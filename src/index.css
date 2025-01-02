@@ -1,0 +1,11 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.barlow-condensed-thin {
+  font-family: "Barlow Condensed", serif;
+  font-weight: 100;
+  font-style: normal;
+}
