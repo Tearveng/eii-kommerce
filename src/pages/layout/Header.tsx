@@ -9,7 +9,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
-import AppProfile from "../../components/Profile";
+import HeaderProfile from "../../components/HeaderProfile";
+import HeaderCart from "../../components/HeaderCart.tsx";
 
 const menuItems = ["Home", "About", "Services", "Contact"];
 
@@ -54,7 +55,8 @@ const AppHeader = () => {
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {/* <SearchInput /> */}
-          <AppProfile />
+          <HeaderCart />
+          <HeaderProfile />
         </Box>
 
         {/* Mobile Menu: Menu Icon */}

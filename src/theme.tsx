@@ -1,5 +1,24 @@
 import { createTheme } from "@mui/material";
 
+// Augmenting the theme with custom types
+declare module "@mui/material/styles" {
+  interface TypographyVariants {
+    body3: React.CSSProperties;
+  }
+
+  // Update the TypographyVariantsOptions to reflect the new variants
+  interface TypographyVariantsOptions {
+    body3?: React.CSSProperties;
+  }
+}
+
+// Update the Typography's variant prop options
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    body3: true;
+  }
+}
+
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -12,13 +31,13 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#1976d2", // Blue color
+      main: "#000000",
     },
     secondary: {
-      main: "#dc004e", // Pink color
+      main: "#dc004e",
     },
     background: {
-      default: "#f4f6f8", // Light gray background
+      default: "#f4f6f8",
     },
   },
   typography: {
@@ -33,6 +52,10 @@ const theme = createTheme({
     },
     body1: {
       fontSize: "1rem",
+    },
+    body3: {
+      fontFamily: "Poppins, sans-serif",
+      fontSize: "0.8rem",
     },
   },
   spacing: 8, // Base spacing unit for margins and padding

@@ -1,22 +1,27 @@
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import AppHeader from "./Header";
 import AppContent from "./Content";
 import AppFooter from "./Footer";
 
 const AppLayout = () => {
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        alignItems: "center",
+      }}
+    >
       <AppHeader />
-      <Container
-        maxWidth="xl"
+      <Box
         sx={{
-          maxWidth: "1920px",
-          border: "1px solid red",
+          maxWidth: "1080px",
         }}
       >
         <AppContent />
         <AppFooter />
-      </Container>
+      </Box>
     </Box>
   );
 };
