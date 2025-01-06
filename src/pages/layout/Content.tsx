@@ -1,11 +1,5 @@
-import ResponsivePostCard from "../../components/PostCard";
+import { Outlet } from "react-router-dom";
 
-const AppContent = () => {
-  return (
-    <>
-      <ResponsivePostCard />
-    </>
-  );
-};
+const AppContent = () => <Outlet />;
 
 export default AppContent;

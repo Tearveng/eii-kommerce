@@ -17,8 +17,10 @@ const AppLayout = () => {
       <Box
         sx={{
           maxWidth: "1080px",
+          width: "100%",
         }}
       >
+        <br />
         <AppContent />
         <AppFooter />
       </Box>
