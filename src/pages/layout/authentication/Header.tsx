@@ -9,8 +9,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
-import HeaderProfile from "../../components/HeaderProfile";
-import HeaderCart from "../../components/HeaderCart.tsx";
+import HeaderCart from "../../../components/HeaderCart";
+import HeaderProfile from "../../../components/HeaderProfile";
 
 const menuItems = ["Home", "About", "Services", "Contact"];
 

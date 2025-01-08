@@ -1,3 +1,4 @@
+import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import {
   Box,
   Button,
@@ -10,12 +11,63 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { strGreater100, substring100 } from "../utils/common.ts";
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
-import ButtonCart from "./Button/ButtonCart.tsx";
 import ButtonBuy from "./Button/ButtonBuy.tsx";
+import ButtonCart from "./Button/ButtonCart.tsx";
 
 const ResponsivePostCard = () => {
   const posts = [
+    {
+      title: "Extra Bass",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
+    },
+    {
+      title: "Post 2",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
+    },
+    {
+      title: "Post 3",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description: "This is a brief description of post 3.",
+    },
+    {
+      title: "Post 4",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description: "This is a brief description of post 4.",
+    },
+    {
+      title: "Extra Bass",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
+    },
+    {
+      title: "Post 2",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
+    },
+    {
+      title: "Post 3",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description: "This is a brief description of post 3.",
+    },
+    {
+      title: "Post 4",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description: "This is a brief description of post 4.",
+    },
     {
       title: "Extra Bass",
       image: "https://via.placeholder.com/400x300",

@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -9,13 +8,37 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { strGreater100, substring100 } from "../../utils/common.ts";
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
-import ButtonCart from "../../components/Button/ButtonCart.tsx";
 import ButtonBuy from "../../components/Button/ButtonBuy.tsx";
+import ButtonCart from "../../components/Button/ButtonCart.tsx";
 
 const ViewItemsPage = () => {
   const posts = [
+    {
+      title: "Extra Bass",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
+    },
+    {
+      title: "Post 2",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
+    },
+    {
+      title: "Post 3",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description: "This is a brief description of post 3.",
+    },
+    {
+      title: "Post 4",
+      image: "https://via.placeholder.com/400x300",
+      showMore: true,
+      description: "This is a brief description of post 4.",
+    },
     {
       title: "Extra Bass",
       image: "https://via.placeholder.com/400x300",
@@ -26,7 +49,33 @@ const ViewItemsPage = () => {
     {
       title: "Post 2",
       image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
+    },
+    {
+      title: "Post 3",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description: "This is a brief description of post 3.",
+    },
+    {
+      title: "Post 4",
+      image: "https://via.placeholder.com/400x300",
       showMore: true,
+      description: "This is a brief description of post 4.",
+    },
+    {
+      title: "Extra Bass",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
+      description:
+        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
+    },
+    {
+      title: "Post 2",
+      image: "https://via.placeholder.com/400x300",
+      showMore: false,
       description:
         "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
     },
@@ -63,41 +112,11 @@ interface PostCardProps {
   title: string;
   image: string;
   description: string;
-  showMore: boolean;
 }
 
-const PostCard = ({ title, image, description, showMore }: PostCardProps) => {
-  const getDescription = () => {
-    let des = (
-      <Typography variant="body2" color="text.secondary">
-        {substring100(description)}
-        {strGreater100(description) && (
-          <Button
-            variant="text"
-            disableFocusRipple
-            disableTouchRipple
-            endIcon={<KeyboardArrowDownOutlinedIcon />}
-            sx={{ textTransform: "none", p: 0 }}
-          >
-            Show more
-          </Button>
-        )}
-      </Typography>
-    );
-
-    if (showMore) {
-      des = (
-        <Typography variant="body2" color="text.secondary">
-          {description}
-        </Typography>
-      );
-    }
-
-    return des;
-  };
-
+const PostCard = ({ title, image, description }: PostCardProps) => {
   return (
-    <Card sx={{ maxWidth: 345, boxShadow: 2, maxHeight: 463 }}>
+    <Card sx={{ maxWidth: 345, boxShadow: 2, maxHeight: 463, flexGrow: 1 }}>
       <CardMedia component="img" height="186" image={image} alt={title} />
       <CardContent>
         <Stack
@@ -119,7 +138,21 @@ const PostCard = ({ title, image, description, showMore }: PostCardProps) => {
             $100
           </Typography>
         </Stack>
-        {getDescription()}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          maxHeight={100}
+          sx={{
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            WebkitLineClamp: 2, // Limit to 2 lines
+            textOverflow: "ellipsis",
+            maxWidth: "300px", // Set a max width for the container
+          }}
+        >
+          {description}
+        </Typography>
       </CardContent>
       <CardActions sx={{ px: 2 }}>
         <Stack
