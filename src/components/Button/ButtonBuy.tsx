@@ -8,6 +8,7 @@ const ButtonBuy = (props: ButtonProps) => {
     textTransform: "none",
     fontWeight: "light",
     boxShadow: "none",
+    fontSize: 12,
   };
   return (
     <Button

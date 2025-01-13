@@ -10,114 +10,87 @@ import {
 import Grid from "@mui/material/Grid2";
 import ButtonBuy from "../../components/Button/ButtonBuy.tsx";
 import ButtonCart from "../../components/Button/ButtonCart.tsx";
+import {
+  IProduct,
+  IProductResponse,
+} from "../../services/types/ProductInterface.tsx";
+import { useCallback, useEffect, useState } from "react";
+import { useGetAllProductsQuery } from "../../services/productApi.ts";
+import { useNavigate } from "react-router-dom";
 
 const ViewItemsPage = () => {
-  const posts = [
-    {
-      title: "Extra Bass",
-      image: "https://via.placeholder.com/400x300",
-      showMore: true,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
-    },
-    {
-      title: "Post 2",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
-    },
-    {
-      title: "Post 3",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description: "This is a brief description of post 3.",
-    },
-    {
-      title: "Post 4",
-      image: "https://via.placeholder.com/400x300",
-      showMore: true,
-      description: "This is a brief description of post 4.",
-    },
-    {
-      title: "Extra Bass",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
-    },
-    {
-      title: "Post 2",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
-    },
-    {
-      title: "Post 3",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description: "This is a brief description of post 3.",
-    },
-    {
-      title: "Post 4",
-      image: "https://via.placeholder.com/400x300",
-      showMore: true,
-      description: "This is a brief description of post 4.",
-    },
-    {
-      title: "Extra Bass",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically senses your environment to deliver an amazing sound experience. ",
-    },
-    {
-      title: "Post 2",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description:
-        "Turn down the world's noise with the long-lasting noise cancellation performance of the WH-CH710N wireless headphones. Dual Noise Sensor technology automatically",
-    },
-    {
-      title: "Post 3",
-      image: "https://via.placeholder.com/400x300",
-      showMore: false,
-      description: "This is a brief description of post 3.",
-    },
-    {
-      title: "Post 4",
-      image: "https://via.placeholder.com/400x300",
-      showMore: true,
-      description: "This is a brief description of post 4.",
-    },
-  ];
+  const [products, setProducts] = useState<IProduct | undefined>();
+  const limit = 10;
+  const page = 1;
+
+  // end point
+  const { data, isLoading, isSuccess } = useGetAllProductsQuery({
+    limit,
+    page,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setProducts(data);
+    }
+  }, [isSuccess, data]);
+
+  if (isLoading) {
+    return <>loading...</>;
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Grid container spacing={2} justifyContent="center">
-        {posts.map((post, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
-            <PostCard {...post} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    products && (
+      <Box sx={{ flexGrow: 1, padding: 2 }}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent={{ xs: "center", md: "start" }}
+        >
+          {products.data.map((product) => (
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id} width="auto">
+              <PostCard {...product} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    )
   );
 };
 
 export default ViewItemsPage;
 
-interface PostCardProps {
-  title: string;
-  image: string;
-  description: string;
-}
+const PostCard = ({
+  id,
+  name,
+  thumbnail,
+  description,
+  skuCode,
+  price,
+}: IProductResponse) => {
+  const navigate = useNavigate();
+  const navigationDetail = useCallback(
+    () => navigate(`/item/${skuCode}/${id}`),
+    [navigate],
+  );
 
-const PostCard = ({ title, image, description }: PostCardProps) => {
   return (
-    <Card sx={{ maxWidth: 345, boxShadow: 2, maxHeight: 463, flexGrow: 1 }}>
-      <CardMedia component="img" height="186" image={image} alt={title} />
+    <Card
+      sx={{
+        maxWidth: 345,
+        boxShadow: 2,
+        maxHeight: 463,
+        flexGrow: 1,
+      }}
+    >
+      <CardMedia
+        component="img"
+        height="186"
+        image={thumbnail ?? "https://via.placeholder.com/400x300"}
+        alt={name}
+        sx={{ cursor: "pointer" }}
+        onClick={navigationDetail}
+      />
       <CardContent>
         <Stack
           direction="row"
@@ -127,19 +100,30 @@ const PostCard = ({ title, image, description }: PostCardProps) => {
         >
           <Stack>
             <Typography variant="body3" component="div">
-              {title}
+              {skuCode}
             </Typography>
-            <Typography variant="subtitle1" component="div">
-              {title}
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                WebkitLineClamp: 1, // Limit to 2 lines
+                textOverflow: "ellipsis",
+                maxWidth: "300px", // Set a max width for the container
+              }}
+            >
+              {name}
             </Typography>
           </Stack>
 
           <Typography variant="h6" component="div">
-            $100
+            ${price}
           </Typography>
         </Stack>
         <Typography
-          variant="body2"
+          variant="body3"
           color="text.secondary"
           maxHeight={100}
           sx={{
@@ -163,7 +147,7 @@ const PostCard = ({ title, image, description }: PostCardProps) => {
           justifyContent="space-between"
         >
           <ButtonCart />
-          <ButtonBuy />
+          <ButtonBuy onClick={navigationDetail} />
         </Stack>
       </CardActions>
     </Card>

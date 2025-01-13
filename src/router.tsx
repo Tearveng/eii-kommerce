@@ -11,7 +11,7 @@ const AppRouter = () => {
       {/* Define your routes using Route */}
       <Route path="/" element={<AppLayout />}>
         <Route index element={<ViewItemsPage />} />
-        <Route path="/item" element={<ViewItemPage />} />
+        <Route path="/item/:skuCode/:id" element={<ViewItemPage />} />
       </Route>
       <Route path="/" element={<AppPublicLayout />}>
         <Route path="/login" element={<AppLogin />} />

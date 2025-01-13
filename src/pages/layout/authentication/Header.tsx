@@ -11,10 +11,12 @@ import {
 import { useState } from "react";
 import HeaderCart from "../../../components/HeaderCart";
 import HeaderProfile from "../../../components/HeaderProfile";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = ["Home", "About", "Services", "Contact"];
 
 const AppHeader = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -27,11 +29,11 @@ const AppHeader = () => {
     <AppBar
       position="sticky"
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: "#fff",
         boxShadow: "none",
-        width: "100%", // Ensure AppBar spans full width
-        maxWidth: "1080px", // Lock max width for the AppBar
-        margin: "0 auto", // Center the AppBar
+        width: "100%",
+        maxWidth: "1080px",
+        margin: "0 auto",
       }}
     >
       <Toolbar
@@ -40,7 +42,13 @@ const AppHeader = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h6" component="div" color="black">
+        <Typography
+          variant="h6"
+          component="div"
+          color="black"
+          sx={{ cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
           App
         </Typography>
 
