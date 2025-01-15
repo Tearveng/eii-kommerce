@@ -11,6 +11,18 @@ export interface IProduct {
   meta: IMeta;
 }
 
+export interface IProductDataGrid {
+  id: number;
+  productName: string;
+  productCode: string;
+  productSkuCode: string;
+  productPrice: number;
+  productQuantity: number;
+  productThumbnail: string | null;
+  productCreatedDate: string;
+  productUpdatedDate: string;
+}
+
 export interface IProductResponse {
   id: number;
   name: string;

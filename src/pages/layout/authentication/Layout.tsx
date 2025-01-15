@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import AppHeader from "./Header";
-import AppContent from "./Content";
-import AppFooter from "./Footer";
+import AppHeader from "./Header.tsx";
+import AppContent from "./Content.tsx";
+import AppFooter from "./Footer.tsx";
 
 const AppLayout = () => {
   return (

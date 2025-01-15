@@ -2,6 +2,11 @@ import { createTheme } from "@mui/material";
 
 // Augmenting the theme with custom types
 declare module "@mui/material/styles" {
+  interface Theme {
+    vars: {
+      [key: string]: any; // Or define specific types depending on your use case
+    };
+  }
   interface TypographyVariants {
     body3: React.CSSProperties;
   }
@@ -9,6 +14,11 @@ declare module "@mui/material/styles" {
   // Update the TypographyVariantsOptions to reflect the new variants
   interface TypographyVariantsOptions {
     body3?: React.CSSProperties;
+  }
+  interface ThemeOptions {
+    vars?: {
+      [key: string]: any;
+    };
   }
 }
 
