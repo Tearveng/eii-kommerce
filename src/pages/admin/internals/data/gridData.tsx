@@ -1,8 +1,11 @@
+import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
+import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
+import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
+import { Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import { GridCellParams, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
-import { IProductDataGrid } from "../../../../services/types/ProductInterface.tsx";
+import { GridCellParams, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
 type SparkLineData = number[];
 
@@ -58,7 +61,7 @@ function renderStatus(status: "Online" | "Offline") {
 }
 
 export function renderAvatar(
-  params: GridCellParams<{ name: string; color: string }, any, any>,
+  params: GridCellParams<{ name: string; color: string }, any, any>
 ) {
   if (params.value == null) {
     return "";
@@ -78,6 +81,42 @@ export function renderAvatar(
   );
 }
 
+export function renderActions() {
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="center"
+      gap={2}
+      sx={{
+        height: "100%",
+      }}
+    >
+      <PreviewRoundedIcon
+        fontSize="small"
+        color="secondary"
+        sx={{
+          cursor: "pointer",
+        }}
+      />
+      <BorderColorRoundedIcon
+        fontSize="small"
+        color="info"
+        sx={{
+          cursor: "pointer",
+        }}
+      />
+      <DisabledByDefaultRoundedIcon
+        fontSize="small"
+        color="error"
+        sx={{
+          cursor: "pointer",
+        }}
+      />
+    </Stack>
+  );
+}
+
 export const productColumns: GridColDef[] = [
   {
     field: "productName",
@@ -89,25 +128,27 @@ export const productColumns: GridColDef[] = [
     field: "productCode",
     headerName: "Code",
     flex: 1.5,
-    minWidth: 200,
+    minWidth: 150,
   },
   {
     field: "productSkuCode",
     headerName: "SkuCode",
     flex: 1.5,
-    minWidth: 200,
+    minWidth: 150,
   },
   {
     field: "productPrice",
     headerName: "Price",
     flex: 1.5,
-    minWidth: 200,
+    minWidth: 50,
+    maxWidth: 100,
   },
   {
     field: "productQuantity",
     headerName: "Quantity",
     flex: 1.5,
-    minWidth: 200,
+    minWidth: 50,
+    maxWidth: 100,
   },
   {
     field: "productThumbnail",
@@ -126,6 +167,14 @@ export const productColumns: GridColDef[] = [
     headerName: "Updated Date",
     flex: 1.5,
     minWidth: 200,
+  },
+  {
+    field: "edit",
+    headerName: "Edit",
+    headerAlign: "center",
+    flex: 1.5,
+    minWidth: 200,
+    renderCell: () => renderActions(),
   },
 ];
 

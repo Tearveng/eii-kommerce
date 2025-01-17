@@ -1,11 +1,8 @@
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { Button, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../../../services/productApi.ts";
 import {
   IProduct,
@@ -14,8 +11,7 @@ import {
 import { productColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 
-const ProductMainGrid = () => {
-  const navigate = useNavigate();
+const OrderMainGrid = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const { data, isLoading, isFetching } = useGetAllProductsQuery({
@@ -65,17 +61,6 @@ const ProductMainGrid = () => {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Products
       </Typography>
-      <Stack direction="row" pb={1}>
-        <Button
-          variant="contained"
-          size="small"
-          sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-          startIcon={<AddRoundedIcon />}
-          onClick={() => navigate("/admin/products/create")}
-        >
-          Create new
-        </Button>
-      </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<IProduct>
@@ -92,4 +77,4 @@ const ProductMainGrid = () => {
   );
 };
 
-export default ProductMainGrid;
+export default OrderMainGrid;

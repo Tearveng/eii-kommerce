@@ -38,7 +38,9 @@ const AppLogin = () => {
       return undefined;
     }
   };
-  const handleLogin = (data: ILogin) => {};
+  const handleLogin = (data: ILogin) => {
+    console.log("data", data);
+  };
 
   return (
     <Box

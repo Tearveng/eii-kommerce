@@ -1,14 +1,13 @@
-import { alpha, Theme, Components } from "@mui/material/styles";
-import { outlinedInputClasses } from "@mui/material/OutlinedInput";
-import { svgIconClasses } from "@mui/material/SvgIcon";
-import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
-import { toggleButtonClasses } from "@mui/material/ToggleButton";
 import CheckBoxOutlineBlankRoundedIcon from "@mui/icons-material/CheckBoxOutlineBlankRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
-import { gray, brand } from "../themePrimitives.ts";
+import { outlinedInputClasses } from "@mui/material/OutlinedInput";
+import { alpha, Components, Theme } from "@mui/material/styles";
+import { svgIconClasses } from "@mui/material/SvgIcon";
+import { toggleButtonClasses } from "@mui/material/ToggleButton";
+import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
+import { brand, gray } from "../themePrimitives.ts";
 
-/* eslint-disable import/prefer-default-export */
 export const inputsCustomizations: Components<Theme> = {
   MuiButtonBase: {
     defaultProps: {
@@ -94,8 +93,14 @@ export const inputsCustomizations: Components<Theme> = {
             style: {
               color: "white",
               backgroundColor: brand[300],
-              backgroundImage: `linear-gradient(to bottom, ${alpha(brand[400], 0.8)}, ${brand[500]})`,
-              boxShadow: `inset 0 2px 0 ${alpha(brand[200], 0.2)}, inset 0 -2px 0 ${alpha(brand[700], 0.4)}`,
+              backgroundImage: `linear-gradient(to bottom, ${alpha(
+                brand[400],
+                0.8
+              )}, ${brand[500]})`,
+              boxShadow: `inset 0 2px 0 ${alpha(
+                brand[200],
+                0.2
+              )}, inset 0 -2px 0 ${alpha(brand[700], 0.4)}`,
               border: `1px solid ${brand[500]}`,
               "&:hover": {
                 backgroundColor: brand[700],
@@ -406,17 +411,17 @@ export const inputsCustomizations: Components<Theme> = {
             props: {
               size: "small",
             },
-            style: {
-              height: "2.25rem",
-            },
+            // style: {
+            //   height: "2.25rem",
+            // },
           },
           {
             props: {
               size: "medium",
             },
-            style: {
-              height: "2.5rem",
-            },
+            // style: {
+            //   height: "2.5rem",
+            // },
           },
         ],
       }),

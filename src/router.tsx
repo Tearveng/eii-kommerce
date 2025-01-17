@@ -1,12 +1,14 @@
 import { Route, Routes } from "react-router-dom";
+import AdminHome from "./pages/admin/AdminHome.tsx";
+import OrderMainGrid from "./pages/admin/components/orders/OrderMainGrid.tsx";
+import ProductCreate from "./pages/admin/components/products/form/ProductCreate.tsx";
+import ProductMainGrid from "./pages/admin/components/products/ProductMainGrid.tsx";
+import AdminLayout from "./pages/admin/layout/AdminLayout.tsx";
 import AppLogin from "./pages/authentication/AppLogin.tsx";
 import AppLayout from "./pages/layout/authentication/Layout.tsx";
 import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
-import AdminHome from "./pages/admin/AdminHome.tsx";
-import AdminLayout from "./pages/admin/layout/AdminLayout.tsx";
-import ProductMainGrid from "./pages/admin/components/products/ProductMainGrid.tsx";
 
 const AppRouter = () => {
   return (
@@ -19,8 +21,10 @@ const AppRouter = () => {
 
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
+        <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/products" element={<ProductMainGrid />} />
-        <Route path="/admin/home" element={<AdminHome />} />
+        <Route path="/admin/products/create" element={<ProductCreate />} />
+        <Route path="/admin/orders" element={<OrderMainGrid />} />
       </Route>
 
       <Route path="/" element={<AppPublicLayout />}>

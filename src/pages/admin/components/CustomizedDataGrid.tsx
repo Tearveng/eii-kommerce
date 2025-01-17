@@ -1,12 +1,29 @@
-import { DataGrid, GridColDef, GridValidRowModel } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridValidRowModel,
+} from "@mui/x-data-grid";
+import { IProduct } from "../../../services/types/ProductInterface";
 
-interface ICustomizedDataGridProps {
+interface ICustomizedDataGridProps<T extends IProduct> {
   rows: readonly GridValidRowModel[];
   columns: GridColDef[];
+  pageSize: number;
+  page: number;
+  data: T | undefined;
+  onPaginationModelChange: (
+    model: GridPaginationModel,
+    _: GridCallbackDetails<"pagination">
+  ) => void;
 }
 
-export default function CustomizedDataGrid(props: ICustomizedDataGridProps) {
-  const { columns, rows } = props;
+export default function CustomizedDataGrid<T extends IProduct>(
+  props: Readonly<ICustomizedDataGridProps<T>>
+) {
+  const { columns, rows, pageSize, page, onPaginationModelChange, data } =
+    props;
   return (
     <DataGrid
       checkboxSelection
@@ -15,12 +32,19 @@ export default function CustomizedDataGrid(props: ICustomizedDataGridProps) {
       getRowClassName={(params) =>
         params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
       }
+      rowCount={data?.meta.totalItems}
       initialState={{
-        pagination: { paginationModel: { pageSize: 20 } },
+        pagination: {
+          paginationModel: { pageSize, page: page - 1 },
+        },
       }}
       pageSizeOptions={[10, 20, 50]}
+      onPaginationModelChange={(e, meta) =>
+        onPaginationModelChange({ ...e }, meta)
+      }
       disableColumnResize
       density="compact"
+      paginationMode="server"
       slotProps={{
         filterPanel: {
           filterFormProps: {

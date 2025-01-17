@@ -1,10 +1,9 @@
-import { styled } from "@mui/material/styles";
-import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import { Avatar, Box, Divider, Stack, Typography } from "@mui/material";
-import SelectContent from "./SelectContent.tsx";
-import MenuContent from "./MenuContent.tsx";
+import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
+import { styled } from "@mui/material/styles";
 import CardAlert from "./CardAlert.tsx";
-import { useGetRouteAdmin } from "../../../utils/internals/useGetRouteAdmin.tsx";
+import MenuContent from "./MenuContent.tsx";
+import SelectContent from "./SelectContent.tsx";
 
 const drawerWidth = 240;
 const Drawer = styled(MuiDrawer)({

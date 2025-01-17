@@ -10,7 +10,6 @@ import AppTheme from "../AdminTheme.tsx";
 import { chartsCustomizations } from "../theme/charts.ts";
 import { dataGridCustomizations } from "../theme/dataGrid.ts";
 import { alpha } from "@mui/material/styles";
-import MainGrid from "../components/MainGrid.tsx";
 import Header from "./Header.tsx";
 import { Outlet } from "react-router-dom";
 
