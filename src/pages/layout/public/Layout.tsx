@@ -1,26 +1,29 @@
-import { Box } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import theme from "../../../theme.tsx";
 
 const AppPublicLayout = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        alignItems: "center",
-      }}
-    >
+    <ThemeProvider theme={theme}>
       <Box
         sx={{
-          maxWidth: "1080px",
-          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          alignItems: "center",
         }}
       >
-        <br />
-        <Outlet />
+        <Box
+          sx={{
+            maxWidth: "1080px",
+            width: "100%",
+          }}
+        >
+          <br />
+          <Outlet />
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 };
 

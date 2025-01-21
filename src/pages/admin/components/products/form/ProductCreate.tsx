@@ -1,22 +1,27 @@
+import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MuiCard from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
 import { useForm } from "react-hook-form";
 import InputText from "../../../../../components/Input/InputText";
-import { IProductResponse } from "../../../../../services/types/ProductInterface";
+import {
+  IProductResponse,
+  IUploadImageResponse,
+} from "../../../../../services/types/ProductInterface";
 import DropZoneUpload from "../../DropZoneUpload";
-// import ForgotPassword from "./components/ForgotPassword";
-// import AppTheme from "../shared-theme/AppTheme";
-// import ColorModeSelect from "../shared-theme/ColorModeSelect";
-// import {
-//   GoogleIcon,
-//   FacebookIcon,
-//   SitemarkIcon,
-// } from "./components/CustomIcons";
+import {
+  useCreateProductMutation,
+  useDeleteImageMutation,
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+  useUploadImageMutation,
+} from "../../../../../services/productApi.ts";
+import { useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -61,60 +66,182 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const ProductCreate = () => {
+  const navigate = useNavigate();
+  const param = useParams();
   const formData = useForm<IProductResponse>();
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [files, setFiles] = useState<IUploadImageResponse[]>([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // *** end-point ***
+  const [create, { isLoading: createLoading }] = useCreateProductMutation();
+  const [upload, { isLoading }] = useUploadImageMutation();
+  const [deleteImage, { isLoading: deleteLoading, originalArgs: deleteArgs }] =
+    useDeleteImageMutation();
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [update, { isLoading: updateProductLoading }] =
+    useUpdateProductMutation();
+  const {
+    data: productById,
+    isLoading: productByIdLoading,
+    isFetching: productByIdFetching,
+  } = useGetProductByIdQuery(
+    {
+      id: Number(param.id),
+    },
+    { skip: !param.id, refetchOnMountOrArgChange: true },
+  );
 
-  const handleSubmit = (data: IProductResponse) => {
-    // if (emailError || passwordError) {
-    //   event.preventDefault();
-    //   return;
-    // }
-    // const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
-  };
-
-  const validateInputs = () => {
-    const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;
-
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+  const onDropFiles = async (fil: File[]) => {
+    for (const f of fil) {
+      // setFiles((prev) => [
+      //   ...prev,
+      //   {
+      //     public_id: "",
+      //     message: "",
+      //     imageUrl: URL.createObjectURL(f),
+      //     originalFile: f,
+      //   },
+      // ]);
+      setFiles([
+        {
+          public_id: "",
+          message: "",
+          imageUrl: URL.createObjectURL(f),
+          originalFile: f,
+        },
+      ]);
     }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
-    }
-
-    return isValid;
   };
 
+  const onDeleteFile = async (props: { publicId?: string; index?: number }) => {
+    if (props.publicId && props.publicId !== "") {
+      await deleteImage({ publicId: props.publicId })
+        .unwrap()
+        .then((res) => {
+          setFiles((prev) =>
+            prev.filter((item) => item.public_id !== res.public_id),
+          );
+        });
+    } else {
+      setFiles((prev) => prev.filter((_, i) => i !== props.index));
+    }
+  };
+
+  const createProduct = async (
+    data: IProductResponse,
+    imageUrl?: string,
+    publicId?: string,
+  ) => {
+    return create({
+      name: data.name,
+      description: data.description,
+      skuCode: data.skuCode,
+      code: "",
+      price: data.price,
+      quantity: data.quantity,
+      publicId: publicId ?? "",
+      thumbnail: imageUrl ?? "",
+    })
+      .unwrap()
+      .then(() => navigate("/admin/products"))
+      .catch((e) => console.error(e));
+  };
+
+  const updateProduct = async (
+    data: IProductResponse,
+    imageUrl?: string,
+    publicId?: string,
+  ) => {
+    const thumbnail2 = imageUrl && imageUrl !== "" ? imageUrl : data.thumbnail;
+    const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
+
+    return update({
+      id: Number(param.id),
+      name: data.name,
+      description: data.description,
+      skuCode: data.skuCode,
+      code: "",
+      price: data.price,
+      quantity: data.quantity,
+      publicId: files.length > 0 ? publicId2 : "",
+      thumbnail: files.length > 0 ? thumbnail2 : "",
+    })
+      .unwrap()
+      .then(() => navigate("/admin/products"))
+      .catch((e) => console.error(e));
+  };
+
+  const handleSubmit = async (data: IProductResponse) => {
+    if (files.length > 0) {
+      for (const f of files.flatMap((i) => i.originalFile)) {
+        const form = new FormData();
+        if (f) {
+          form.append("file", f);
+          await upload({ form })
+            .unwrap()
+            .then((res) => {
+              createProduct(data, res.imageUrl, res.public_id);
+            });
+        }
+      }
+    } else {
+      await createProduct(data, "", "");
+    }
+  };
+
+  const handleUpdateSubmit = async (data: IProductResponse) => {
+    if (files.length > 0) {
+      for (const f of files.flatMap((i) => i.originalFile)) {
+        const form = new FormData();
+        if (f) {
+          form.append("file", f);
+          await upload({ form })
+            .unwrap()
+            .then((res) => {
+              updateProduct(data, res.imageUrl, res.public_id);
+            });
+        } else {
+          await updateProduct(data, "", "");
+        }
+      }
+    } else {
+      await updateProduct(data, "", "");
+    }
+  };
+
+  useEffect(() => {
+    if (productById) {
+      formData.reset({
+        id: Number(productById.id),
+        name: productById.name,
+        description: productById.description,
+        code: productById.code,
+        skuCode: productById.skuCode,
+        price: productById.price,
+        quantity: productById.quantity,
+        thumbnail: productById.thumbnail,
+        createdAt: productById.createdAt,
+      });
+      if (productById.thumbnail && productById.thumbnail !== "") {
+        setFiles([
+          {
+            public_id: productById.publicId ?? "",
+            message: "",
+            imageUrl: productById.thumbnail ?? "",
+            originalFile: null,
+          },
+        ]);
+      } else {
+        setFiles([]);
+      }
+    }
+  }, [productById, formData]);
+
+  if (productByIdLoading || productByIdFetching) {
+    return <>loading...</>;
+  }
+
+  const createFormLoading = createLoading || isLoading;
+  const updateFormLoading = updateProductLoading || isLoading;
   return (
     <Box
       sx={{
@@ -122,15 +249,14 @@ const ProductCreate = () => {
         maxWidth: { sm: "100%", md: "1700px" },
       }}
     >
-      {/* <SignInContainer direction="column" justifyContent="space-between"> */}
-      {/* <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} /> */}
-      {/* <SitemarkIcon /> */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Create
+        {param.id ? "Update" : "Create"}
       </Typography>
       <Box
         component="form"
-        onSubmit={formData.handleSubmit(handleSubmit)}
+        onSubmit={formData.handleSubmit(
+          param.id ? handleUpdateSubmit : handleSubmit,
+        )}
         noValidate
         sx={{
           display: "flex",
@@ -207,6 +333,11 @@ const ProductCreate = () => {
             error={formData.formState.errors["price"]}
             inputPropsTextField={{
               type: "number",
+              slotProps: {
+                htmlInput: {
+                  min: 1,
+                },
+              },
             }}
             rules={{
               required: {
@@ -227,6 +358,11 @@ const ProductCreate = () => {
             error={formData.formState.errors["quantity"]}
             inputPropsTextField={{
               type: "number",
+              slotProps: {
+                htmlInput: {
+                  min: 1,
+                },
+              },
             }}
             rules={{
               required: {
@@ -240,17 +376,46 @@ const ProductCreate = () => {
           <Typography variant="body2" color="textSecondary">
             Thumbnail
           </Typography>
-          <DropZoneUpload />
+          <DropZoneUpload
+            onDrop={onDropFiles}
+            loading={isLoading}
+            resFiles={files}
+            onDelete={onDeleteFile}
+            deleteLoading={deleteLoading}
+            deleteArgs={deleteArgs}
+            dropZoneOptions={{ multiple: false }}
+          />
         </Stack>
 
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          onClick={validateInputs}
-        >
-          Submit
-        </Button>
+        {param.id ? (
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={updateFormLoading}
+            startIcon={
+              updateFormLoading && (
+                <CircularProgress color="inherit" size={20} />
+              )
+            }
+          >
+            {updateFormLoading ? "Updating" : "Update"}
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={createFormLoading}
+            startIcon={
+              createFormLoading && (
+                <CircularProgress color="inherit" size={20} />
+              )
+            }
+          >
+            {createFormLoading ? "Submitting" : "Submit"}
+          </Button>
+        )}
       </Box>
     </Box>
   );

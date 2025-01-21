@@ -31,12 +31,31 @@ export interface IProductResponse {
   skuCode: string;
   price: number;
   quantity: number;
+  publicId: string | null;
   thumbnail: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
+export interface IProductCreatePayload {
+  name: string;
+  description: string;
+  code: string;
+  skuCode: string;
+  price: number;
+  quantity: number;
+  publicId: string | null;
+  thumbnail: string | null;
+}
+
 export interface IProductGetAllPayload {
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
+}
+
+export interface IUploadImageResponse {
+  message: string;
+  imageUrl: string;
+  public_id: string;
+  originalFile: File | null;
 }

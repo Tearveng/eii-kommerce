@@ -1,33 +1,36 @@
-import { Box } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 import AppHeader from "./Header.tsx";
 import AppContent from "./Content.tsx";
 import AppFooter from "./Footer.tsx";
+import theme from "../../../theme.tsx";
 
 const AppLayout = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        alignItems: "center",
-      }}
-    >
-      <AppHeader />
+    <ThemeProvider theme={theme}>
       <Box
         sx={{
-          maxWidth: "1080px",
-          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          alignItems: "center",
         }}
       >
-        <br />
-        <AppContent />
-        <br />
-        <br />
-        <br />
-        <AppFooter />
+        <AppHeader />
+        <Box
+          sx={{
+            maxWidth: "1080px",
+            width: "100%",
+          }}
+        >
+          <br />
+          <AppContent />
+          <br />
+          <br />
+          <br />
+          <AppFooter />
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 };
 

@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../../../services/productApi.ts";
 import {
   IProduct,
@@ -13,25 +13,35 @@ import {
 } from "../../../../services/types/ProductInterface.tsx";
 import { productColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
+import { useAppDispatch } from "../../../../redux.ts";
 
 const ProductMainGrid = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(20);
-  const { data, isLoading, isFetching } = useGetAllProductsQuery({
-    limit,
-    page,
+  const dispatch = useAppDispatch();
+  const [search, setSearchParam] = useSearchParams();
+  const [page, setPage] = useState(search.get("page") ?? 1);
+  const [limit, setLimit] = useState(search.get("limit") ?? 20);
+  const {
+    currentData: data,
+    isLoading,
+    isFetching,
+  } = useGetAllProductsQuery({
+    limit: Number(limit),
+    page: Number(page),
   });
-
   const [products, setProducts] = useState<IProductDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    detail: GridCallbackDetails<"pagination">
+    _: GridCallbackDetails<"pagination">,
   ) => {
-    console.log("detail", detail);
     setLimit(model.pageSize);
     setPage(model.page + 1);
+    search.set("page", (model.page + 1).toString());
+    search.set("limit", model.pageSize.toString());
+    setSearchParam(search);
+    dispatch(dispatchProductCurrentPage(model.page + 1));
   };
 
   useEffect(() => {
@@ -80,8 +90,8 @@ const ProductMainGrid = () => {
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<IProduct>
             data={data}
-            pageSize={limit}
-            page={page}
+            pageSize={Number(limit)}
+            page={Number(page)}
             columns={productColumns}
             rows={products}
             onPaginationModelChange={onPaginationModelChange}

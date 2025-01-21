@@ -24,6 +24,7 @@ const AppRouter = () => {
         <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/products" element={<ProductMainGrid />} />
         <Route path="/admin/products/create" element={<ProductCreate />} />
+        <Route path="/admin/products/update/:id" element={<ProductCreate />} />
         <Route path="/admin/orders" element={<OrderMainGrid />} />
       </Route>
 

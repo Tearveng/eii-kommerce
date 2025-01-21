@@ -1,11 +1,19 @@
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Stack } from "@mui/material";
+import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
-import { GridCellParams, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import {
+  GridCellParams,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowsProp,
+} from "@mui/x-data-grid";
+import { store } from "../../../../redux.ts";
+import { dispatchDeleteProductId } from "../../../../redux/application.ts";
+import { Stack } from "@mui/material";
 
 type SparkLineData = number[];
 
@@ -61,7 +69,7 @@ function renderStatus(status: "Online" | "Offline") {
 }
 
 export function renderAvatar(
-  params: GridCellParams<{ name: string; color: string }, any, any>
+  params: GridCellParams<{ name: string; color: string }, any, any>,
 ) {
   if (params.value == null) {
     return "";
@@ -81,13 +89,14 @@ export function renderAvatar(
   );
 }
 
-export function renderActions() {
+export function renderActions(param: GridRenderCellParams) {
   return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="center"
       gap={2}
+      onClick={(e) => e.stopPropagation()}
       sx={{
         height: "100%",
       }}
@@ -99,16 +108,22 @@ export function renderActions() {
           cursor: "pointer",
         }}
       />
-      <BorderColorRoundedIcon
-        fontSize="small"
-        color="info"
-        sx={{
-          cursor: "pointer",
-        }}
-      />
+      <Link to={`/admin/products/update/${param.id}`}>
+        <BorderColorRoundedIcon
+          fontSize="small"
+          color="info"
+          sx={{
+            mt: 1.5,
+            cursor: "pointer",
+          }}
+        />
+      </Link>
       <DisabledByDefaultRoundedIcon
         fontSize="small"
         color="error"
+        onClick={() =>
+          store.dispatch(dispatchDeleteProductId(Number(param.id)))
+        }
         sx={{
           cursor: "pointer",
         }}
@@ -174,7 +189,7 @@ export const productColumns: GridColDef[] = [
     headerAlign: "center",
     flex: 1.5,
     minWidth: 200,
-    renderCell: () => renderActions(),
+    renderCell: (param) => renderActions(param),
   },
 ];
 

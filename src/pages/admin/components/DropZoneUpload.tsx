@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useUploadImageMutation } from "../../../services/productApi";
+import { DropzoneOptions, useDropzone } from "react-dropzone";
+import { IUploadImageResponse } from "../../../services/types/ProductInterface.tsx";
+import { Button, CircularProgress } from "@mui/material";
+import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 
-interface IFileType extends File {
-  preview: string;
-}
 const baseStyle = {
   flex: 1,
   display: "flex",
@@ -64,39 +63,89 @@ const img = {
   height: "100%",
 };
 
-function DropZoneUpload() {
-  const [files, setFiles] = useState<IFileType[]>([]);
-  const [upload] = useUploadImageMutation();
+export interface IDropZoneUploadProps {
+  loading: boolean;
+  onDrop: (file: File[]) => void;
+  resFiles: IUploadImageResponse[];
+  onDelete: (props: { publicId: string; index?: number }) => void;
+  deleteLoading: boolean;
+  deleteArgs: any;
+  dropZoneOptions?: DropzoneOptions;
+}
+
+function DropZoneUpload(props: IDropZoneUploadProps) {
+  const {
+    loading,
+    resFiles,
+    onDelete,
+    onDrop,
+    deleteLoading,
+    deleteArgs,
+    dropZoneOptions,
+  } = props;
+  const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const { getRootProps, getInputProps, isFocused, isDragReject, isDragAccept } =
     useDropzone({
+      ...dropZoneOptions,
       accept: {
         "image/*": [],
       },
       onDrop: async (acceptedFiles) => {
-        for (const file of acceptedFiles) {
-          const formData = new FormData();
-          formData.append("file", file);
-          await upload({ form: formData })
-            .unwrap()
-            .then((res) => console.log("asdasd", res));
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          });
-        }
+        onDrop(acceptedFiles);
       },
     });
 
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img
-          src={file.preview}
-          style={img}
-          // Revoke data uri after image is loaded
-          onLoad={() => {
-            URL.revokeObjectURL(file.preview);
+  const thumbs = files.map((file, i) => (
+    <div style={{ ...thumb, position: "relative" }} key={file.public_id}>
+      <div style={{ ...thumbInner }}>
+        <RemoveCircleOutlineRoundedIcon
+          onClick={() => {
+            if (deleteLoading) {
+              return;
+            } else {
+              onDelete({
+                publicId: file.public_id,
+                index: i,
+              });
+            }
+          }}
+          color="error"
+          sx={{
+            width: 20,
+            position: "absolute",
+            top: -10,
+            right: -10,
+            cursor: "pointer",
           }}
         />
+        {deleteLoading && deleteArgs.publicId === file.public_id && (
+          <div
+            style={{
+              backgroundColor: "#fff",
+              opacity: 0.5,
+              width: "100%",
+              top: "0",
+              left: "0",
+              height: "100%",
+              filter: "blur(5px)",
+              position: "absolute",
+              zIndex: 0,
+            }}
+          ></div>
+        )}
+        {deleteLoading && deleteArgs.publicId === file.public_id && (
+          <CircularProgress
+            color="inherit"
+            size={20}
+            sx={{
+              top: "40%",
+              left: "40%",
+              position: "absolute",
+              zIndex: 99,
+            }}
+          />
+        )}
+        <img src={file.imageUrl} style={img} alt={file.public_id} />
       </div>
     </div>
   ));
@@ -108,19 +157,30 @@ function DropZoneUpload() {
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
     }),
-    [isFocused, isDragAccept, isDragReject]
+    [isFocused, isDragAccept, isDragReject],
   ) as React.CSSProperties;
 
   useEffect(() => {
+    setFiles(resFiles);
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [files]);
+    // return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
+  }, [resFiles]);
 
   return (
     <section className="container">
       <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        {!loading && <input {...getInputProps()} />}
+        {loading ? (
+          <Button
+            variant={"text"}
+            disabled
+            startIcon={<CircularProgress color="inherit" size={20} />}
+          >
+            uploading....
+          </Button>
+        ) : (
+          <p>Drag 'n' drop some files here, or click to select files</p>
+        )}
       </div>
       <aside style={thumbsContainer}>{thumbs}</aside>
     </section>
