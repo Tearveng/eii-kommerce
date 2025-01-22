@@ -108,7 +108,7 @@ export function renderActions(param: GridRenderCellParams) {
           cursor: "pointer",
         }}
       />
-      <Link to={`/admin/products/update/${param.id}`}>
+      <Link to={`/admin/products/update/${param.id}${window.location.search}`}>
         <BorderColorRoundedIcon
           fontSize="small"
           color="info"

@@ -9,6 +9,7 @@ import AppLayout from "./pages/layout/authentication/Layout.tsx";
 import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
+import CartMainGrid from "./pages/admin/components/carts/CartMainGrid.tsx";
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,7 @@ const AppRouter = () => {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/products" element={<ProductMainGrid />} />
+        <Route path="/admin/carts" element={<CartMainGrid />} />
         <Route path="/admin/products/create" element={<ProductCreate />} />
         <Route path="/admin/products/update/:id" element={<ProductCreate />} />
         <Route path="/admin/orders" element={<OrderMainGrid />} />

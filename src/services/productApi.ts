@@ -6,8 +6,6 @@ import {
   IProductResponse,
   IUploadImageResponse,
 } from "./types/ProductInterface.tsx";
-import { store } from "../redux.ts";
-import { useSearchParams } from "react-router-dom";
 
 export const productApi = createApi({
   reducerPath: "productApi",
@@ -26,19 +24,51 @@ export const productApi = createApi({
     }),
 
     /** Get product */
-    createProduct: builder.mutation<IProduct, IProductCreatePayload>({
+    createProduct: builder.mutation<IProductResponse, IProductCreatePayload>({
       query: (body) => ({
         url: "/create-products",
         method: "POST",
         body,
       }),
-      // Invalidate the 'Post' tag after a new post is added, causing a refetch
-      invalidatesTags: [{ type: "Product", id: "LIST" }],
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
+          const { data } = await queryFulfilled;
+          dispatch(
+            productApi.util.updateQueryData(
+              "getAllProducts",
+              {
+                limit: Number(limit),
+                page: Number(page),
+              },
+              (draft) => {
+                // Filter out the deleted post from the cached posts
+                return {
+                  meta: {
+                    ...draft.meta,
+                    totalItems: draft.meta.totalItems + 1,
+                  },
+                  data: [data, ...draft.data],
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the product:", error);
+        }
+      },
     }),
 
     /** Update product */
     updateProduct: builder.mutation<
-      IProduct,
+      IProductResponse,
       IProductCreatePayload & { id: number }
     >({
       query: ({ id, ...rest }) => ({
@@ -46,8 +76,43 @@ export const productApi = createApi({
         method: "PUT",
         body: rest,
       }),
-      // Invalidate the 'Post' tag after a new post is added, causing a refetch
-      // invalidatesTags: [{ type: "Product", id: "LIST" }],
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const { page, limit } = queryObject as Record<string, any>;
+          // Wait for the delete mutation to be successful
+          const { data } = await queryFulfilled;
+          dispatch(
+            productApi.util.updateQueryData(
+              "getAllProducts",
+              {
+                limit: Number(limit),
+                page: Number(page),
+              },
+              (draft) => {
+                const cpData = [...draft.data];
+                // Filter out the deleted post from the cached posts
+                const tempIndex = draft.data.findIndex(
+                  (item) => item.id === id,
+                );
+                cpData[tempIndex] = data;
+                return {
+                  ...draft,
+                  data: cpData,
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the product:", error);
+        }
+      },
     }),
 
     /** Get product */
@@ -77,7 +142,10 @@ export const productApi = createApi({
               (draft) => {
                 // Filter out the deleted post from the cached posts
                 return {
-                  ...draft,
+                  meta: {
+                    ...draft.meta,
+                    totalItems: draft.meta.totalItems - 1,
+                  },
                   data: draft.data.filter((product) => product.id !== id),
                 };
               },

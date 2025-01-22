@@ -12,6 +12,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import Stack from "@mui/material/Stack";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -19,6 +20,7 @@ const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, path: "/home" },
   { text: "Products", icon: <CategoryRoundedIcon />, path: "/products" },
   { text: "Orders", icon: <InventoryRoundedIcon />, path: "/orders" },
+  { text: "Cart", icon: <ShoppingCartRoundedIcon />, path: "/carts" },
   { text: "Analytics", icon: <AnalyticsRoundedIcon />, path: "/analytics" },
   { text: "Clients", icon: <PeopleRoundedIcon />, path: "/people" },
   { text: "Tasks", icon: <AssignmentRoundedIcon />, path: "/tasks" },

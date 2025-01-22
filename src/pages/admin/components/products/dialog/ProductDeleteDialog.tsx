@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useDeleteProductMutation } from "../../../../../services/productApi.ts";
 import {
   Button,
