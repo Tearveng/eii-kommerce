@@ -13,12 +13,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import Stack from "@mui/material/Stack";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, path: "/home" },
-  { text: "Products", icon: <CategoryRoundedIcon />, path: "/products" },
+  { text: "Products", icon: <Inventory2RoundedIcon />, path: "/products" },
+  { text: "Items", icon: <CategoryRoundedIcon />, path: "/items" },
   { text: "Orders", icon: <InventoryRoundedIcon />, path: "/orders" },
   { text: "Cart", icon: <ShoppingCartRoundedIcon />, path: "/carts" },
   { text: "Analytics", icon: <AnalyticsRoundedIcon />, path: "/analytics" },
@@ -39,7 +41,6 @@ const MenuContent = () => {
   const handleNavigate = (path: string): void => {
     navigate(`/admin${path}`);
   };
-  console.log("location.pathname", location.pathname);
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
       <List dense>

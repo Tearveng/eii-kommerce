@@ -4,15 +4,15 @@ import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { cartColumns } from "../../internals/data/gridData.tsx";
+import { cartColumns, userColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
 import { useAppDispatch } from "../../../../redux.ts";
-import { useGetAllCartsQuery } from "../../../../services/cartApi.ts";
 import {
-  ICart,
-  ICartDataGrid,
-} from "../../../../services/types/CartInterface.tsx";
+  IUser,
+  IUserDataGrid,
+} from "../../../../services/types/UserInterface.tsx";
+import { useGetAllUsersQuery } from "../../../../services/userApi.ts";
 
 const CartMainGrid = () => {
   const navigate = useNavigate();
@@ -24,11 +24,11 @@ const CartMainGrid = () => {
     currentData: data,
     isLoading,
     isFetching,
-  } = useGetAllCartsQuery({
+  } = useGetAllUsersQuery({
     limit: Number(limit),
     page: Number(page),
   });
-  const [carts, setCarts] = useState<ICartDataGrid[]>([]);
+  const [carts, setCarts] = useState<IUserDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
@@ -44,19 +44,17 @@ const CartMainGrid = () => {
 
   useEffect(() => {
     if (data) {
-      const remap: ICartDataGrid[] = data.data.map((d) => ({
-        id: d.cartId,
-        user: d.user.username,
-        cartSubtotal: d.subtotal,
-        cartTax: d.tax,
-        cartShippingCost: d.shippingCost,
-        cartTotalPrice: d.totalPrice,
-        cartCurrency: d.currency,
-        cartCouponCode: d.couponCode ?? "-",
-        cartDiscountApplied: d.discountsApplied ?? "-",
-        cartIsSavedForLater: d.isSavedForLater,
-        cartCreatedDate: d.createdAt,
-        cartUpdatedDate: d.updatedAt,
+      const remap: IUserDataGrid[] = data.data.map((d) => ({
+        id: d.id,
+        userFirstName: d.firstName,
+        userLastName: d.lastName,
+        userEmail: d.email,
+        userPhone: d.phone,
+        userProfile: d.profile,
+        userPublicId: d.publicId,
+        userUsername: d.username,
+        userCreatedDate: d.createdAt,
+        userUpdatedDate: d.updatedAt,
       }));
       setCarts(remap);
     }
@@ -74,16 +72,16 @@ const CartMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Carts
+        Users
       </Typography>
 
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <CustomizedDataGrid<ICart>
+          <CustomizedDataGrid<IUser>
             data={data}
             pageSize={Number(limit)}
             page={Number(page)}
-            columns={cartColumns}
+            columns={userColumns}
             rows={carts}
             onPaginationModelChange={onPaginationModelChange}
           />

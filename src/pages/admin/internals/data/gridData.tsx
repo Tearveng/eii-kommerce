@@ -14,6 +14,8 @@ import {
 import { store } from "../../../../redux.ts";
 import { dispatchDeleteProductId } from "../../../../redux/application.ts";
 import { Stack } from "@mui/material";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 
 type SparkLineData = number[];
 
@@ -66,6 +68,30 @@ function renderStatus(status: "Online" | "Offline") {
   };
 
   return <Chip label={status} color={colors[status]} size="small" />;
+}
+
+function renderSaveLater(status: boolean) {
+  if (status) {
+    return (
+      <CheckRoundedIcon
+        color="success"
+        sx={{
+          mt: 0.6,
+          cursor: "pointer",
+        }}
+      />
+    );
+  }
+
+  return (
+    <ClearRoundedIcon
+      color="error"
+      sx={{
+        mt: 0.6,
+        cursor: "pointer",
+      }}
+    />
+  );
 }
 
 export function renderAvatar(
@@ -190,6 +216,169 @@ export const productColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 200,
     renderCell: (param) => renderActions(param),
+  },
+];
+
+export const cartColumns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 1.5,
+    minWidth: 50,
+    type: "singleSelect",
+  },
+  {
+    field: "user",
+    headerName: "User",
+    flex: 1.5,
+    minWidth: 150,
+    renderCell: (params) => (
+      <Stack onClick={(e) => e.stopPropagation()}>
+        <Link
+          to={`/profile/${params.row.id}`}
+          style={{ textDecoration: "none", color: "blue" }}
+        >
+          {params.value}
+        </Link>
+      </Stack>
+    ),
+  },
+  {
+    field: "cartSubtotal",
+    headerName: "Subtotal",
+    flex: 1.5,
+    minWidth: 100,
+    type: "number",
+  },
+  {
+    field: "cartTax",
+    headerName: "Tax",
+    flex: 1.5,
+    minWidth: 100,
+    maxWidth: 100,
+    type: "number",
+  },
+  {
+    field: "cartShippingCost",
+    headerName: "Shipping",
+    flex: 1.5,
+    minWidth: 100,
+    maxWidth: 100,
+    type: "number",
+  },
+  {
+    field: "cartTotalPrice",
+    headerName: "Total",
+    flex: 1.5,
+    minWidth: 100,
+    type: "number",
+  },
+  {
+    field: "cartCurrency",
+    headerName: "Currency",
+    flex: 1.5,
+    minWidth: 100,
+    type: "boolean",
+    renderCell: (params) => params.value,
+  },
+  {
+    field: "cartCouponCode",
+    headerName: "Coupon Code",
+    flex: 1.5,
+    minWidth: 120,
+  },
+  {
+    field: "cartDiscountApplied",
+    headerName: "Discount",
+    flex: 1.5,
+    minWidth: 100,
+  },
+  {
+    field: "cartIsSavedForLater",
+    headerName: "Save Later",
+    flex: 1.5,
+    minWidth: 100,
+    type: "boolean",
+    renderCell: (params) => renderSaveLater(Boolean(params.value)),
+  },
+  {
+    field: "cartCreatedDate",
+    headerName: "CreatedAt",
+    flex: 1.5,
+    minWidth: 200,
+  },
+  {
+    field: "cartUpdatedDate",
+    headerName: "UpdatedAt",
+    flex: 1.5,
+    minWidth: 200,
+  },
+];
+
+export const userColumns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 0.5,
+    minWidth: 50,
+  },
+  {
+    field: "userProfile",
+    headerName: "Profile",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (param) => {
+      return (
+        <img
+          style={{ maxWidth: "30px" }}
+          src={param.value}
+          alt={param.value}
+          loading="lazy"
+        />
+      );
+    },
+  },
+  {
+    field: "userFirstName",
+    headerName: "First name",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "userLastName",
+    headerName: "Last name",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "userUsername",
+    headerName: "Username",
+    flex: 1.5,
+    minWidth: 120,
+  },
+  {
+    field: "userEmail",
+    headerName: "Email",
+    flex: 2,
+    minWidth: 200,
+  },
+  {
+    field: "userPhone",
+    headerName: "Phone",
+    flex: 1.5,
+    minWidth: 150,
+  },
+  {
+    field: "userCreatedDate",
+    headerName: "CreatedAt",
+    flex: 1.5,
+    minWidth: 100,
+  },
+  {
+    field: "userUpdatedDate",
+    headerName: "UpdatedAt",
+    flex: 1.5,
+    minWidth: 100,
   },
 ];
 

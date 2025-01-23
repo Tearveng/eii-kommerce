@@ -4,15 +4,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { applicationSlice } from "./redux/application";
 import { productApi } from "./services/productApi";
 import { userApi } from "./services/userApi";
+import { cartApi } from "./services/cartApi.ts";
 
 export const store = configureStore({
   reducer: {
     [userApi.reducerPath]: userApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [cartApi.reducerPath]: cartApi.reducer,
     application: applicationSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware, productApi.middleware),
+    getDefaultMiddleware().concat(
+      userApi.middleware,
+      productApi.middleware,
+      cartApi.middleware,
+    ),
 });
 
 setupListeners(store.dispatch);

@@ -13,8 +13,10 @@ import {
   ICart,
   ICartDataGrid,
 } from "../../../../services/types/CartInterface.tsx";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { Stack, TextField } from "@mui/material";
 
-const CartMainGrid = () => {
+const ItemMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
@@ -74,10 +76,14 @@ const CartMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Carts
+        Items
       </Typography>
+      <Stack direction="row" alignItems="center" gap={1}>
+        <SearchRoundedIcon />
+        <TextField type="search" size="small" placeholder="Search" />
+      </Stack>
 
-      <Grid container spacing={2} columns={12}>
+      <Grid container spacing={2} columns={12} mt={2}>
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<ICart>
             data={data}
@@ -93,4 +99,4 @@ const CartMainGrid = () => {
   );
 };
 
-export default CartMainGrid;
+export default ItemMainGrid;

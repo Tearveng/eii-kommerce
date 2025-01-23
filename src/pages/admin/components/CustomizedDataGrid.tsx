@@ -6,8 +6,10 @@ import {
   GridValidRowModel,
 } from "@mui/x-data-grid";
 import { IProduct } from "../../../services/types/ProductInterface";
+import { ICart } from "../../../services/types/CartInterface.tsx";
+import { IUser } from "../../../services/types/UserInterface.tsx";
 
-interface ICustomizedDataGridProps<T extends IProduct> {
+interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser> {
   rows: readonly GridValidRowModel[];
   columns: GridColDef[];
   pageSize: number;
@@ -15,12 +17,12 @@ interface ICustomizedDataGridProps<T extends IProduct> {
   data: T | undefined;
   onPaginationModelChange: (
     model: GridPaginationModel,
-    _: GridCallbackDetails<"pagination">
+    _: GridCallbackDetails<"pagination">,
   ) => void;
 }
 
-export default function CustomizedDataGrid<T extends IProduct>(
-  props: Readonly<ICustomizedDataGridProps<T>>
+export default function CustomizedDataGrid<T extends IProduct | ICart | IUser>(
+  props: Readonly<ICustomizedDataGridProps<T>>,
 ) {
   const { columns, rows, pageSize, page, onPaginationModelChange, data } =
     props;
