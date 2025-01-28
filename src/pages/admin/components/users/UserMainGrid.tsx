@@ -4,15 +4,15 @@ import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { cartColumns, userColumns } from "../../internals/data/gridData.tsx";
-import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
-import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
 import { useAppDispatch } from "../../../../redux.ts";
+import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
+import { useGetAllUsersQuery } from "../../../../services/adminApi.ts";
 import {
   IUser,
   IUserDataGrid,
 } from "../../../../services/types/UserInterface.tsx";
-import { useGetAllUsersQuery } from "../../../../services/userApi.ts";
+import { userColumns } from "../../internals/data/gridData.tsx";
+import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 
 const CartMainGrid = () => {
   const navigate = useNavigate();
@@ -28,11 +28,11 @@ const CartMainGrid = () => {
     limit: Number(limit),
     page: Number(page),
   });
-  const [carts, setCarts] = useState<IUserDataGrid[]>([]);
+  const [users, setUser] = useState<IUserDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    _: GridCallbackDetails<"pagination">,
+    _: GridCallbackDetails<"pagination">
   ) => {
     setLimit(model.pageSize);
     setPage(model.page + 1);
@@ -56,7 +56,7 @@ const CartMainGrid = () => {
         userCreatedDate: d.createdAt,
         userUpdatedDate: d.updatedAt,
       }));
-      setCarts(remap);
+      setUser(remap);
     }
   }, [data, limit, page]);
 
@@ -82,7 +82,7 @@ const CartMainGrid = () => {
             pageSize={Number(limit)}
             page={Number(page)}
             columns={userColumns}
-            rows={carts}
+            rows={users}
             onPaginationModelChange={onPaginationModelChange}
           />
         </Grid>

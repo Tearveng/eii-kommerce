@@ -2,15 +2,17 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationSlice } from "./redux/application";
+import { adminApi } from './services/adminApi.ts';
+import { cartApi } from "./services/cartApi.ts";
 import { productApi } from "./services/productApi";
 import { userApi } from "./services/userApi";
-import { cartApi } from "./services/cartApi.ts";
 
 export const store = configureStore({
   reducer: {
     [userApi.reducerPath]: userApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
     application: applicationSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -18,6 +20,7 @@ export const store = configureStore({
       userApi.middleware,
       productApi.middleware,
       cartApi.middleware,
+      adminApi.middleware
     ),
 });
 
