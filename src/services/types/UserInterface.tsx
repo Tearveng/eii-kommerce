@@ -43,6 +43,11 @@ export interface IUserDataGrid {
   userUpdatedDate: Date;
 }
 
+export interface IUserInfoRedux extends IUserInfo {
+  access_token: string;
+  roles: string[];
+}
+
 export interface IUser {
   data: IUserResponse[];
   meta: IMeta;

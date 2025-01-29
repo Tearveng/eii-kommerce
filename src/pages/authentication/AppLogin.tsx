@@ -3,7 +3,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   Button,
-  IconButton,
+  CircularProgress,
   InputAdornment,
   Link,
   Stack,
@@ -12,6 +12,10 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputText from "../../components/Input/InputText";
+import { useLoginMutation } from "../../services/userApi.ts";
+import { dispatchUserInfo } from "../../redux/application.ts";
+import { useAppDispatch } from "../../redux.ts";
+import { useNavigate } from "react-router-dom";
 
 interface ILogin {
   email: string;
@@ -19,6 +23,8 @@ interface ILogin {
 }
 
 const AppLogin = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(true);
   const formData = useForm<ILogin>({
     defaultValues: {
@@ -26,6 +32,9 @@ const AppLogin = () => {
       password: "",
     },
   });
+
+  // end-point
+  const [login, { isLoading: loginLoading }] = useLoginMutation();
 
   const handleShowPassword = () => (showPassword ? "password" : "text");
   const validateEmail = (email: string) => {
@@ -38,8 +47,14 @@ const AppLogin = () => {
       return undefined;
     }
   };
-  const handleLogin = (data: ILogin) => {
-    console.log("data", data);
+  const handleLogin = async (data: ILogin) => {
+    return login(data)
+      .unwrap()
+      .then((res) => {
+        dispatch(dispatchUserInfo(res));
+        navigate("/admin");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -94,13 +109,16 @@ const AppLogin = () => {
                 slotProps: {
                   input: {
                     endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          size="small"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
+                      <InputAdornment
+                        position="end"
+                        sx={{ cursor: "pointer", height: 10 }}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <VisibilityOff sx={{ width: 20 }} />
+                        ) : (
+                          <Visibility sx={{ width: 20 }} />
+                        )}
                       </InputAdornment>
                     ),
                   },
@@ -127,9 +145,12 @@ const AppLogin = () => {
               }}
               form="login-form"
               type="submit"
+              disabled={loginLoading}
+              startIcon={
+                loginLoading && <CircularProgress color="inherit" size={20} />
+              }
             >
-              Login
-              {/* <CircularProgress size="22px" sx={{ color: "#fff" }} /> */}
+              {loginLoading ? "logging..." : "Login"}
             </Button>
           </Stack>
         </Stack>

@@ -13,6 +13,7 @@ export const userApi = createApi({
     login: builder.mutation<any, IUserLoginPayload>({
       query: (body) => ({
         url: "/login",
+        method: "POST",
         body,
       }),
     }),
