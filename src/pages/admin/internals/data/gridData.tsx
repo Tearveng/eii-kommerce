@@ -1,7 +1,9 @@
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Link } from "react-router-dom";
+import { Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -11,11 +13,10 @@ import {
   GridRenderCellParams,
   GridRowsProp,
 } from "@mui/x-data-grid";
+import { Link } from "react-router-dom";
 import { store } from "../../../../redux.ts";
 import { dispatchDeleteProductId } from "../../../../redux/application.ts";
-import { Stack } from "@mui/material";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import { dateShortFormat } from "../../../../utils/common.ts";
 
 type SparkLineData = number[];
 
@@ -115,7 +116,19 @@ export function renderAvatar(
   );
 }
 
-export function renderActions(param: GridRenderCellParams) {
+export function renderActions(param: GridRenderCellParams, type: 'product' | 'client') {
+  const actionsBtn = {
+    ['product']: {
+      edit: `/admin/products/update/${param.id}${window.location.search}`,
+      delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id)))
+    },
+    ['client']: {
+      edit: `/admin/clients/update/${param.id}${window.location.search}`,
+      delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id)))
+    }
+  }
+
+
   return (
     <Stack
       direction="row"
@@ -134,7 +147,7 @@ export function renderActions(param: GridRenderCellParams) {
           cursor: "pointer",
         }}
       />
-      <Link to={`/admin/products/update/${param.id}${window.location.search}`}>
+      <Link to={actionsBtn[type].edit}>
         <BorderColorRoundedIcon
           fontSize="small"
           color="info"
@@ -148,7 +161,7 @@ export function renderActions(param: GridRenderCellParams) {
         fontSize="small"
         color="error"
         onClick={() =>
-          store.dispatch(dispatchDeleteProductId(Number(param.id)))
+          actionsBtn[type].delete()
         }
         sx={{
           cursor: "pointer",
@@ -202,12 +215,14 @@ export const productColumns: GridColDef[] = [
     headerName: "Created Date",
     flex: 1.5,
     minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value)
   },
   {
     field: "productUpdatedDate",
     headerName: "Updated Date",
     flex: 1.5,
     minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value)
   },
   {
     field: "edit",
@@ -215,7 +230,7 @@ export const productColumns: GridColDef[] = [
     headerAlign: "center",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => renderActions(param),
+    renderCell: (param) => renderActions(param, 'product'),
   },
 ];
 
@@ -306,12 +321,14 @@ export const cartColumns: GridColDef[] = [
     headerName: "CreatedAt",
     flex: 1.5,
     minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value)
   },
   {
     field: "cartUpdatedDate",
     headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value)
   },
 ];
 
@@ -325,8 +342,8 @@ export const userColumns: GridColDef[] = [
   {
     field: "userProfile",
     headerName: "Profile",
-    flex: 1,
-    minWidth: 100,
+    flex: 0.7,
+    minWidth: 50,
     renderCell: (param) => {
       return (
         <img
@@ -373,12 +390,22 @@ export const userColumns: GridColDef[] = [
     headerName: "CreatedAt",
     flex: 1.5,
     minWidth: 100,
+    renderCell: (param) => dateShortFormat(param.value)
   },
   {
     field: "userUpdatedDate",
     headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 100,
+    renderCell: (param) => dateShortFormat(param.value)
+  },
+  {
+    field: "edit",
+    headerName: "Edit",
+    headerAlign: "center",
+    flex: 1,
+    minWidth: 150,
+    renderCell: (param) => renderActions(param, 'client'),
   },
 ];
 

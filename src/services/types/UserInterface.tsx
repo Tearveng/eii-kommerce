@@ -30,6 +30,15 @@ export interface IUserResponse {
   updatedAt: Date;
 }
 
+export interface IUserCreatePayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  profile: string;
+  publicId: string;
+}
+
 export interface IUserDataGrid {
   id: number;
   userFirstName: string;
