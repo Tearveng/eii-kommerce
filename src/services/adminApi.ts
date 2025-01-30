@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IProductCreatePayload } from "./types/ProductInterface";
-import { IUser, IUserGetAllPayload, IUserResponse } from "./types/UserInterface";
+import { IUploadImageResponse } from "./types/ProductInterface";
+import {
+  IUser,
+  IUserCreatePayload,
+  IUserGetAllPayload,
+  IUserResponse,
+  IUserUpdatePayload,
+} from "./types/UserInterface";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
@@ -18,48 +24,167 @@ export const adminApi = createApi({
         result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
     }),
 
-    createUser: builder.mutation<IUserResponse, IProductCreatePayload>({
-          query: (body) => ({
-            url: "/create-products",
-            method: "POST",
-            body,
-          }),
-          // Using `onQueryStarted` to update the cache manually without a refetch
-          onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
-            try {
-              const queryParams = new URLSearchParams(window.location.search);
-              const queryObject = {};
-              queryParams.forEach((value, key) => {
-                queryObject[key] = value;
-              });
-              const { page = 1, limit = 20 } = queryObject as Record<string, any>;
-              const { data } = await queryFulfilled;
-            //   dispatch(
-            //     adminApi.util.updateQueryData(
-            //       "getAllProducts",
-            //       {
-            //         limit: Number(limit),
-            //         page: Number(page),
-            //       },
-            //       (draft) => {
-            //         // Filter out the deleted post from the cached posts
-            //         return {
-            //           meta: {
-            //             ...draft.meta,
-            //             totalItems: draft.meta.totalItems + 1,
-            //           },
-            //           data: [data, ...draft.data],
-            //         };
-            //       },
-            //     ),
-            //   );
-            } catch (error) {
-              // Handle error (if any)
-              console.error("Failed to delete the product:", error);
-            }
-          },
-        }),
+    /** Upload image */
+    uploadImage: builder.mutation<IUploadImageResponse, { form: FormData }>({
+      query: ({ form }) => ({
+        url: "/upload/image/profile",
+        method: "POST",
+        body: form,
+      }),
+    }),
+
+    /** delete image */
+    deleteImage: builder.mutation<IUploadImageResponse, { publicId: string }>({
+      query: ({ publicId }) => ({
+        url: `/upload/image/profile/${publicId}`,
+        method: "DELETE",
+      }),
+    }),
+
+    /** Update user */
+    updateUser: builder.mutation<
+      IUserResponse,
+      IUserUpdatePayload & { id: number }
+    >({
+      query: ({ id, ...rest }) => ({
+        url: `/update-users/${id}`,
+        method: "PUT",
+        body: rest,
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const { page, limit } = queryObject as Record<string, any>;
+          // Wait for the delete mutation to be successful
+          const { data } = await queryFulfilled;
+          dispatch(
+            adminApi.util.updateQueryData(
+              "getAllUsers",
+              {
+                limit: Number(limit),
+                page: Number(page),
+              },
+              (draft) => {
+                const cpData = [...draft.data];
+                // Filter out the deleted post from the cached posts
+                const tempIndex = draft.data.findIndex(
+                  (item) => item.id === id,
+                );
+                cpData[tempIndex] = data;
+                return {
+                  ...draft,
+                  data: cpData,
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the product:", error);
+        }
+      },
+    }),
+
+    /** Create user */
+    createUser: builder.mutation<IUserResponse, IUserCreatePayload>({
+      query: (body) => ({
+        url: "/create-user",
+        method: "POST",
+        body,
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
+          const { data } = await queryFulfilled;
+          dispatch(
+            adminApi.util.updateQueryData(
+              "getAllUsers",
+              {
+                limit: Number(limit),
+                page: Number(page),
+              },
+              (draft) => {
+                // Filter out the deleted post from the cached posts
+                return {
+                  meta: {
+                    ...draft.meta,
+                    totalItems: draft.meta.totalItems + 1,
+                  },
+                  data: [data, ...draft.data],
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the product:", error);
+        }
+      },
+    }),
+
+    /** Delete user */
+    deleteUser: builder.mutation<IUserResponse, { id: number }>({
+      query: ({ id }) => ({
+        url: `/delete-users/${id}`,
+        method: "DELETE",
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const { page, limit } = queryObject as Record<string, any>;
+          // Wait for the delete mutation to be successful
+          await queryFulfilled;
+          dispatch(
+            adminApi.util.updateQueryData(
+              "getAllUsers",
+              {
+                limit: Number(limit),
+                page: Number(page),
+              },
+              (draft) => {
+                // Filter out the deleted post from the cached posts
+                return {
+                  meta: {
+                    ...draft.meta,
+                    totalItems: draft.meta.totalItems - 1,
+                  },
+                  data: draft.data.filter((user) => user.id !== id),
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the user:", error);
+        }
+      },
+      // Invalidate the tag of the deleted post and the 'LIST'
+      // invalidatesTags: (_result, _error, { id }) => [{ type: "Product", id }],
+    }),
   }),
 });
 
-export const { useGetAllUsersQuery, useCreateUserMutation } = adminApi;
+export const {
+  useGetAllUsersQuery,
+  useCreateUserMutation,
+  useUploadImageMutation,
+  useDeleteImageMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = adminApi;

@@ -4,6 +4,7 @@ import { IUserInfoRedux } from "../services/types/UserInterface.tsx";
 
 const initialState: IApplication = {
   deleteProductId: null,
+  deleteUserId: null,
   productCurrentPage: 1,
   user: null,
 };
@@ -18,6 +19,9 @@ export const applicationSlice = createSlice({
     ) => {
       state.user = payload;
     },
+    dispatchDeleteUserId: (state, { payload }: { payload: number }) => {
+      state.deleteUserId = payload;
+    },
     dispatchDeleteProductId: (state, { payload }: { payload: number }) => {
       state.deleteProductId = payload;
     },
@@ -27,10 +31,15 @@ export const applicationSlice = createSlice({
     clearDeleteProductId: (state) => {
       state.deleteProductId = null;
     },
+    clearDeleteUserId: (state) => {
+      state.deleteUserId = null;
+    },
   },
 });
 
 export const {
+  clearDeleteUserId,
+  dispatchDeleteUserId,
   dispatchUserInfo,
   dispatchDeleteProductId,
   dispatchProductCurrentPage,

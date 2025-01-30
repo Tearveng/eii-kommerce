@@ -13,6 +13,8 @@ import {
 } from "../../../../services/types/UserInterface.tsx";
 import { userColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+import { Button, Stack } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const CartMainGrid = () => {
   const navigate = useNavigate();
@@ -24,15 +26,18 @@ const CartMainGrid = () => {
     currentData: data,
     isLoading,
     isFetching,
-  } = useGetAllUsersQuery({
-    limit: Number(limit),
-    page: Number(page),
-  });
+  } = useGetAllUsersQuery(
+    {
+      limit: Number(limit),
+      page: Number(page),
+    },
+    { refetchOnMountOrArgChange: true },
+  );
   const [users, setUser] = useState<IUserDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    _: GridCallbackDetails<"pagination">
+    _: GridCallbackDetails<"pagination">,
   ) => {
     setLimit(model.pageSize);
     setPage(model.page + 1);
@@ -74,7 +79,17 @@ const CartMainGrid = () => {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Users
       </Typography>
-
+      <Stack direction="row" pb={1}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
+          startIcon={<AddRoundedIcon />}
+          onClick={() => navigate("/admin/people/create")}
+        >
+          Create new
+        </Button>
+      </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<IUser>

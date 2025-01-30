@@ -13,6 +13,7 @@ import { alpha } from "@mui/material/styles";
 import Header from "./Header.tsx";
 import { Outlet } from "react-router-dom";
 import ProductDeleteDialog from "../components/products/dialog/ProductDeleteDialog.tsx";
+import UserDeleteDialog from "../components/users/dialog/UserDeleteDialog.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -52,6 +53,7 @@ const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
       </Box>
 
       <ProductDeleteDialog />
+      <UserDeleteDialog />
     </AppTheme>
   );
 };

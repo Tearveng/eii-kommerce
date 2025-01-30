@@ -26,11 +26,22 @@ export interface IUserResponse {
   profile: string;
   publicId: string;
   username: string;
+  password: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface IUserCreatePayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  profile: string;
+  publicId: string;
+}
+
+export interface IUserUpdatePayload {
   firstName: string;
   lastName: string;
   email: string;

@@ -1,4 +1,3 @@
-import { useDeleteProductMutation } from "../../../../../services/productApi.ts";
 import {
   Button,
   CircularProgress,
@@ -9,16 +8,16 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { store, useAppSelector } from "../../../../../redux.ts";
-import { clearDeleteProductId } from "../../../../../redux/application.ts";
+import { clearDeleteUserId } from "../../../../../redux/application.ts";
+import { useDeleteUserMutation } from "../../../../../services/adminApi.ts";
 
 const UserDeleteDialog = () => {
-  const { deleteProductId } = useAppSelector((state) => state.application);
-  const [deleteProduct, { isLoading: deleteLoading }] =
-    useDeleteProductMutation();
+  const { deleteUserId } = useAppSelector((state) => state.application);
+  const [deleteUser, { isLoading: deleteLoading }] = useDeleteUserMutation();
 
-  const handleDeleteProduct = async () => {
-    if (deleteProductId) {
-      await deleteProduct({ id: deleteProductId })
+  const handleDeleteUser = async () => {
+    if (deleteUserId) {
+      await deleteUser({ id: deleteUserId })
         .unwrap()
         .then(() => handleClose())
         .catch((err) => console.error(err));
@@ -26,12 +25,12 @@ const UserDeleteDialog = () => {
   };
 
   const handleClose = () => {
-    store.dispatch(clearDeleteProductId());
+    store.dispatch(clearDeleteUserId());
   };
 
   return (
     <Dialog
-      open={Boolean(deleteProductId)}
+      open={Boolean(deleteUserId)}
       onClose={handleClose}
       fullWidth
       maxWidth="xs"
@@ -41,7 +40,7 @@ const UserDeleteDialog = () => {
       <DialogTitle id="alert-dialog-title">{"Are you sure ?"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Do you really want to delete this product?
+          Do you really want to delete this user?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -54,7 +53,7 @@ const UserDeleteDialog = () => {
           color="error"
           disabled={deleteLoading}
           autoFocus
-          onClick={handleDeleteProduct}
+          onClick={handleDeleteUser}
           startIcon={
             deleteLoading && <CircularProgress color="inherit" size={14} />
           }

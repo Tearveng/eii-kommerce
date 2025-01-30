@@ -15,7 +15,10 @@ import {
 } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { store } from "../../../../redux.ts";
-import { dispatchDeleteProductId } from "../../../../redux/application.ts";
+import {
+  dispatchDeleteProductId,
+  dispatchDeleteUserId,
+} from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
 
 type SparkLineData = number[];
@@ -116,18 +119,20 @@ export function renderAvatar(
   );
 }
 
-export function renderActions(param: GridRenderCellParams, type: 'product' | 'client') {
+export function renderActions(
+  param: GridRenderCellParams,
+  type: "product" | "client",
+) {
   const actionsBtn = {
-    ['product']: {
+    ["product"]: {
       edit: `/admin/products/update/${param.id}${window.location.search}`,
-      delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id)))
+      delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id))),
     },
-    ['client']: {
-      edit: `/admin/clients/update/${param.id}${window.location.search}`,
-      delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id)))
-    }
-  }
-
+    ["client"]: {
+      edit: `/admin/people/update/${param.id}${window.location.search}`,
+      delete: () => store.dispatch(dispatchDeleteUserId(Number(param.id))),
+    },
+  };
 
   return (
     <Stack
@@ -160,9 +165,7 @@ export function renderActions(param: GridRenderCellParams, type: 'product' | 'cl
       <DisabledByDefaultRoundedIcon
         fontSize="small"
         color="error"
-        onClick={() =>
-          actionsBtn[type].delete()
-        }
+        onClick={() => actionsBtn[type].delete()}
         sx={{
           cursor: "pointer",
         }}
@@ -215,14 +218,14 @@ export const productColumns: GridColDef[] = [
     headerName: "Created Date",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "productUpdatedDate",
     headerName: "Updated Date",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "edit",
@@ -230,7 +233,7 @@ export const productColumns: GridColDef[] = [
     headerAlign: "center",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => renderActions(param, 'product'),
+    renderCell: (param) => renderActions(param, "product"),
   },
 ];
 
@@ -321,14 +324,14 @@ export const cartColumns: GridColDef[] = [
     headerName: "CreatedAt",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "cartUpdatedDate",
     headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 200,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
 ];
 
@@ -347,7 +350,10 @@ export const userColumns: GridColDef[] = [
     renderCell: (param) => {
       return (
         <img
-          style={{ maxWidth: "30px" }}
+          style={{
+            maxWidth: "30px",
+            marginTop: 3,
+          }}
           src={param.value}
           alt={param.value}
           loading="lazy"
@@ -390,14 +396,14 @@ export const userColumns: GridColDef[] = [
     headerName: "CreatedAt",
     flex: 1.5,
     minWidth: 100,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "userUpdatedDate",
     headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 100,
-    renderCell: (param) => dateShortFormat(param.value)
+    renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "edit",
@@ -405,7 +411,7 @@ export const userColumns: GridColDef[] = [
     headerAlign: "center",
     flex: 1,
     minWidth: 150,
-    renderCell: (param) => renderActions(param, 'client'),
+    renderCell: (param) => renderActions(param, "client"),
   },
 ];
 

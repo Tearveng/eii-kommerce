@@ -3,7 +3,9 @@ import {
   IUser,
   IUserGetAllPayload,
   IUserLoginPayload,
+  IUserResponse,
 } from "./types/UserInterface";
+import { adminApi } from "./adminApi.ts";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -17,17 +19,15 @@ export const userApi = createApi({
         body,
       }),
     }),
-    /** Get all products */
-    getAllUsers: builder.query<IUser, IUserGetAllPayload>({
-      query: ({ limit = 10, page = 1 }) => ({
-        url: "/",
+
+    /** Get user by ID **/
+    getUserById: builder.query<IUserResponse, { id: number }>({
+      query: ({ id }) => ({
+        url: `/user/${id}`,
         method: "GET",
-        params: { limit, page },
       }),
-      providesTags: (result) =>
-        result ? result.data.map(({ id }) => ({ type: "User", id })) : [],
     }),
   }),
 });
 
-export const { useLoginMutation, useGetAllUsersQuery } = userApi;
+export const { useLoginMutation, useGetUserByIdQuery } = userApi;
