@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import CardAlert from "./CardAlert.tsx";
 import MenuContent from "./MenuContent.tsx";
 import SelectContent from "./SelectContent.tsx";
+import { useAppSelector } from "../../../redux.ts";
 
 const drawerWidth = 240;
 const Drawer = styled(MuiDrawer)({
@@ -18,6 +19,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 const SideMenu = () => {
+  const { user } = useAppSelector((state) => state.application);
+
   return (
     <Drawer
       variant="permanent"
@@ -61,8 +64,8 @@ const SideMenu = () => {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
-          src="/static/images/avatar/7.jpg"
+          alt={user ? user.username : "Riley Carter"}
+          src={user ? user.profile : ""}
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: "auto" }}>
@@ -70,10 +73,10 @@ const SideMenu = () => {
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Riley Carter
+            {user ? user.username : "Riley Carter"}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            riley@email.com
+            {user ? user.email : "riley@email.com"}
           </Typography>
         </Box>
         {/*<OptionsMenu />*/}

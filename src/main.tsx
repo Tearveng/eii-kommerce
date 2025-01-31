@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { Provider } from "react-redux";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -15,13 +14,11 @@ if (!PUBLISHABLE_KEY) {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-          <App />
-        </ClerkProvider>
-      </Provider>
-    </BrowserRouter>
-  </StrictMode>
+  <BrowserRouter>
+    <Provider store={store}>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <App />
+      </ClerkProvider>
+    </Provider>
+  </BrowserRouter>,
 );

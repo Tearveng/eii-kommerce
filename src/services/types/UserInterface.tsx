@@ -10,6 +10,7 @@ export interface IUserInfo {
   lastName: string;
   username: string;
   email: string;
+  profile: string;
 }
 
 export interface IUserGetAllPayload {
@@ -65,6 +66,7 @@ export interface IUserDataGrid {
 
 export interface IUserInfoRedux extends IUserInfo {
   access_token: string;
+  refresh_token: string;
   roles: string[];
 }
 

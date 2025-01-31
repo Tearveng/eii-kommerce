@@ -51,8 +51,11 @@ const AppLogin = () => {
     return login(data)
       .unwrap()
       .then((res) => {
-        dispatch(dispatchUserInfo(res));
-        navigate("/admin");
+        if (res) {
+          dispatch(dispatchUserInfo(res));
+          localStorage.setItem("refresh_token", res.refresh_token);
+          navigate("/admin");
+        }
       })
       .catch((err) => console.log(err));
   };
