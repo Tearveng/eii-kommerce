@@ -29,9 +29,9 @@ const mainListItems = [
 ];
 
 const secondaryListItems = [
-  { text: "Settings", icon: <SettingsRoundedIcon /> },
-  { text: "About", icon: <InfoRoundedIcon /> },
-  { text: "Feedback", icon: <HelpRoundedIcon /> },
+  { text: "Settings", icon: <SettingsRoundedIcon />, path: "/settings" },
+  { text: "About", icon: <InfoRoundedIcon />, path: "/about" },
+  { text: "Feedback", icon: <HelpRoundedIcon />, path: "/feedback" },
 ];
 
 const MenuContent = () => {
@@ -59,7 +59,10 @@ const MenuContent = () => {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton>
+            <ListItemButton
+              selected={location.pathname.includes(`/admin${item.path}`)}
+              onClick={() => handleNavigate(item.path)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

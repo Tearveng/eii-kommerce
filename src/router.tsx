@@ -13,6 +13,8 @@ import CartMainGrid from "./pages/admin/components/carts/CartMainGrid.tsx";
 import ItemMainGrid from "./pages/admin/components/items/ItemMainGrid.tsx";
 import UserMainGrid from "./pages/admin/components/users/UserMainGrid.tsx";
 import UserCreate from "./pages/admin/components/users/form/UserCreate.tsx";
+import Settings from "./pages/admin/components/settings/Settings.tsx";
+import General from "./pages/admin/components/settings/general/General.tsx";
 
 const AppRouter = () => {
   return (
@@ -26,7 +28,6 @@ const AppRouter = () => {
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index path="/admin/home" element={<AdminHome />} />
-
         <Route path="/admin/carts" element={<CartMainGrid />} />
         <Route path="/admin/items" element={<ItemMainGrid />} />
 
@@ -38,7 +39,10 @@ const AppRouter = () => {
         <Route path="/admin/products" element={<ProductMainGrid />} />
         <Route path="/admin/products/create" element={<ProductCreate />} />
         <Route path="/admin/products/update/:id" element={<ProductCreate />} />
-
+        {/* route settings */}
+        <Route path="/admin/settings" element={<Settings />}>
+          <Route index path="/admin/settings/general" element={<General />} />
+        </Route>
         <Route path="/admin/orders" element={<OrderMainGrid />} />
       </Route>
 
