@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import InputText from "../../components/Input/InputText";
-import { useLoginMutation } from "../../services/userApi.ts";
-import { dispatchUserInfo } from "../../redux/application.ts";
-import { useAppDispatch } from "../../redux.ts";
 import { useNavigate } from "react-router-dom";
+import InputText from "../../components/Input/InputText";
+import { useAppDispatch } from "../../redux.ts";
+import { dispatchUserInfo } from "../../redux/application.ts";
+import { useLoginMutation } from "../../services/userApi.ts";
+import { snackbarError } from "../../utils/common.ts";
 
 interface ILogin {
   email: string;
@@ -57,7 +58,10 @@ const AppLogin = () => {
           navigate("/admin");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log("err", err)
+        snackbarError(err);
+      });
   };
 
   return (

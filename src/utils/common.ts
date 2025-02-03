@@ -1,3 +1,7 @@
+import { store } from "../redux";
+import { dispatchSnackbar } from "../redux/application";
+import { IErrorConnection, IErrorType } from "../redux/type";
+
 export const substring100 = (str: string) => {
   if (str.length > 100) {
     str = str.substring(0, 100);
@@ -28,5 +32,13 @@ export const validateEmail = (email: string) => {
     }
   } else {
     return undefined;
+  }
+};
+
+export const snackbarError = (error: IErrorConnection | IErrorType) => {
+  if ("error" in error && error.status === "FETCH_ERROR") {
+    store.dispatch(dispatchSnackbar({message: error.error, status: 'error'}))
+  } else {
+    store.dispatch(dispatchSnackbar({message: error.data.message, status: 'error'}))
   }
 };

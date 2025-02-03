@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IApplication } from "./type.ts";
 import { IUserInfoRedux } from "../services/types/UserInterface.tsx";
+import { IApplication, ISnackbarStatus } from "./type.ts";
 
 const initialState: IApplication = {
+  productCurrentPage: 1,
+  snackbarMessage: null,
+  snackbarStatus: 'error',
   deleteProductId: null,
   deleteUserId: null,
-  productCurrentPage: 1,
   user: null,
 };
 
@@ -13,6 +15,13 @@ export const applicationSlice = createSlice({
   name: "application",
   initialState,
   reducers: {
+    dispatchSnackbar: (
+      state,
+      { payload }: { payload: {message: string | null, status:ISnackbarStatus } },
+    ) => {
+      state.snackbarMessage = payload.message;
+      state.snackbarStatus = payload.status;
+    },
     dispatchUserInfo: (
       state,
       { payload }: { payload: IUserInfoRedux | null },
@@ -43,6 +52,7 @@ export const {
   dispatchUserInfo,
   dispatchDeleteProductId,
   dispatchProductCurrentPage,
+  dispatchSnackbar,
   clearDeleteProductId,
 } = applicationSlice.actions;
 
