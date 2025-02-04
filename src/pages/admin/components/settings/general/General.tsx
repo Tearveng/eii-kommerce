@@ -1,9 +1,18 @@
-import { Avatar, Button, Divider, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Divider,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useAppSelector } from "../../../../../redux.ts";
 import { useForm } from "react-hook-form";
 import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import InputText from "../../../../../components/Input/InputText.tsx";
 import { validateEmail } from "../../../../../utils/common.ts";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 
 const General = () => {
   const { user } = useAppSelector((state) => state.application);
@@ -128,6 +137,81 @@ const General = () => {
           />
         </Stack>
       </Stack>
+      <Stack direction="row" gap={3}>
+        <Stack gap={0.5} flexGrow={1}>
+          <Typography variant="body2" color="textSecondary">
+            Password
+          </Typography>
+          <InputText
+            formData={formData}
+            name="password"
+            placeholder="Password"
+            error={formData.formState.errors["password"]}
+            inputPropsTextField={{
+              slotProps: {
+                input: {
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{ cursor: "pointer", height: 10 }}
+                    >
+                      <VisibilityOff sx={{ width: 20 }} />
+                    </InputAdornment>
+                  ),
+                },
+              },
+              type: "password",
+            }}
+            rules={{
+              required: {
+                value: true,
+                message: "Password is required",
+              },
+            }}
+          />
+        </Stack>
+        <Stack gap={0.5} flexGrow={1}>
+          <Typography variant="body2" color="textSecondary">
+            Confirm Password
+          </Typography>
+          <InputText
+            formData={formData}
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            error={formData.formState.errors["confirmPassword"]}
+            inputPropsTextField={{
+              slotProps: {
+                input: {
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{ cursor: "pointer", height: 10 }}
+                    >
+                      <VisibilityOff sx={{ width: 20 }} />
+                    </InputAdornment>
+                  ),
+                },
+              },
+              type: "password",
+            }}
+            rules={{
+              required: {
+                value: true,
+                message: "Confirm password is required",
+              },
+            }}
+          />
+        </Stack>
+      </Stack>
+      <Button
+        variant="contained"
+        size="large"
+        color="error"
+        sx={{ minWidth: 100, borderRadius: "6px", height: 42 }}
+        // onClick={() => navigate("/admin/products/create")}
+      >
+        Logout
+      </Button>
     </Stack>
   );
 };
