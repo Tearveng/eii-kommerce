@@ -10,8 +10,12 @@ import {
 } from "../../../../services/types/ProductInterface.tsx";
 import { productColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+import { Button, Stack } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { useNavigate } from "react-router-dom";
 
 const OrderMainGrid = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const { data, isLoading, isFetching } = useGetAllProductsQuery({
@@ -23,9 +27,8 @@ const OrderMainGrid = () => {
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    detail: GridCallbackDetails<"pagination">
+    detail: GridCallbackDetails<"pagination">,
   ) => {
-    console.log("detail", detail);
     setLimit(model.pageSize);
     setPage(model.page + 1);
   };
@@ -59,8 +62,19 @@ const OrderMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Products
+        Orders
       </Typography>
+      <Stack direction="row" pb={1}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
+          startIcon={<AddRoundedIcon />}
+          onClick={() => navigate("/admin/orders/create")}
+        >
+          Create new
+        </Button>
+      </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<IProduct>

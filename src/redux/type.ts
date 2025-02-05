@@ -9,11 +9,11 @@ export interface IApplication {
   snackbarStatus: ISnackbarStatus;
 }
 
-export type ISnackbarStatus = 'error' | 'success' | 'info' | 'warning'
+export type ISnackbarStatus = "error" | "success" | "info" | "warning";
 
 export interface IErrorConnection {
-  error: string; 
-  status: "FETCH_ERROR"
+  error: string;
+  status: "FETCH_ERROR";
 }
 
 export interface IErrorType {

@@ -1,4 +1,4 @@
-import { Button, Stack, Typography, Box } from "@mui/material";
+import { Button, Stack, Typography, Box, Divider } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -10,6 +10,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const mainListItems = [
   {
@@ -46,6 +47,12 @@ const Settings = () => {
   const handleNavigate = (path: string): void => {
     navigate(`/admin/settings${path}`);
   };
+
+  useEffect(() => {
+    if (location.pathname === "/admin/settings") {
+      navigate("/admin/settings/general");
+    }
+  }, [location, navigate]);
 
   return (
     <Box
@@ -88,17 +95,18 @@ const Settings = () => {
         direction="row"
         sx={{
           p: 1,
+          gap: 1,
         }}
       >
-        <List dense sx={{ minWidth: "300px" }}>
+        <List
+          dense
+          sx={{
+            minWidth: "300px",
+          }}
+        >
           {mainListItems.map((item, index) => (
-            <ListItem
-              key={index}
-              disablePadding
-              sx={{ display: "block", height: 50 }}
-            >
+            <ListItem key={index} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                sx={{ height: 40 }}
                 selected={location.pathname.includes(
                   `/admin/settings${item.path}`,
                 )}
@@ -110,6 +118,7 @@ const Settings = () => {
             </ListItem>
           ))}
         </List>
+        <Divider orientation="vertical" flexItem />
         <Stack p={1.5} gap={1} flexGrow={1}>
           <Outlet />
         </Stack>

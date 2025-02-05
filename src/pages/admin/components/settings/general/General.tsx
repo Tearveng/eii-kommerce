@@ -12,15 +12,35 @@ import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import InputText from "../../../../../components/Input/InputText.tsx";
 import { validateEmail } from "../../../../../utils/common.ts";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
+import { useGetUserInfoQuery } from "../../../../../services/adminApi.ts";
+import { useEffect } from "react";
 
 const General = () => {
   const { user } = useAppSelector((state) => state.application);
   const formData = useForm<IUserResponse & { confirmPassword: string }>();
+
+  /** end-point */
+  const { data, isLoading, isSuccess } = useGetUserInfoQuery();
+
+  useEffect(() => {
+    if (data) {
+      formData.reset({
+        id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        profile: data.profile,
+        phone: data.phone,
+        password: data.password,
+        confirmPassword: data.password,
+      });
+    }
+  }, [isSuccess, data, formData]);
+
   return (
     <Stack gap={2} width="100%">
       <Stack gap={1}>
-        <Typography variant="h3" fontWeight={600}>
+        <Typography variant="h4" fontWeight={600}>
           General
         </Typography>
         <Typography variant="body2" color="textSecondary">
@@ -33,8 +53,8 @@ const General = () => {
         <Stack py={2} direction="row" gap={2} alignItems="center">
           <Avatar
             sizes="small"
-            alt={user ? user.username : "Riley Carter"}
-            src={user ? user.profile : ""}
+            alt={formData.getValues("publicId")}
+            src={formData.getValues("profile")}
             sx={{ width: 50, height: 50 }}
           />
           <Button
@@ -148,6 +168,7 @@ const General = () => {
             placeholder="Password"
             error={formData.formState.errors["password"]}
             inputPropsTextField={{
+              disabled: true,
               slotProps: {
                 input: {
                   endAdornment: (
@@ -180,6 +201,7 @@ const General = () => {
             placeholder="Confirm Password"
             error={formData.formState.errors["confirmPassword"]}
             inputPropsTextField={{
+              disabled: true,
               slotProps: {
                 input: {
                   endAdornment: (

@@ -5,7 +5,7 @@ import { IApplication, ISnackbarStatus } from "./type.ts";
 const initialState: IApplication = {
   productCurrentPage: 1,
   snackbarMessage: null,
-  snackbarStatus: 'error',
+  snackbarStatus: "error",
   deleteProductId: null,
   deleteUserId: null,
   user: null,
@@ -17,7 +17,9 @@ export const applicationSlice = createSlice({
   reducers: {
     dispatchSnackbar: (
       state,
-      { payload }: { payload: {message: string | null, status:ISnackbarStatus } },
+      {
+        payload,
+      }: { payload: { message: string | null; status: ISnackbarStatus } },
     ) => {
       state.snackbarMessage = payload.message;
       state.snackbarStatus = payload.status;

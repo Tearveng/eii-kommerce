@@ -7,6 +7,7 @@ import {
   IUserResponse,
   IUserUpdatePayload,
 } from "./types/UserInterface";
+import { store } from "../redux.ts";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
@@ -39,6 +40,19 @@ export const adminApi = createApi({
         url: `/upload/image/profile/${publicId}`,
         method: "DELETE",
       }),
+    }),
+
+    /** get user info */
+    getUserInfo: builder.query<IUser, void>({
+      query: () => ({
+        url: "/user-info",
+        method: "GET",
+        headers: {
+          authorization: `bearer ${store.getState().application.user.access_token}`,
+        },
+      }),
+      // providesTags: (result) =>
+      //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
     }),
 
     /** Update user */
@@ -164,7 +178,7 @@ export const adminApi = createApi({
                     ...draft.meta,
                     totalItems: draft.meta.totalItems - 1,
                   },
-                  data: draft.data.filter((user) => user.id !== id),
+                  data: draft.data.filter((u) => u.id !== id),
                 };
               },
             ),
@@ -174,13 +188,12 @@ export const adminApi = createApi({
           console.error("Failed to delete the user:", error);
         }
       },
-      // Invalidate the tag of the deleted post and the 'LIST'
-      // invalidatesTags: (_result, _error, { id }) => [{ type: "Product", id }],
     }),
   }),
 });
 
 export const {
+  useGetUserInfoQuery,
   useGetAllUsersQuery,
   useCreateUserMutation,
   useUploadImageMutation,

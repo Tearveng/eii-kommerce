@@ -15,6 +15,9 @@ import UserMainGrid from "./pages/admin/components/users/UserMainGrid.tsx";
 import UserCreate from "./pages/admin/components/users/form/UserCreate.tsx";
 import Settings from "./pages/admin/components/settings/Settings.tsx";
 import General from "./pages/admin/components/settings/general/General.tsx";
+import Notifications from "./pages/admin/components/settings/notifications/Notifications.tsx";
+import Preference from "./pages/admin/components/settings/preference/Preference.tsx";
+import OrderCreate from "./pages/admin/components/orders/form/OrderCreate.tsx";
 
 const AppRouter = () => {
   return (
@@ -42,8 +45,20 @@ const AppRouter = () => {
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
           <Route index path="/admin/settings/general" element={<General />} />
+          <Route
+            index
+            path="/admin/settings/notifications"
+            element={<Notifications />}
+          />
+          <Route
+            index
+            path="/admin/settings/preference"
+            element={<Preference />}
+          />
         </Route>
+        {/* route order */}
         <Route path="/admin/orders" element={<OrderMainGrid />} />
+        <Route path="/admin/orders/create" element={<OrderCreate />} />
       </Route>
 
       <Route path="/" element={<AppPublicLayout />}>
