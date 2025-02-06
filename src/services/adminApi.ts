@@ -21,8 +21,8 @@ export const adminApi = createApi({
         method: "GET",
         params: { limit, page },
       }),
-      providesTags: (result) =>
-        result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
+      // providesTags: (result) =>
+      //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
     }),
 
     /** Upload image */
@@ -161,7 +161,7 @@ export const adminApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page, limit } = queryObject as Record<string, any>;
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           await queryFulfilled;
           dispatch(

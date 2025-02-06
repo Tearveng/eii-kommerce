@@ -1,13 +1,16 @@
-import { CircularProgress, InputAdornment } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import InputText from "../../../../../components/Input/InputText.tsx";
-import { IUploadImageResponse } from "../../../../../services/types/ProductInterface.tsx";
+import {
+  IProductResponse,
+  IUploadImageResponse,
+} from "../../../../../services/types/ProductInterface.tsx";
 import {
   IUserCreatePayload,
   IUserResponse,
@@ -24,11 +27,20 @@ import {
 } from "../../../../../services/adminApi.ts";
 import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
 import InputPhone from "../../../../../components/Input/InputPhone.tsx";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useFindProduct } from "./useFindProduct.tsx";
 
 const OrderCreate = () => {
   const navigate = useNavigate();
   const param = useParams();
-  const formData = useForm<IUserResponse & { confirmPassword: string }>();
+  const formData = useForm<IUserResponse & { products: IProductResponse[] }>();
+  const formDataArray = useFieldArray({
+    control: formData.control,
+    name: "products",
+  });
+  const watchProducts = formData.watch("products");
+  const { returnJsx } = useFindProduct();
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const handleShowPassword = () => (showPassword ? "password" : "text");
@@ -156,6 +168,38 @@ const OrderCreate = () => {
       }
     } else {
       await updateUser(data, "", "");
+    }
+  };
+
+  const appendProduct = async () => {
+    formDataArray.append({
+      id: 1,
+      name: "",
+      description: "",
+      code: "",
+      skuCode: "",
+      price: 20.5,
+      quantity: 2,
+      publicId: null,
+      thumbnail: null,
+      createdAt: "",
+      updatedAt: "",
+    });
+  };
+  const removeProduct = async (index: number) => {
+    formDataArray.remove(index);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "." || event.key === ",") {
+      event.preventDefault(); // Prevent decimal input
+    }
+  };
+
+  const handleOnPast = (event) => {
+    const text = event.clipboardData.getData("text");
+    if (text.includes(".") || text.includes(",")) {
+      event.preventDefault(); // Prevent decimal input
     }
   };
 
@@ -300,6 +344,155 @@ const OrderCreate = () => {
             />
           </Stack>
         </Stack>
+        {returnJsx()}
+        {formDataArray.fields.map((item, index) => (
+          <Stack direction="row" gap={2} key={item.id}>
+            <Stack gap={0.5} maxWidth={250} flexGrow={1}>
+              <Typography variant="body2" color="textSecondary">
+                Product name
+              </Typography>
+              <InputText
+                formData={formData}
+                name={`products.${index}.name`}
+                placeholder="Product name"
+                // error={formData.formState.errors[""]}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Product name is required",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack gap={0.5} maxWidth={150} flexGrow={1}>
+              <Typography variant="body2" color="textSecondary">
+                Code
+              </Typography>
+              <InputText
+                formData={formData}
+                name={`products.${index}.code`}
+                placeholder="Code"
+                // error={formData.formState.errors[""]}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Code is required",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack gap={0.5} maxWidth={100} flexGrow={1}>
+              <Typography variant="body2" color="textSecondary">
+                Price
+              </Typography>
+              <InputText
+                inputPropsTextField={{
+                  disabled: true,
+                  slotProps: {
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    },
+                  },
+                }}
+                formData={formData}
+                name={`products.${index}.price`}
+                placeholder="Price"
+                // error={formData.formState.errors[""]}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Price is required",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack gap={0.5} maxWidth={100} flexGrow={1}>
+              <Typography variant="body2" color="textSecondary">
+                Quantity
+              </Typography>
+              <InputText
+                inputPropsTextField={{
+                  defaultValue: 1,
+                  type: "number",
+                  slotProps: {
+                    htmlInput: {
+                      min: 1,
+                      step: 1,
+                    },
+                  },
+                  onKeyDown: handleKeyDown,
+                  onPaste: handleOnPast,
+                }}
+                formData={formData}
+                name={`products.${index}.quantity`}
+                placeholder="QTY"
+                // error={formData.formState.errors[""]}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Quantity is required",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack gap={0.5} maxWidth={80} flexGrow={1}>
+              <Typography variant="body2" color="textSecondary">
+                Total
+              </Typography>
+              <Stack p="10px 0px">
+                <Typography variant="body2">
+                  ${" "}
+                  {(
+                    watchProducts[index].price * watchProducts[index].quantity
+                  ).toFixed(2)}
+                </Typography>
+              </Stack>
+              {/*<InputText*/}
+              {/*  inputPropsTextField={{*/}
+              {/*    type: "number",*/}
+              {/*    slotProps: {*/}
+              {/*      htmlInput: {*/}
+              {/*        min: 1,*/}
+              {/*      },*/}
+              {/*    },*/}
+              {/*  }}*/}
+              {/*  formData={formData}*/}
+              {/*  name={`products.${index}.quantity`}*/}
+              {/*  placeholder="Price"*/}
+              {/*  // error={formData.formState.errors[""]}*/}
+              {/*  rules={{*/}
+              {/*    required: {*/}
+              {/*      value: true,*/}
+              {/*      message: "Quantity is required",*/}
+              {/*    },*/}
+              {/*  }}*/}
+              {/*/>*/}
+            </Stack>
+            <Stack gap={0.5} maxWidth={40} flexGrow={1}>
+              <Typography
+                variant="body2"
+                sx={{ visibility: "hidden" }}
+                color="textSecondary"
+              >
+                Remove
+              </Typography>
+              <IconButton size="small" onClick={() => removeProduct(index)}>
+                <CloseRoundedIcon color="error" />
+              </IconButton>
+            </Stack>
+          </Stack>
+        ))}
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ maxWidth: 120 }}
+          onClick={appendProduct}
+          startIcon={<AddRoundedIcon />}
+        >
+          Add more
+        </Button>
       </Box>
     </Box>
   );

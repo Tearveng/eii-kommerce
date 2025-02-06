@@ -160,6 +160,15 @@ export const productApi = createApi({
       // invalidatesTags: (_result, _error, { id }) => [{ type: "Product", id }],
     }),
 
+    /** Search product by name / code / sku code **/
+    searchProducts: builder.query<IProduct, { search: string }>({
+      query: ({ search }) => ({
+        url: "/search-products",
+        method: "GET",
+        params: { search },
+      }),
+    }),
+
     /** Get product by ID **/
     getProductById: builder.query<IProductResponse, { id: number }>({
       query: ({ id }) => ({
@@ -188,6 +197,7 @@ export const productApi = createApi({
 });
 
 export const {
+  useSearchProductsQuery,
   useGetAllProductsQuery,
   useGetProductByIdQuery,
   useUploadImageMutation,
