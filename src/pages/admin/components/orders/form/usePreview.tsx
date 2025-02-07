@@ -1,0 +1,322 @@
+import {
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { gray } from "../../../share-theme/themePrimitives.ts";
+
+const TAX_RATE = 0.07;
+
+function ccyFormat(num: number) {
+  return `${num.toFixed(2)}`;
+}
+
+function priceRow(qty: number, unit: number) {
+  return qty * unit;
+}
+
+function createRow(desc: string, qty: number, unit: number) {
+  const price = priceRow(qty, unit);
+  return { desc, qty, unit, price };
+}
+
+interface Row {
+  desc: string;
+  qty: number;
+  unit: number;
+  price: number;
+}
+
+function subtotal(items: readonly Row[]) {
+  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+}
+
+const rows = [
+  createRow("Paperclips (Box)", 100, 1.15),
+  createRow("Paper (Case)", 10, 45.99),
+  createRow("Waste Basket", 2, 17.99),
+];
+
+const invoiceSubtotal = subtotal(rows);
+const invoiceTaxes = TAX_RATE * invoiceSubtotal;
+const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+
+export const usePreview = () => {
+  const receiptBlock3 = (props: { title: string; value: string }) => {
+    return (
+      <Stack direction="row" gap={4}>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          textAlign="end"
+          fontWeight={600}
+        >
+          {props.title}
+        </Typography>
+        <Typography
+          variant="body2"
+          textAlign="end"
+          color="textSecondary"
+          minWidth={80}
+        >
+          {props.value}
+        </Typography>
+      </Stack>
+    );
+  };
+
+  const previewReceipt = () => {
+    return (
+      <Stack px={2}>
+        <Stack gap={3}>
+          {/* block 1 */}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Stack direction="row" alignItems="center" gap={2}>
+              <Stack>
+                <img
+                  style={{
+                    maxWidth: "30px",
+                  }}
+                  src={"/vite.svg"}
+                  alt={"/vite.svg"}
+                  loading="lazy"
+                />
+              </Stack>
+              <Stack>
+                <Typography variant="h5" component="div">
+                  East Repair Inc.
+                </Typography>
+              </Stack>
+            </Stack>
+            <Typography variant="h6" component="div">
+              RECEIPT
+            </Typography>
+          </Stack>
+          {/* block 2 */}
+          <Stack alignItems="flex-end">
+            <Stack maxWidth={150}>
+              <Typography variant="body2" color="textSecondary" textAlign="end">
+                1912 Harvest Lane New York, NY 12210
+              </Typography>
+            </Stack>
+          </Stack>
+          {/* block 3 */}
+          <br />
+          <Stack direction="row" justifyContent="space-between">
+            <Stack maxWidth={150}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                fontWeight={600}
+              >
+                Bill to
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                John Smith
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                2 Count Square New York, NY 12210
+              </Typography>
+            </Stack>
+            <Stack maxWidth={150}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                fontWeight={600}
+              >
+                Ship to
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                John Smith
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                3787 Pineview Drive Cambridge, MA 12210
+              </Typography>
+            </Stack>
+            <Stack maxWidth={250} alignItems="end">
+              <Stack direction="row" gap={4}>
+                {receiptBlock3({ title: "Receipt #", value: "US-001" })}
+              </Stack>
+              <Stack direction="row" gap={4}>
+                {receiptBlock3({ title: "Receipt Date", value: "11/02/2025" })}
+              </Stack>
+              <Stack direction="row" gap={4}>
+                {receiptBlock3({ title: "P.O.#", value: "23/02/2025" })}
+              </Stack>
+              <Stack direction="row" gap={4}>
+                {receiptBlock3({ title: "Due Date", value: "23/03/2025" })}
+              </Stack>
+            </Stack>
+          </Stack>
+
+          {/* block 4 */}
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 700, borderCollapse: "collapse" }}
+              aria-label="spanning table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    colSpan={3}
+                    sx={{
+                      bgcolor: "background.paper",
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                  >
+                    Details
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{
+                      bgcolor: "background.paper",
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                  >
+                    Price
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                  >
+                    Desc
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    Qty.
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    Unit
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    Sum
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow key={row.desc}>
+                    <TableCell
+                      sx={{
+                        border: `2px solid ${gray[300]}`,
+                      }}
+                    >
+                      {row.desc}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        border: `2px solid ${gray[300]}`,
+                      }}
+                      align="right"
+                    >
+                      {row.qty}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        border: `2px solid ${gray[300]}`,
+                      }}
+                      align="right"
+                    >
+                      {row.unit}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        border: `2px solid ${gray[300]}`,
+                      }}
+                      align="right"
+                    >
+                      {ccyFormat(row.price)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    rowSpan={3}
+                  />
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    colSpan={2}
+                  >
+                    Subtotal
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    {ccyFormat(invoiceSubtotal)}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Tax</TableCell>
+                  <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    {ccyFormat(invoiceTaxes)}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    colSpan={2}
+                  >
+                    Total
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: `2px solid ${gray[300]}`,
+                    }}
+                    align="right"
+                  >
+                    {ccyFormat(invoiceTotal)}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Stack>
+      </Stack>
+    );
+  };
+  return { previewReceipt };
+};

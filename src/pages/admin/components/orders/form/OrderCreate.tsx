@@ -29,7 +29,9 @@ import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
 import InputPhone from "../../../../../components/Input/InputPhone.tsx";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import PreviewOutlinedIcon from "@mui/icons-material/PreviewOutlined";
 import { useFindProduct } from "./useFindProduct.tsx";
+import { usePreview } from "./usePreview.tsx";
 
 const OrderCreate = () => {
   const navigate = useNavigate();
@@ -40,7 +42,9 @@ const OrderCreate = () => {
     name: "products",
   });
   const watchProducts = formData.watch("products");
-  const { returnJsx } = useFindProduct();
+  const { returnJsx, selectOption, setSelectOption, setSearchValue } =
+    useFindProduct();
+  const { previewReceipt } = usePreview();
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const handleShowPassword = () => (showPassword ? "password" : "text");
@@ -171,20 +175,29 @@ const OrderCreate = () => {
     }
   };
 
-  const appendProduct = async () => {
-    formDataArray.append({
-      id: 1,
-      name: "",
-      description: "",
-      code: "",
-      skuCode: "",
-      price: 20.5,
-      quantity: 2,
-      publicId: null,
-      thumbnail: null,
-      createdAt: "",
-      updatedAt: "",
-    });
+  const appendProduct = () => {
+    if (selectOption) {
+      const duplicateCode = watchProducts
+        .flatMap((item) => item.code)
+        .includes(selectOption.code);
+      if (duplicateCode) {
+        return;
+      }
+
+      formDataArray.append({
+        id: 1,
+        name: selectOption.name,
+        description: selectOption.description,
+        code: selectOption.code,
+        skuCode: selectOption.skuCode,
+        price: selectOption.price,
+        quantity: 1,
+        publicId: selectOption.publicId,
+        thumbnail: selectOption.thumbnail,
+        createdAt: "",
+        updatedAt: "",
+      });
+    }
   };
   const removeProduct = async (index: number) => {
     formDataArray.remove(index);
@@ -192,16 +205,26 @@ const OrderCreate = () => {
 
   const handleKeyDown = (event) => {
     if (event.key === "." || event.key === ",") {
-      event.preventDefault(); // Prevent decimal input
+      event.preventDefault();
     }
   };
 
   const handleOnPast = (event) => {
     const text = event.clipboardData.getData("text");
     if (text.includes(".") || text.includes(",")) {
-      event.preventDefault(); // Prevent decimal input
+      event.preventDefault();
     }
   };
+
+  useEffect(() => {
+    if (selectOption) {
+      appendProduct();
+    }
+    return () => {
+      setSelectOption(undefined as never);
+      setSearchValue("");
+    };
+  }, [selectOption, setSelectOption, setSearchValue]);
 
   useEffect(() => {
     if (userById) {
@@ -344,155 +367,170 @@ const OrderCreate = () => {
             />
           </Stack>
         </Stack>
-        {returnJsx()}
-        {formDataArray.fields.map((item, index) => (
-          <Stack direction="row" gap={2} key={item.id}>
-            <Stack gap={0.5} maxWidth={250} flexGrow={1}>
-              <Typography variant="body2" color="textSecondary">
-                Product name
-              </Typography>
-              <InputText
-                formData={formData}
-                name={`products.${index}.name`}
-                placeholder="Product name"
-                // error={formData.formState.errors[""]}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Product name is required",
-                  },
-                }}
-              />
-            </Stack>
-            <Stack gap={0.5} maxWidth={150} flexGrow={1}>
-              <Typography variant="body2" color="textSecondary">
-                Code
-              </Typography>
-              <InputText
-                formData={formData}
-                name={`products.${index}.code`}
-                placeholder="Code"
-                // error={formData.formState.errors[""]}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Code is required",
-                  },
-                }}
-              />
-            </Stack>
-            <Stack gap={0.5} maxWidth={100} flexGrow={1}>
-              <Typography variant="body2" color="textSecondary">
-                Price
-              </Typography>
-              <InputText
-                inputPropsTextField={{
-                  disabled: true,
-                  slotProps: {
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">$</InputAdornment>
-                      ),
-                    },
-                  },
-                }}
-                formData={formData}
-                name={`products.${index}.price`}
-                placeholder="Price"
-                // error={formData.formState.errors[""]}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Price is required",
-                  },
-                }}
-              />
-            </Stack>
-            <Stack gap={0.5} maxWidth={100} flexGrow={1}>
-              <Typography variant="body2" color="textSecondary">
-                Quantity
-              </Typography>
-              <InputText
-                inputPropsTextField={{
-                  defaultValue: 1,
-                  type: "number",
-                  slotProps: {
-                    htmlInput: {
-                      min: 1,
-                      step: 1,
-                    },
-                  },
-                  onKeyDown: handleKeyDown,
-                  onPaste: handleOnPast,
-                }}
-                formData={formData}
-                name={`products.${index}.quantity`}
-                placeholder="QTY"
-                // error={formData.formState.errors[""]}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Quantity is required",
-                  },
-                }}
-              />
-            </Stack>
-            <Stack gap={0.5} maxWidth={80} flexGrow={1}>
-              <Typography variant="body2" color="textSecondary">
-                Total
-              </Typography>
-              <Stack p="10px 0px">
-                <Typography variant="body2">
-                  ${" "}
-                  {(
-                    watchProducts[index].price * watchProducts[index].quantity
-                  ).toFixed(2)}
-                </Typography>
+        <Stack direction="row">
+          <Stack gap={2} flexGrow={1} maxWidth={850}>
+            {returnJsx()}
+            {formDataArray.fields.map((item, index) => (
+              <Stack direction="row" gap={2} key={item.id}>
+                <Stack gap={0.5} maxWidth={250} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Product name
+                  </Typography>
+                  <InputText
+                    formData={formData}
+                    name={`products.${index}.name`}
+                    placeholder="Product name"
+                    inputPropsTextField={{
+                      disabled: true,
+                    }}
+                    // error={formData.formState.errors[""]}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Product name is required",
+                      },
+                    }}
+                  />
+                </Stack>
+                <Stack gap={0.5} maxWidth={150} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Code
+                  </Typography>
+                  <InputText
+                    formData={formData}
+                    name={`products.${index}.code`}
+                    placeholder="Code"
+                    inputPropsTextField={{
+                      disabled: true,
+                    }}
+                    // error={formData.formState.errors[""]}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Code is required",
+                      },
+                    }}
+                  />
+                </Stack>
+                <Stack gap={0.5} maxWidth={100} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Price
+                  </Typography>
+                  <InputText
+                    inputPropsTextField={{
+                      disabled: true,
+                      slotProps: {
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">$</InputAdornment>
+                          ),
+                        },
+                      },
+                    }}
+                    formData={formData}
+                    name={`products.${index}.price`}
+                    placeholder="Price"
+                    // error={formData.formState.errors[""]}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Price is required",
+                      },
+                    }}
+                  />
+                </Stack>
+                <Stack gap={0.5} maxWidth={100} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Quantity
+                  </Typography>
+                  <InputText
+                    inputPropsTextField={{
+                      defaultValue: 1,
+                      type: "number",
+                      slotProps: {
+                        htmlInput: {
+                          min: 1,
+                          step: 1,
+                        },
+                      },
+                      onKeyDown: handleKeyDown,
+                      onPaste: handleOnPast,
+                    }}
+                    formData={formData}
+                    name={`products.${index}.quantity`}
+                    placeholder="QTY"
+                    // error={formData.formState.errors[""]}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Quantity is required",
+                      },
+                    }}
+                  />
+                </Stack>
+                <Stack gap={0.5} maxWidth={80} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Total
+                  </Typography>
+                  <Stack p="10px 0px">
+                    <Typography variant="body2">
+                      ${" "}
+                      {(
+                        watchProducts[index].price *
+                        watchProducts[index].quantity
+                      ).toFixed(2)}
+                    </Typography>
+                  </Stack>
+                  {/*<InputText*/}
+                  {/*  inputPropsTextField={{*/}
+                  {/*    type: "number",*/}
+                  {/*    slotProps: {*/}
+                  {/*      htmlInput: {*/}
+                  {/*        min: 1,*/}
+                  {/*      },*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*  formData={formData}*/}
+                  {/*  name={`products.${index}.quantity`}*/}
+                  {/*  placeholder="Price"*/}
+                  {/*  // error={formData.formState.errors[""]}*/}
+                  {/*  rules={{*/}
+                  {/*    required: {*/}
+                  {/*      value: true,*/}
+                  {/*      message: "Quantity is required",*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                </Stack>
+                <Stack gap={0.5} maxWidth={40} flexGrow={1}>
+                  <Typography
+                    variant="body2"
+                    sx={{ visibility: "hidden" }}
+                    color="textSecondary"
+                  >
+                    Remove
+                  </Typography>
+                  <IconButton size="small" onClick={() => removeProduct(index)}>
+                    <CloseRoundedIcon color="error" />
+                  </IconButton>
+                </Stack>
               </Stack>
-              {/*<InputText*/}
-              {/*  inputPropsTextField={{*/}
-              {/*    type: "number",*/}
-              {/*    slotProps: {*/}
-              {/*      htmlInput: {*/}
-              {/*        min: 1,*/}
-              {/*      },*/}
-              {/*    },*/}
-              {/*  }}*/}
-              {/*  formData={formData}*/}
-              {/*  name={`products.${index}.quantity`}*/}
-              {/*  placeholder="Price"*/}
-              {/*  // error={formData.formState.errors[""]}*/}
-              {/*  rules={{*/}
-              {/*    required: {*/}
-              {/*      value: true,*/}
-              {/*      message: "Quantity is required",*/}
-              {/*    },*/}
-              {/*  }}*/}
-              {/*/>*/}
-            </Stack>
-            <Stack gap={0.5} maxWidth={40} flexGrow={1}>
-              <Typography
-                variant="body2"
-                sx={{ visibility: "hidden" }}
-                color="textSecondary"
+            ))}
+            <Stack direction="row" gap={2}>
+              <Button
+                variant="contained"
+                disabled={!watchProducts || watchProducts.length < 1}
+                size="small"
+                sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
+                startIcon={<PreviewOutlinedIcon sx={{ width: 14 }} />}
+                // onClick={() => navigate("/admin/products/create")}
               >
-                Remove
-              </Typography>
-              <IconButton size="small" onClick={() => removeProduct(index)}>
-                <CloseRoundedIcon color="error" />
-              </IconButton>
+                Preview
+              </Button>
             </Stack>
           </Stack>
-        ))}
-        <Button
-          variant="contained"
-          size="small"
-          sx={{ maxWidth: 120 }}
-          onClick={appendProduct}
-          startIcon={<AddRoundedIcon />}
-        >
-          Add more
-        </Button>
+          <Stack flexGrow={1}> {previewReceipt()}</Stack>
+        </Stack>
       </Box>
     </Box>
   );

@@ -1,55 +1,16 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import InputText from "../../../../../components/Input/InputText.tsx";
-import { validateEmail } from "../../../../../utils/common.ts";
-import InputPhone from "../../../../../components/Input/InputPhone.tsx";
-import { Autocomplete, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, Box, Divider, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { SelectChangeEvent } from "@mui/material/Select";
 import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
 
-const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-  { label: "The Dark Knight", year: 2008 },
-  { label: "12 Angry Men", year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: "Pulp Fiction", year: 1994 },
-  {
-    label: "The Lord of the Rings: The Return of the King",
-    year: 2003,
-  },
-  { label: "The Good, the Bad and the Ugly", year: 1966 },
-  { label: "Fight Club", year: 1999 },
-  {
-    label: "The Lord of the Rings: The Fellowship of the Ring",
-    year: 2001,
-  },
-  {
-    label: "Star Wars: Episode V - The Empire Strikes Back",
-    year: 1980,
-  },
-  { label: "Forrest Gump", year: 1994 },
-  { label: "Inception", year: 2010 },
-  {
-    label: "The Lord of the Rings: The Two Towers",
-    year: 2002,
-  },
-  { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { label: "Goodfellas", year: 1990 },
-  { label: "The Matrix", year: 1999 },
-  { label: "Seven Samurai", year: 1954 },
-  {
-    label: "Star Wars: Episode IV - A New Hope",
-    year: 1977,
-  },
-];
-
 export const useFindProduct = () => {
-  const [searchBy, setSearchBy] = useState<string>("1");
+  // const [searchBy, setSearchBy] = useState<string>("1");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [selectOption, setSelectOption] = useState<IProductResponse | null>(
+    null,
+  );
 
   /** end-point */
   const { data, isLoading, isFetching } = useSearchProductsQuery(
@@ -59,10 +20,27 @@ export const useFindProduct = () => {
     { skip: searchValue.length < 3 },
   );
 
-  console.log(data);
+  // const onSearchBy = (event: SelectChangeEvent) => {
+  //   setSearchBy(event.target.value);
+  // };
 
-  const onSearchBy = (event: SelectChangeEvent) => {
-    setSearchBy(event.target.value);
+  const onClickListDown = (
+    option: IProductResponse,
+    event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  ) => {
+    return setSelectOption(option);
+  };
+
+  const handleKeyboardEvent = (
+    event: React.KeyboardEvent<HTMLLIElement>,
+    option: IProductResponse,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      onClickListDown(option);
+    }
+  };
+  const handleOptionChange = (_event: React.SyntheticEvent, value: any) => {
+    setSelectOption(value);
   };
 
   const onSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +58,8 @@ export const useFindProduct = () => {
             Noted: Name / Code / Sku code
           </Typography>
           <Autocomplete
+            value={selectOption as IProductResponse | undefined}
+            onChange={handleOptionChange}
             freeSolo
             size="small"
             id="free-solo-2-demo"
@@ -93,10 +73,28 @@ export const useFindProduct = () => {
               return option.name;
             }}
             renderOption={(props, option) => (
-              <li {...props} key={option.id}>
+              <Box
+                {...props}
+                key={option.id}
+                component="li"
+                // onClick={(event) => onClickListDown(option, event)}
+                // onKeyDown={(event) => handleKeyboardEvent(event, option)}
+              >
                 {/* Use a unique key for each item */}
-                {option.name}
-              </li>
+                <Stack direction="row" gap={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {option.name}
+                  </Typography>
+                  <Divider orientation="vertical" flexItem />
+                  <Typography variant="body2" color="textSecondary">
+                    {option.code}
+                  </Typography>
+                  <Divider orientation="vertical" flexItem />
+                  <Typography variant="body2" color="textSecondary">
+                    $ {option.price.toFixed(2)}
+                  </Typography>
+                </Stack>
+              </Box>
             )}
             renderInput={(params) => (
               <TextField
@@ -118,5 +116,5 @@ export const useFindProduct = () => {
     );
   };
 
-  return { returnJsx };
+  return { returnJsx, selectOption, setSelectOption, setSearchValue };
 };
