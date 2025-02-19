@@ -1,23 +1,41 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Box, Divider, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  Box,
+  Divider,
+  TextField,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import { useSearchUsersQuery } from "../../../../../services/adminApi.ts";
+import {
+  IUser,
+  IUserResponse,
+} from "../../../../../services/types/UserInterface.tsx";
+import { UseFormReturn } from "react-hook-form";
 
-export const useFindProduct = () => {
-  // const [searchBy, setSearchBy] = useState<string>("1");
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [selectOption, setSelectOption] = useState<IProductResponse | null>(
-    null,
-  );
+export interface IUseFindUser {
+  key: keyof IUserResponse;
+  formData: UseFormReturn<IUserResponse & { products: IProductResponse[] }>;
+}
+
+export const useFindUser = (props: IUseFindUser) => {
+  const { formData, key } = props;
+  const [selectOption, setSelectOption] = useState<IUserResponse | null>(null);
+  const value = formData.watch(key);
 
   /** end-point */
-  const { data, isLoading, isFetching } = useSearchProductsQuery(
+  const { data, isLoading, isFetching } = useSearchUsersQuery(
     {
-      search: searchValue,
+      key,
+      search: value,
     },
-    { skip: searchValue.length < 3 },
+    {
+      skip: !key || !value || value.toString().length < 3,
+    },
   );
 
   // const onSearchBy = (event: SelectChangeEvent) => {
@@ -25,15 +43,15 @@ export const useFindProduct = () => {
   // };
 
   // const onClickListDown = (
-  //   option: IProductResponse,
+  //   option: IUserResponse,
   //   event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
   // ) => {
   //   return setSelectOption(option);
   // };
-
+  //
   // const handleKeyboardEvent = (
   //   event: React.KeyboardEvent<HTMLLIElement>,
-  //   option: IProductResponse,
+  //   option: IUserResponse,
   // ) => {
   //   if (event.key === "Enter" || event.key === " ") {
   //     onClickListDown(option);
@@ -43,22 +61,14 @@ export const useFindProduct = () => {
     setSelectOption(value);
   };
 
-  const onSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
-
-  const returnJsx = () => {
+  const findUserJsx = (
+    autoParam: (param: AutocompleteRenderInputParams) => JSX.Element,
+  ) => {
     return (
       <Stack direction="row" gap={2}>
-        <Stack gap={0.5} maxWidth={400} flexGrow={1}>
-          <Typography variant="body2" color="textSecondary">
-            Search product
-          </Typography>
-          <Typography variant="caption" color="warning">
-            Noted: Name / Code / Sku code
-          </Typography>
+        <Stack gap={0.5} flexGrow={1}>
           <Autocomplete
-            value={selectOption as IProductResponse | undefined}
+            value={selectOption as IUserResponse | undefined}
             onChange={handleOptionChange}
             freeSolo
             size="small"
@@ -70,11 +80,11 @@ export const useFindProduct = () => {
               if (typeof option === "string") {
                 return option;
               }
-              return option.name;
+              return option.email;
             }}
-            renderOption={(props, option) => (
+            renderOption={(p, option) => (
               <Box
-                {...props}
+                {...p}
                 key={option.id}
                 component="li"
                 // onClick={(event) => onClickListDown(option, event)}
@@ -83,38 +93,25 @@ export const useFindProduct = () => {
                 {/* Use a unique key for each item */}
                 <Stack direction="row" gap={1}>
                   <Typography variant="body2" color="textSecondary">
-                    {option.name}
+                    N: {option.firstName} {option.lastName}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">
-                    {option.code}
+                    E: {option.email}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">
-                    $ {option.price.toFixed(2)}
+                    P: {option.phone}
                   </Typography>
                 </Stack>
               </Box>
             )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Search"
-                value={searchValue}
-                onChange={onSearchValue}
-                slotProps={{
-                  input: {
-                    ...params.InputProps,
-                    type: "search",
-                  },
-                }}
-              />
-            )}
+            renderInput={(params) => autoParam(params)}
           />
         </Stack>
       </Stack>
     );
   };
 
-  return { returnJsx, selectOption, setSelectOption, setSearchValue };
+  return { findUserJsx, selectOption, setSelectOption };
 };

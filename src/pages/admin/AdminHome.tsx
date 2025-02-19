@@ -1,5 +1,7 @@
+import HomeMainGrid from "./components/home/HomeMainGrid.tsx";
+
 const AdminHome = () => {
-  return <>HOME</>;
+  return <HomeMainGrid />;
 };
 
 export default AdminHome;

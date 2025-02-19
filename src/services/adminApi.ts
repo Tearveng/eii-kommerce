@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IUploadImageResponse } from "./types/ProductInterface";
+import { IProduct, IUploadImageResponse } from "./types/ProductInterface";
 import {
   IUser,
   IUserCreatePayload,
@@ -39,6 +39,15 @@ export const adminApi = createApi({
       query: ({ publicId }) => ({
         url: `/upload/image/profile/${publicId}`,
         method: "DELETE",
+      }),
+    }),
+
+    /** Search users by firstName / lastName / email / phone **/
+    searchUsers: builder.query<IUser, { key: string; search: string }>({
+      query: ({ search, key }) => ({
+        url: "/search-users",
+        method: "GET",
+        params: { search, key },
       }),
     }),
 
@@ -193,6 +202,7 @@ export const adminApi = createApi({
 });
 
 export const {
+  useSearchUsersQuery,
   useGetUserInfoQuery,
   useGetAllUsersQuery,
   useCreateUserMutation,

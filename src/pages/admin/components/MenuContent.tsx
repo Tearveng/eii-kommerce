@@ -16,16 +16,64 @@ import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import Stack from "@mui/material/Stack";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StoreRoundedIcon from "@mui/icons-material/StoreRounded";
+import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
+import { useState, MouseEvent } from "react";
 
 const mainListItems = [
-  { text: "Home", icon: <HomeRoundedIcon />, path: "/home" },
-  { text: "Products", icon: <Inventory2RoundedIcon />, path: "/products" },
-  { text: "Items", icon: <CategoryRoundedIcon />, path: "/items" },
-  { text: "Orders", icon: <InventoryRoundedIcon />, path: "/orders" },
-  { text: "Cart", icon: <ShoppingCartRoundedIcon />, path: "/carts" },
-  { text: "Analytics", icon: <AnalyticsRoundedIcon />, path: "/analytics" },
-  { text: "Clients", icon: <PeopleRoundedIcon />, path: "/people" },
-  { text: "Tasks", icon: <AssignmentRoundedIcon />, path: "/tasks" },
+  { text: "Home", icon: <HomeRoundedIcon />, path: "/home", children: [] },
+  {
+    text: "Products",
+    icon: <Inventory2RoundedIcon />,
+    path: "/products",
+    children: [],
+  },
+  {
+    text: "Items",
+    icon: <CategoryRoundedIcon />,
+    path: "/items",
+    children: [],
+  },
+  {
+    text: "Orders",
+    icon: <InventoryRoundedIcon />,
+    path: "/orders",
+    children: [
+      { text: "Deposit", icon: <StoreRoundedIcon />, path: "/orders/deposit" },
+      {
+        text: "Purchase",
+        icon: <LocalAtmRoundedIcon />,
+        path: "/orders/create",
+      },
+    ],
+  },
+  {
+    text: "Cart",
+    icon: <ShoppingCartRoundedIcon />,
+    path: "/carts",
+    children: [],
+  },
+  {
+    text: "Analytics",
+    icon: <AnalyticsRoundedIcon />,
+    path: "/analytics",
+    children: [],
+  },
+  {
+    text: "Clients",
+    icon: <PeopleRoundedIcon />,
+    path: "/people",
+    children: [],
+  },
+  {
+    text: "Tasks",
+    icon: <AssignmentRoundedIcon />,
+    path: "/tasks",
+    children: [],
+  },
 ];
 
 const secondaryListItems = [
@@ -37,24 +85,88 @@ const secondaryListItems = [
 const MenuContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(
+    Array.from({ length: mainListItems.length }, () => false),
+  );
 
   const handleNavigate = (path: string): void => {
     navigate(`/admin${path}`);
   };
+
+  const handleClickExpand = (
+    event: MouseEvent<SVGSVGElement>,
+    index: number,
+  ) => {
+    event.stopPropagation();
+    const cpExpanded = [...expanded];
+    cpExpanded[index] = !cpExpanded[index];
+    setExpanded(cpExpanded);
+  };
+
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
       <List dense>
-        {mainListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              selected={location.pathname.includes(`/admin${item.path}`)}
-              onClick={() => handleNavigate(item.path)}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {mainListItems.map((item, index) => {
+          if (item.children.length > 0) {
+            return (
+              <Box key={index}>
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    selected={location.pathname.includes(`/admin${item.path}`)}
+                    onClick={() => handleNavigate(item.path)}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                    {expanded[index] ? (
+                      <ExpandLess
+                        onClick={(e) => handleClickExpand(e, index)}
+                      />
+                    ) : (
+                      <ExpandMore
+                        onClick={(e) => handleClickExpand(e, index)}
+                      />
+                    )}
+                  </ListItemButton>
+                </ListItem>
+                {expanded[index] && (
+                  <List dense>
+                    {item.children.map((i, idx) => {
+                      return (
+                        <ListItem
+                          key={idx}
+                          disablePadding
+                          sx={{ display: "block" }}
+                        >
+                          <ListItemButton
+                            selected={location.pathname.includes(
+                              `/admin${i.path}`,
+                            )}
+                            onClick={() => handleNavigate(i.path)}
+                          >
+                            <ListItemIcon>{i.icon}</ListItemIcon>
+                            <ListItemText primary={i.text} />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                )}
+              </Box>
+            );
+          } else {
+            return (
+              <ListItem key={index} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  selected={location.pathname.includes(`/admin${item.path}`)}
+                  onClick={() => handleNavigate(item.path)}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            );
+          }
+        })}
       </List>
       <List dense>
         {secondaryListItems.map((item, index) => (

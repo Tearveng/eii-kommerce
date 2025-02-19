@@ -1,4 +1,10 @@
-import { Stack, Typography, TypographyProps } from "@mui/material";
+import {
+  AutocompleteRenderInputParams,
+  Stack,
+  TextFieldProps,
+  Typography,
+  TypographyProps,
+} from "@mui/material";
 import {
   Controller,
   FieldError,
@@ -19,6 +25,7 @@ interface IInputPhone<T extends Record<string, any>> {
   placeholder: string;
   error?: FieldError;
   inputPropsTextField?: MuiTelInputProps;
+  inputPropsAutoComplete?: AutocompleteRenderInputParams;
   errorSx?: TypographyProps;
   disabled?: boolean;
 }
@@ -31,6 +38,7 @@ const InputPhone = <T extends Record<string, any>>(props: IInputPhone<T>) => {
     placeholder,
     error,
     inputPropsTextField,
+    inputPropsAutoComplete,
     errorSx,
   } = props;
 
@@ -47,12 +55,18 @@ const InputPhone = <T extends Record<string, any>>(props: IInputPhone<T>) => {
             <MuiTelInput
               {...rest}
               {...inputPropsTextField}
+              {...inputPropsAutoComplete}
+              // slotProps={{
+              //   input: {
+              //     ...inputPropsAutoComplete?.InputProps,
+              //   },
+              // }}
               forceCallingCode
               defaultCountry="KH"
               sx={{
                 ...inputPropsTextField?.sx,
                 "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none", // Remove the border
+                  border: "none",
                 },
                 ".MuiButtonBase-root": {
                   border: "none",
@@ -63,35 +77,9 @@ const InputPhone = <T extends Record<string, any>>(props: IInputPhone<T>) => {
                 },
               }}
               onChange={onChange}
-              size="small"
+              size="medium"
               placeholder={placeholder}
             />
-            // <TextField
-            //   {...rest}
-            //   {...inputPropsTextField}
-            //   sx={{
-            //     ...inputPropsTextField?.sx,
-            //     "& .MuiInputBase-input::placeholder": {
-            //       fontSize: "14px",
-            //       color: "gray",
-            //     },
-            //     "& .MuiInputBase-input": {
-            //       fontSize: "14px", // Set the font size of the input field
-            //     },
-            //     "& .MuiOutlinedInput-root": {
-            //       "& fieldset": {
-            //         borderColor: error ? "red" : "inherit", // Change border color when focused to red
-            //       },
-            //       "&.Mui-focused fieldset": {
-            //         borderColor: !error ? "green" : "red", // Change border color when focused to red
-            //         borderWidth: 1.5,
-            //       },
-            //     },
-            //   }}
-            //   onChange={onChange}
-            //   size="small"
-            //   placeholder={placeholder}
-            // />
           );
         }}
       />

@@ -1,4 +1,5 @@
 import {
+  AutocompleteRenderInputParams,
   Stack,
   TextField,
   TextFieldProps,
@@ -24,6 +25,7 @@ interface IInputText<T extends Record<string, any>> {
   placeholder: string;
   error?: FieldError;
   inputPropsTextField?: TextFieldProps;
+  inputPropsAutoComplete?: AutocompleteRenderInputParams;
   errorSx?: TypographyProps;
   disabled?: boolean;
 }
@@ -36,6 +38,7 @@ const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
     placeholder,
     error,
     inputPropsTextField,
+    inputPropsAutoComplete,
     errorSx,
   } = props;
 
@@ -52,6 +55,12 @@ const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
             <TextField
               {...rest}
               {...inputPropsTextField}
+              {...inputPropsAutoComplete}
+              slotProps={{
+                input: {
+                  ...inputPropsAutoComplete?.InputProps,
+                },
+              }}
               sx={{
                 ...inputPropsTextField?.sx,
                 "& .MuiInputBase-input::placeholder": {

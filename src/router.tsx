@@ -18,6 +18,7 @@ import General from "./pages/admin/components/settings/general/General.tsx";
 import Notifications from "./pages/admin/components/settings/notifications/Notifications.tsx";
 import Preference from "./pages/admin/components/settings/preference/Preference.tsx";
 import OrderCreate from "./pages/admin/components/orders/form/OrderCreate.tsx";
+import OrderDeposit from "./pages/admin/components/orders/form/OrderDeposit.tsx";
 
 const AppRouter = () => {
   return (
@@ -59,6 +60,7 @@ const AppRouter = () => {
         {/* route order */}
         <Route path="/admin/orders" element={<OrderMainGrid />} />
         <Route path="/admin/orders/create" element={<OrderCreate />} />
+        <Route path="/admin/orders/deposit" element={<OrderDeposit />} />
       </Route>
 
       <Route path="/" element={<AppPublicLayout />}>
