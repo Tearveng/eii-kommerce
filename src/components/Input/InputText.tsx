@@ -28,6 +28,7 @@ interface IInputText<T extends Record<string, any>> {
   inputPropsAutoComplete?: AutocompleteRenderInputParams;
   errorSx?: TypographyProps;
   disabled?: boolean;
+  disableSuggestions?: boolean;
 }
 
 const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
@@ -39,6 +40,7 @@ const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
     error,
     inputPropsTextField,
     inputPropsAutoComplete,
+    disableSuggestions,
     errorSx,
   } = props;
 
@@ -57,8 +59,10 @@ const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
               {...inputPropsTextField}
               {...inputPropsAutoComplete}
               slotProps={{
+                ...inputPropsTextField?.slotProps,
                 input: {
                   ...inputPropsAutoComplete?.InputProps,
+                  autoComplete: disableSuggestions ? "new-password" : undefined,
                 },
               }}
               sx={{

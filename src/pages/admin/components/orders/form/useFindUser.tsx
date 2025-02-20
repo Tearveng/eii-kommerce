@@ -5,26 +5,22 @@ import {
   AutocompleteRenderInputParams,
   Box,
   Divider,
-  TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
-import { useSearchUsersQuery } from "../../../../../services/adminApi.ts";
-import {
-  IUser,
-  IUserResponse,
-} from "../../../../../services/types/UserInterface.tsx";
+import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import { UseFormReturn } from "react-hook-form";
+import { useSearchUsersQuery } from "../../../../../services/adminApi.ts";
+import { IDepositRegister } from "./OrderDeposit.tsx";
 
 export interface IUseFindUser {
   key: keyof IUserResponse;
-  formData: UseFormReturn<IUserResponse & { products: IProductResponse[] }>;
+  formData: UseFormReturn<IDepositRegister>;
 }
 
 export const useFindUser = (props: IUseFindUser) => {
   const { formData, key } = props;
-  const [selectOption, setSelectOption] = useState<IUserResponse | null>(null);
+  const [selectUser, setSelectUser] = useState<IUserResponse | null>(null);
   const value = formData.watch(key);
 
   /** end-point */
@@ -38,37 +34,19 @@ export const useFindUser = (props: IUseFindUser) => {
     },
   );
 
-  // const onSearchBy = (event: SelectChangeEvent) => {
-  //   setSearchBy(event.target.value);
-  // };
-
-  // const onClickListDown = (
-  //   option: IUserResponse,
-  //   event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
-  // ) => {
-  //   return setSelectOption(option);
-  // };
-  //
-  // const handleKeyboardEvent = (
-  //   event: React.KeyboardEvent<HTMLLIElement>,
-  //   option: IUserResponse,
-  // ) => {
-  //   if (event.key === "Enter" || event.key === " ") {
-  //     onClickListDown(option);
-  //   }
-  // };
   const handleOptionChange = (_event: React.SyntheticEvent, value: any) => {
-    setSelectOption(value);
+    setSelectUser(value);
   };
 
   const findUserJsx = (
     autoParam: (param: AutocompleteRenderInputParams) => JSX.Element,
+    k: keyof IUserResponse,
   ) => {
     return (
       <Stack direction="row" gap={2}>
         <Stack gap={0.5} flexGrow={1}>
           <Autocomplete
-            value={selectOption as IUserResponse | undefined}
+            value={selectUser as IUserResponse | undefined}
             onChange={handleOptionChange}
             freeSolo
             size="small"
@@ -80,7 +58,7 @@ export const useFindUser = (props: IUseFindUser) => {
               if (typeof option === "string") {
                 return option;
               }
-              return option.email;
+              return option[k as string];
             }}
             renderOption={(p, option) => (
               <Box
@@ -113,5 +91,5 @@ export const useFindUser = (props: IUseFindUser) => {
     );
   };
 
-  return { findUserJsx, selectOption, setSelectOption };
+  return { findUserJsx, selectUser, setSelectUser };
 };
