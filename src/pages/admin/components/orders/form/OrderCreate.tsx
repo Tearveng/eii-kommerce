@@ -1,4 +1,6 @@
-import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import PreviewOutlinedIcon from "@mui/icons-material/PreviewOutlined";
+import { IconButton, InputAdornment } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -6,7 +8,14 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import InputPhone from "../../../../../components/Input/InputPhone.tsx";
 import InputText from "../../../../../components/Input/InputText.tsx";
+import {
+  useCreateUserMutation,
+  useDeleteImageMutation,
+  useUpdateUserMutation,
+  useUploadImageMutation,
+} from "../../../../../services/adminApi.ts";
 import {
   IProductResponse,
   IUploadImageResponse,
@@ -15,21 +24,8 @@ import {
   IUserCreatePayload,
   IUserResponse,
 } from "../../../../../services/types/UserInterface.tsx";
-import DropZoneUpload from "../../DropZoneUpload.tsx";
-import { validateEmail } from "../../../../../utils/common.ts";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
-import {
-  useCreateUserMutation,
-  useDeleteImageMutation,
-  useUpdateUserMutation,
-  useUploadImageMutation,
-} from "../../../../../services/adminApi.ts";
 import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
-import InputPhone from "../../../../../components/Input/InputPhone.tsx";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import PreviewOutlinedIcon from "@mui/icons-material/PreviewOutlined";
+import { validateEmail, validatePhone } from "../../../../../utils/common.ts";
 import { useFindProduct } from "./useFindProduct.tsx";
 import { usePreview } from "./usePreview.tsx";
 
@@ -44,7 +40,9 @@ const OrderCreate = () => {
   const watchProducts = formData.watch("products");
   const { returnJsx, selectOption, setSelectOption, setSearchValue } =
     useFindProduct();
-  const { previewReceipt } = usePreview();
+  const { previewReceipt } = usePreview({
+    tableData: watchProducts,
+  });
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const handleShowPassword = () => (showPassword ? "password" : "text");
@@ -64,7 +62,7 @@ const OrderCreate = () => {
     {
       id: Number(param.id),
     },
-    { skip: !param.id, refetchOnMountOrArgChange: true },
+    { skip: !param.id, refetchOnMountOrArgChange: true }
   );
 
   const watchPassword = formData.watch("password");
@@ -88,7 +86,7 @@ const OrderCreate = () => {
         .unwrap()
         .then((res) => {
           setFiles((prev) =>
-            prev.filter((item) => item.public_id !== res.public_id),
+            prev.filter((item) => item.public_id !== res.public_id)
           );
         });
     } else {
@@ -99,7 +97,7 @@ const OrderCreate = () => {
   const createUser = async (
     data: IUserCreatePayload,
     imageUrl?: string,
-    publicId?: string,
+    publicId?: string
   ) => {
     return create({
       firstName: data.firstName,
@@ -118,7 +116,7 @@ const OrderCreate = () => {
   const updateUser = async (
     data: IUserResponse,
     imageUrl?: string,
-    publicId?: string,
+    publicId?: string
   ) => {
     const profile2 = imageUrl && imageUrl !== "" ? imageUrl : data.profile;
     const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
@@ -138,21 +136,7 @@ const OrderCreate = () => {
   };
 
   const handleSubmit = async (data: IUserCreatePayload) => {
-    if (files.length > 0) {
-      for (const f of files.flatMap((i) => i.originalFile)) {
-        const form = new FormData();
-        if (f) {
-          form.append("file", f);
-          await upload({ form })
-            .unwrap()
-            .then((res) => {
-              createUser(data, res.imageUrl, res.public_id);
-            });
-        }
-      }
-    } else {
-      await createUser(data, "", "");
-    }
+    console.log("data", data);
   };
 
   const handleUpdateSubmit = async (data: IUserResponse) => {
@@ -180,7 +164,7 @@ const OrderCreate = () => {
       const duplicateCode = watchProducts
         .flatMap((item) => item.code)
         .includes(selectOption.code);
-      if (duplicateCode) {
+      if (duplicateCode || typeof selectOption === "string") {
         return;
       }
 
@@ -226,6 +210,8 @@ const OrderCreate = () => {
     };
   }, [selectOption, setSelectOption, setSearchValue]);
 
+  console.log(formData.watch('phone'))
+
   useEffect(() => {
     if (userById) {
       formData.reset({
@@ -260,18 +246,43 @@ const OrderCreate = () => {
   const updateFormLoading = updateUserLoading || isLoading;
   return (
     <Box
+      component="form"
+      onSubmit={formData.handleSubmit(handleSubmit)}
+      noValidate
       sx={{
         width: "100%",
         maxWidth: { sm: "100%", md: "1700px" },
       }}
     >
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        {param.id ? "Update" : "Order purchase"}
-      </Typography>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+          {param.id ? "Update" : "Order purchase"}
+        </Typography>
+        <Stack direction="row" gap={2}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
+          // startIcon={<AddRoundedIcon />}
+          // onClick={() => navigate("/admin/products/create")}
+          >
+            Clear
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            size="medium"
+            sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
+          // onClick={() => navigate("/admin/products/create")}
+          >
+            Save
+          </Button>
+        </Stack>
+      </Stack>
       <Box
         component="form"
         onSubmit={formData.handleSubmit(
-          param.id ? handleUpdateSubmit : handleSubmit,
+          param.id ? handleUpdateSubmit : handleSubmit
         )}
         noValidate
         sx={{
@@ -330,7 +341,7 @@ const OrderCreate = () => {
               error={formData.formState.errors["email"]}
               rules={{
                 required: {
-                  value: true,
+                  value: false,
                   message: "Email address is required",
                 },
                 validate: (val: any) => validateEmail(val),
@@ -346,6 +357,13 @@ const OrderCreate = () => {
               name="phone"
               placeholder="Phone number"
               error={formData.formState.errors["phone"]}
+              rules={{
+                required: {
+                  value: true,
+                  message: "Phone number is required",
+                },
+                validate: (val: any) => validatePhone(val),
+              }}
             />
           </Stack>
         </Stack>
@@ -412,6 +430,21 @@ const OrderCreate = () => {
                     }}
                   />
                 </Stack>
+                {watchProducts[index].thumbnail && (
+                  <Stack gap={0.5} maxWidth={150} flexGrow={1}>
+                    <Typography variant="body2" color="textSecondary">
+                      Image
+                    </Typography>
+                    <img
+                      style={{
+                        maxWidth: "30px",
+                      }}
+                      src={watchProducts[index].thumbnail}
+                      alt={watchProducts[index].publicId ?? ""}
+                      loading="lazy"
+                    />
+                  </Stack>
+                )}
                 <Stack gap={0.5} maxWidth={100} flexGrow={1}>
                   <Typography variant="body2" color="textSecondary">
                     Price
@@ -523,13 +556,13 @@ const OrderCreate = () => {
                 size="small"
                 sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
                 startIcon={<PreviewOutlinedIcon sx={{ width: 14 }} />}
-                // onClick={() => navigate("/admin/products/create")}
+              // onClick={() => navigate("/admin/products/create")}
               >
                 Preview
               </Button>
             </Stack>
           </Stack>
-          <Stack flexGrow={1}> {previewReceipt()}</Stack>
+          {watchProducts && <Stack flexGrow={1}>{previewReceipt()}</Stack>}
         </Stack>
       </Box>
     </Box>

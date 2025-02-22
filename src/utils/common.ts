@@ -1,3 +1,4 @@
+import { matchIsValidTel } from 'mui-tel-input';
 import { store } from "../redux";
 import { dispatchSnackbar } from "../redux/application";
 import { IErrorConnection, IErrorType } from "../redux/type";
@@ -18,8 +19,6 @@ export const dateShortFormat = (d: string) => {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
     hour12: true,
   });
 };
@@ -34,6 +33,16 @@ export const validateEmail = (email: string) => {
     return undefined;
   }
 };
+
+export const validatePhone = (phone: string) => {
+  if(phone && phone.startsWith("+")) {
+    const isMatch = matchIsValidTel(phone);
+    if(!isMatch) {
+      return "Phoner number is invalid."
+    }
+  }
+  return undefined
+}
 
 export const snackbarError = (error: IErrorConnection | IErrorType) => {
   if ("error" in error && error.status === "FETCH_ERROR") {

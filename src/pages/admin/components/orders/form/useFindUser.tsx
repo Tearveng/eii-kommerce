@@ -2,18 +2,18 @@ import { Autocomplete, Box, Divider, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
-import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import { useSearchUsersQuery } from "../../../../../services/adminApi.ts";
+import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 
-export const useFindProduct = () => {
+export const useFindUser = () => {
   // const [searchBy, setSearchBy] = useState<string>("1");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selectOption, setSelectOption] = useState<IProductResponse | null>(
+  const [selectOption, setSelectOption] = useState<IUserResponse | null>(
     null,
   );
 
   /** end-point */
-  const { data, isLoading, isFetching } = useSearchProductsQuery(
+  const { data, isLoading, isFetching } = useSearchUsersQuery(
     {
       search: searchValue,
     },
@@ -25,7 +25,7 @@ export const useFindProduct = () => {
   // };
 
   const onClickListDown = (
-    option: IProductResponse,
+    option: IUserResponse,
     event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
   ) => {
 
@@ -34,7 +34,7 @@ export const useFindProduct = () => {
 
   const handleKeyboardEvent = (
     event: React.KeyboardEvent<HTMLLIElement>,
-    option: IProductResponse,
+    option: IUserResponse,
   ) => {
     if (event.key === "Enter" || event.key === " ") {
       onClickListDown(option);
@@ -59,7 +59,7 @@ export const useFindProduct = () => {
             Noted: Name / Code / Sku code
           </Typography>
           <Autocomplete
-            value={selectOption as IProductResponse | undefined}
+            value={selectOption as IUserResponse | undefined}
             onChange={handleOptionChange}
             freeSolo
             size="small"
@@ -71,7 +71,7 @@ export const useFindProduct = () => {
               if (typeof option === "string") {
                 return option;
               }
-              return `${option.name} - ${option.code}`
+              return `${option.firstName} - ${option.phone}`
             }}
             renderOption={(props, option) => (
               <Box
@@ -84,16 +84,16 @@ export const useFindProduct = () => {
                 {/* Use a unique key for each item */}
                 <Stack direction="row" gap={1}>
                   <Typography variant="body2" color="textSecondary">
-                    {option.name}
+                    {option.firstName} {" "} {option.lastName}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">
-                    {option.code}
+                    {option.phone}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
-                  <Typography variant="body2" color="textSecondary">
+                  {/* <Typography variant="body2" color="textSecondary">
                     $ {option.price.toFixed(2)}
-                  </Typography>
+                  </Typography> */}
                 </Stack>
               </Box>
             )}

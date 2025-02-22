@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { store } from "../redux.ts";
 import { IUploadImageResponse } from "./types/ProductInterface";
 import {
   IUser,
@@ -7,11 +8,12 @@ import {
   IUserResponse,
   IUserUpdatePayload,
 } from "./types/UserInterface";
-import { store } from "../redux.ts";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4001/admin" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://${import.meta.env.VITE_HOST}:4001/admin`,
+  }),
   tagTypes: ["Admin", "User"],
   endpoints: (builder) => ({
     /** Get all products */
@@ -23,6 +25,15 @@ export const adminApi = createApi({
       }),
       // providesTags: (result) =>
       //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
+    }),
+
+    /** Search user by firstName / phone **/
+    searchUsers: builder.query<IUser, { search: string }>({
+      query: ({ search }) => ({
+        url: "/search-users",
+        method: "GET",
+        params: { search },
+      }),
     }),
 
     /** Upload image */
@@ -48,7 +59,9 @@ export const adminApi = createApi({
         url: "/user-info",
         method: "GET",
         headers: {
-          authorization: `bearer ${store.getState().application.user.access_token}`,
+          authorization: `bearer ${
+            store.getState().application.user.access_token
+          }`,
         },
       }),
       // providesTags: (result) =>
@@ -87,15 +100,15 @@ export const adminApi = createApi({
                 const cpData = [...draft.data];
                 // Filter out the deleted post from the cached posts
                 const tempIndex = draft.data.findIndex(
-                  (item) => item.id === id,
+                  (item) => item.id === id
                 );
                 cpData[tempIndex] = data;
                 return {
                   ...draft,
                   data: cpData,
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -137,8 +150,8 @@ export const adminApi = createApi({
                   },
                   data: [data, ...draft.data],
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -180,8 +193,8 @@ export const adminApi = createApi({
                   },
                   data: draft.data.filter((u) => u.id !== id),
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -194,6 +207,7 @@ export const adminApi = createApi({
 
 export const {
   useGetUserInfoQuery,
+  useSearchUsersQuery,
   useGetAllUsersQuery,
   useCreateUserMutation,
   useUploadImageMutation,
