@@ -13,6 +13,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import Stack from "@mui/material/Stack";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -29,7 +33,13 @@ const mainListItems = [
     text: "Products",
     icon: <Inventory2RoundedIcon />,
     path: "/products",
-    children: [],
+    children: [
+      {
+        text: "Stock",
+        icon: <Inventory2Icon />,
+        path: "/products/stock",
+      },
+    ],
   },
   {
     text: "Items",
@@ -51,17 +61,51 @@ const mainListItems = [
     ],
   },
   {
+    text: "Sales",
+    icon: <AttachMoneyIcon />,
+    path: "/sales",
+    children: [
+      {
+        text: "Preorder",
+        icon: <BookmarkAddedIcon />,
+        path: "/sales/preorder",
+      },
+      {
+        text: "Stock",
+        icon: <Inventory2Icon />,
+        path: "/sales/stock",
+      },
+      {
+        text: "Live",
+        icon: <ShowChartIcon />,
+        path: "/sales/live",
+      },
+    ],
+  },
+  {
+    text: "Report",
+    icon: <AnalyticsRoundedIcon />,
+    path: "/report",
+    children: [
+      {
+        text: "Preorder",
+        icon: <BookmarkAddedIcon />,
+        path: "/sales/preorder",
+      },
+    ],
+  },
+  {
     text: "Cart",
     icon: <ShoppingCartRoundedIcon />,
     path: "/carts",
     children: [],
   },
-  {
-    text: "Analytics",
-    icon: <AnalyticsRoundedIcon />,
-    path: "/analytics",
-    children: [],
-  },
+  // {
+  //   text: "Analytics",
+  //   icon: <AnalyticsRoundedIcon />,
+  //   path: "/analytics",
+  //   children: [],
+  // },
   {
     text: "Clients",
     icon: <PeopleRoundedIcon />,

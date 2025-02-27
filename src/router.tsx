@@ -19,6 +19,7 @@ import Notifications from "./pages/admin/components/settings/notifications/Notif
 import Preference from "./pages/admin/components/settings/preference/Preference.tsx";
 import OrderCreate from "./pages/admin/components/orders/form/OrderCreate.tsx";
 import OrderDeposit from "./pages/admin/components/orders/form/OrderDeposit.tsx";
+import UserPermission from "./pages/admin/components/settings/user-permission/UserPermission.tsx";
 
 const AppRouter = () => {
   return (
@@ -55,6 +56,11 @@ const AppRouter = () => {
             index
             path="/admin/settings/preference"
             element={<Preference />}
+          />
+          <Route
+            index
+            path="/admin/settings/user-permissions"
+            element={<UserPermission />}
           />
         </Route>
         {/* route order */}
