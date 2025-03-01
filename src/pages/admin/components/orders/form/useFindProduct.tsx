@@ -24,22 +24,21 @@ export const useFindProduct = () => {
   //   setSearchBy(event.target.value);
   // };
 
-  const onClickListDown = (
-    option: IProductResponse,
-    event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
-  ) => {
+  // const onClickListDown = (
+  //   option: IProductResponse,
+  //   event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  // ) => {
+  //   return setSelectOption(option);
+  // };
 
-    return setSelectOption(option);
-  };
-
-  const handleKeyboardEvent = (
-    event: React.KeyboardEvent<HTMLLIElement>,
-    option: IProductResponse,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      onClickListDown(option);
-    }
-  };
+  // const handleKeyboardEvent = (
+  //   event: React.KeyboardEvent<HTMLLIElement>,
+  //   option: IProductResponse,
+  // ) => {
+  //   if (event.key === "Enter" || event.key === " ") {
+  //     onClickListDown(option);
+  //   }
+  // };
   const handleOptionChange = (_event: React.SyntheticEvent, value: any) => {
     setSelectOption(value);
   };

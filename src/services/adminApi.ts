@@ -18,22 +18,13 @@ export const adminApi = createApi({
   endpoints: (builder) => ({
     /** Get all products */
     getAllUsers: builder.query<IUser, IUserGetAllPayload>({
-      query: ({ limit = 10, page = 1 }) => ({
+      query: ({ limit = 10, page = 1, role = 'USER' }) => ({
         url: "/users",
         method: "GET",
-        params: { limit, page },
+        params: { limit, page,role },
       }),
       // providesTags: (result) =>
       //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
-    }),
-
-    /** Search user by firstName / phone **/
-    searchUsers: builder.query<IUser, { search: string }>({
-      query: ({ search }) => ({
-        url: "/search-users",
-        method: "GET",
-        params: { search },
-      }),
     }),
 
     /** Upload image */
@@ -201,6 +192,15 @@ export const adminApi = createApi({
           console.error("Failed to delete the user:", error);
         }
       },
+    }),
+
+    /** Search user by firstName / phone **/
+    searchUsers: builder.query<string, { key: string; search: string }>({
+      query: ({ search, key }) => ({
+        url: "/search-users",
+        method: "GET",
+        params: { search, key },
+      }),
     }),
   }),
 });
