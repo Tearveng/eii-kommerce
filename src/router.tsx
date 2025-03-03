@@ -32,33 +32,24 @@ const AppRouter = () => {
 
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index path="/admin/home" element={<AdminHome />} />
-        <Route path="/admin/carts" element={<CartMainGrid />} />
-        <Route path="/admin/items" element={<ItemMainGrid />} />
+        <Route index path="home" element={<AdminHome />} />
+        <Route path="carts" element={<CartMainGrid />} />
+        <Route path="items" element={<ItemMainGrid />} />
 
         {/* route people */}
-        <Route path="/admin/people" element={<UserMainGrid />} />
-        <Route path="/admin/people/create" element={<UserCreate />} />
-        <Route path="/admin/people/update/:id" element={<UserCreate />} />
+        <Route path="people" element={<UserMainGrid />} />
+        <Route path="people/create" element={<UserCreate />} />
+        <Route path="people/update/:id" element={<UserCreate />} />
         {/* route product */}
-        <Route path="/admin/products" element={<ProductMainGrid />} />
-        <Route path="/admin/products/create" element={<ProductCreate />} />
-        <Route path="/admin/products/update/:id" element={<ProductCreate />} />
+        <Route path="products" element={<ProductMainGrid />} />
+        <Route path="products/create" element={<ProductCreate />} />
+        <Route path="products/update/:id" element={<ProductCreate />} />
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
-          <Route index path="/admin/settings/general" element={<General />} />
+          <Route index path="general" element={<General />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="preference" element={<Preference />} />
           <Route
-            index
-            path="/admin/settings/notifications"
-            element={<Notifications />}
-          />
-          <Route
-            index
-            path="/admin/settings/preference"
-            element={<Preference />}
-          />
-          <Route
-            index
             path="/admin/settings/user-permissions"
             element={<UserPermission />}
           />

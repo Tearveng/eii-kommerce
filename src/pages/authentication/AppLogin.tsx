@@ -17,6 +17,7 @@ import { useAppDispatch } from "../../redux.ts";
 import { dispatchUserInfo } from "../../redux/application.ts";
 import { useLoginMutation } from "../../services/userApi.ts";
 import { snackbarError } from "../../utils/common.ts";
+import { authService } from "../../services/service/AuthService.ts";
 
 interface ILogin {
   email: string;
@@ -26,6 +27,7 @@ interface ILogin {
 const AppLogin = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(true);
   const formData = useForm<ILogin>({
     defaultValues: {
@@ -36,7 +38,6 @@ const AppLogin = () => {
 
   // end-point
   const [login, { isLoading: loginLoading }] = useLoginMutation();
-
   const handleShowPassword = () => (showPassword ? "password" : "text");
   const validateEmail = (email: string) => {
     if (email) {
@@ -54,12 +55,12 @@ const AppLogin = () => {
       .then((res) => {
         if (res) {
           dispatch(dispatchUserInfo(res));
-          localStorage.setItem("refresh_token", res.refresh_token);
-          navigate("/admin");
+          authService.setRefreshToken(res.refresh_token);
+          navigate("/admin/home");
         }
       })
       .catch((err) => {
-        console.log("err", err)
+        console.log("err", err);
         snackbarError(err);
       });
   };

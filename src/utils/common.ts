@@ -37,8 +37,10 @@ export const validateEmail = (email: string) => {
 
 export const snackbarError = (error: IErrorConnection | IErrorType) => {
   if ("error" in error && error.status === "FETCH_ERROR") {
-    store.dispatch(dispatchSnackbar({message: error.error, status: 'error'}))
+    store.dispatch(dispatchSnackbar({ message: error.error, status: "error" }));
   } else {
-    store.dispatch(dispatchSnackbar({message: error.data.message, status: 'error'}))
+    store.dispatch(
+      dispatchSnackbar({ message: error.data.message, status: "error" }),
+    );
   }
 };
