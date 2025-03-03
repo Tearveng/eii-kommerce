@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { store } from "../redux.ts";
 import { dispatchUserInfo } from "../redux/application.ts";
+import { refreshTokenService } from "../services/service/RefreshTokenService.ts";
 
 export const useAuthWatcher = () => {
   const navigate = useNavigate();
@@ -9,7 +10,9 @@ export const useAuthWatcher = () => {
   useEffect(() => {
     const checkToken = (): void => {
       const refreshToken = localStorage.getItem("refresh_token");
-      if (!refreshToken) {
+      if (refreshToken) {
+        refreshTokenService(refreshToken).then((e) => e);
+      } else {
         redirectToLogin();
       }
     };

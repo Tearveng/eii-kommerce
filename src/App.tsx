@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
-      refreshTokenService(refreshToken);
+      refreshTokenService(refreshToken).then((r) => r);
     } else {
       authService.removeRefreshToken();
     }
