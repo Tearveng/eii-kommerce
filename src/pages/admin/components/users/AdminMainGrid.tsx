@@ -26,7 +26,7 @@ const AdminMainGrid = () => {
     {
       limit: Number(limit),
       page: Number(page),
-      role: 'ADMIN'
+      role: "ADMIN",
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -48,6 +48,7 @@ const AdminMainGrid = () => {
     if (data) {
       const remap: IUserDataGrid[] = data.data.map((d) => ({
         id: d.id,
+        userRoles: d.roles,
         userFirstName: d.firstName,
         userLastName: d.lastName,
         userEmail: d.email,

@@ -22,6 +22,8 @@ import AppLayout from "./pages/layout/authentication/Layout.tsx";
 import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
+import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
+import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
 
 const AppRouter = () => {
   return (
@@ -33,37 +35,28 @@ const AppRouter = () => {
       </Route>
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
-<<<<<<< HEAD
         <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/carts" element={<CartMainGrid />} />
         <Route path="/admin/items" element={<ItemMainGrid />} />
-        {/* route people */}
-        <Route path="/admin/people" element={<UserMainGrid />} />
-        <Route path="/admin/people/admin" element={<UserMainGrid />} />
-        <Route path="/admin/people/user" element={<UserMainGrid />} />
-        <Route path="/admin/people/client" element={<UserMainGrid />} />
-        <Route path="/admin/people/create" element={<UserCreate />} />
-        <Route path="/admin/people/update/:id" element={<UserCreate />} />
-        {/* route product */}
-        <Route path="/admin/products" element={<ProductMainGrid />} />
-        <Route path="/admin/products/stock" element={<StockMainGrid />} />
-        <Route path="/admin/products/create" element={<ProductCreate />} />
-        <Route path="/admin/products/stock/create/" element={<StockCreate />} />
-        <Route path="/admin/products/update/:id" element={<ProductCreate />} />
-=======
+
         <Route index path="home" element={<AdminHome />} />
         <Route path="carts" element={<CartMainGrid />} />
         <Route path="items" element={<ItemMainGrid />} />
 
         {/* route people */}
         <Route path="people" element={<UserMainGrid />} />
+        <Route path="people/user" element={<UserMainGrid />} />
+        <Route path="people/client" element={<ClientMainGrid />} />
+        <Route path="people/admin" element={<AdminMainGrid />} />
         <Route path="people/create" element={<UserCreate />} />
         <Route path="people/update/:id" element={<UserCreate />} />
+
         {/* route product */}
         <Route path="products" element={<ProductMainGrid />} />
+        <Route path="products/stock" element={<StockMainGrid />} />
         <Route path="products/create" element={<ProductCreate />} />
+        <Route path="products/stock/create" element={<StockCreate />} />
         <Route path="products/update/:id" element={<ProductCreate />} />
->>>>>>> 0c774f0371b2bbd52299a47113be96c4dada030c
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
           <Route index path="general" element={<General />} />

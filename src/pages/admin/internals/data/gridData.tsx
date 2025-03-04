@@ -186,6 +186,7 @@ export const productColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 200,
   },
+
   {
     field: "productCode",
     headerName: "Code",
@@ -418,20 +419,21 @@ export const userColumns: GridColDef[] = [
     minWidth: 120,
     renderCell: (param) => {
       const getChip = (role: UserRole) => {
-        let color: any = "info"
+        let color: any = "info";
         if (role === UserRole.USER) {
-          color = 'error'
+          color = "error";
         } else if (role === UserRole.CLIENT) {
-          color = 'success'
+          color = "success";
         }
 
-        return <Chip label={role.charAt(0)} color={color} />
-      }
-
+        return <Chip label={role.charAt(0)} color={color} />;
+      };
       return (
-        <Stack direction='row' alignItems='center' mt={1} gap={1}>
-          {param.value.map(v => getChip(v))}
-        </Stack>
+        param.value.length > 0 && (
+          <Stack direction="row" alignItems="center" mt={1} gap={1}>
+            {param.value.map((v) => getChip(v))}
+          </Stack>
+        )
       );
     },
   },

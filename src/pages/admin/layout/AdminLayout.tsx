@@ -16,7 +16,7 @@ import { dataGridCustomizations } from "../theme/dataGrid.ts";
 import Header from "./Header.tsx";
 import { authService } from "../../../services/service/AuthService.ts";
 import { useAuthWatcher } from "../../../hooks/useAuthWatcher.tsx";
-import DialogPopup from "../components/UI/DialogPopup.tsx";
+import PreviewDialog from "../components/UI/PreviewDialog.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -62,15 +62,7 @@ const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
 
       <ProductDeleteDialog />
       <UserDeleteDialog />
-      {/*<DialogPopup*/}
-      {/*  dialogProps={}*/}
-      {/*  dialogTitleProps={}*/}
-      {/*  dialogContentProps={}*/}
-      {/*  dialogActionProps={}*/}
-      {/*  titleJsx={}*/}
-      {/*  contentJsx={}*/}
-      {/*  actionsJsx={}*/}
-      {/*/>*/}
+      <PreviewDialog />
     </AppTheme>
   );
 };

@@ -14,6 +14,7 @@ export interface IProduct {
 export interface IProductDataGrid {
   id: number;
   productName: string;
+  productDescription: string;
   productCode: string;
   productSkuCode: string;
   productPrice: number;

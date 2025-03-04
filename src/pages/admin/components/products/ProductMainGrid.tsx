@@ -48,6 +48,7 @@ const ProductMainGrid = () => {
     if (data) {
       const remap: IProductDataGrid[] = data.data.map((d) => ({
         id: d.id,
+        productDescription: d.description,
         productName: d.name,
         productCode: d.code,
         productSkuCode: d.skuCode,
