@@ -33,6 +33,7 @@ const AppRouter = () => {
       </Route>
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
+<<<<<<< HEAD
         <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/carts" element={<CartMainGrid />} />
         <Route path="/admin/items" element={<ItemMainGrid />} />
@@ -49,21 +50,26 @@ const AppRouter = () => {
         <Route path="/admin/products/create" element={<ProductCreate />} />
         <Route path="/admin/products/stock/create/" element={<StockCreate />} />
         <Route path="/admin/products/update/:id" element={<ProductCreate />} />
+=======
+        <Route index path="home" element={<AdminHome />} />
+        <Route path="carts" element={<CartMainGrid />} />
+        <Route path="items" element={<ItemMainGrid />} />
+
+        {/* route people */}
+        <Route path="people" element={<UserMainGrid />} />
+        <Route path="people/create" element={<UserCreate />} />
+        <Route path="people/update/:id" element={<UserCreate />} />
+        {/* route product */}
+        <Route path="products" element={<ProductMainGrid />} />
+        <Route path="products/create" element={<ProductCreate />} />
+        <Route path="products/update/:id" element={<ProductCreate />} />
+>>>>>>> 0c774f0371b2bbd52299a47113be96c4dada030c
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
-          <Route index path="/admin/settings/general" element={<General />} />
+          <Route index path="general" element={<General />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="preference" element={<Preference />} />
           <Route
-            index
-            path="/admin/settings/notifications"
-            element={<Notifications />}
-          />
-          <Route
-            index
-            path="/admin/settings/preference"
-            element={<Preference />}
-          />
-          <Route
-            index
             path="/admin/settings/user-permissions"
             element={<UserPermission />}
           />

@@ -14,6 +14,7 @@ import { validateEmail } from "../../../../../utils/common.ts";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useGetUserInfoQuery } from "../../../../../services/adminApi.ts";
 import { useEffect } from "react";
+import { authService } from "../../../../../services/service/AuthService.ts";
 
 const General = () => {
   const { user } = useAppSelector((state) => state.application);
@@ -230,7 +231,7 @@ const General = () => {
         size="large"
         color="error"
         sx={{ minWidth: 100, borderRadius: "6px", height: 42 }}
-        // onClick={() => navigate("/admin/products/create")}
+        onClick={authService.removeRefreshToken}
       >
         Logout
       </Button>
