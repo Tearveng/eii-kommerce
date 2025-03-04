@@ -238,6 +238,33 @@ export const productColumns: GridColDef[] = [
   },
 ];
 
+export const userPermissionColumns: GridColDef[] = [
+  {
+    field: "actions",
+    headerName: "Actions",
+    flex: 1.5,
+    minWidth: 200,
+  },
+  {
+    field: "user",
+    headerName: "User",
+    flex: 1,
+    maxWidth: 100,
+  },
+  {
+    field: "manager",
+    headerName: "Manager",
+    flex: 1,
+    maxWidth: 100,
+  },
+  {
+    field: "admin",
+    headerName: "Admin",
+    flex: 1,
+    maxWidth: 100,
+  },
+];
+
 export const cartColumns: GridColDef[] = [
   {
     field: "id",

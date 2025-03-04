@@ -34,9 +34,9 @@ const mainListItems = [
     path: "/account",
   },
   {
-    text: "User permission",
+    text: "User permissions",
     icon: <PeopleAltOutlinedIcon />,
-    path: "/user-permission",
+    path: "/user-permissions",
   },
 ];
 

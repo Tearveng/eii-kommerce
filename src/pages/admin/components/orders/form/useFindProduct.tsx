@@ -70,7 +70,7 @@ export const useFindProduct = () => {
               if (typeof option === "string") {
                 return option;
               }
-              return `${option.name} - ${option.code}`
+              return `${option.name} - ${option.code} - ${option.skuCode}`
             }}
             renderOption={(props, option) => (
               <Box
@@ -88,6 +88,9 @@ export const useFindProduct = () => {
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">
                     {option.code}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {option.skuCode}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">

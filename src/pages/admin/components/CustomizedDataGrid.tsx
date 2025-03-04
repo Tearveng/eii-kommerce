@@ -8,8 +8,10 @@ import {
 import { IProduct } from "../../../services/types/ProductInterface";
 import { ICart } from "../../../services/types/CartInterface.tsx";
 import { IUser } from "../../../services/types/UserInterface.tsx";
+import { DataGridProps } from "@mui/x-data-grid/models/props/DataGridProps";
 
-interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser> {
+interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser>
+  extends DataGridProps {
   rows: readonly GridValidRowModel[];
   columns: GridColDef[];
   pageSize: number;
@@ -24,8 +26,15 @@ interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser> {
 export default function CustomizedDataGrid<T extends IProduct | ICart | IUser>(
   props: Readonly<ICustomizedDataGridProps<T>>,
 ) {
-  const { columns, rows, pageSize, page, onPaginationModelChange, data } =
-    props;
+  const {
+    columns,
+    rows,
+    pageSize,
+    page,
+    onPaginationModelChange,
+    data,
+    ...rest
+  } = props;
   return (
     <DataGrid
       checkboxSelection
@@ -73,6 +82,7 @@ export default function CustomizedDataGrid<T extends IProduct | ICart | IUser>(
           },
         },
       }}
+      {...rest}
     />
   );
 }

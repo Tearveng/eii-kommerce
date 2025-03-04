@@ -7,12 +7,13 @@ import OrderCreate from "./pages/admin/components/orders/form/OrderCreate.tsx";
 import OrderDeposit from "./pages/admin/components/orders/form/OrderDeposit.tsx";
 import ProductMainGrid from "./pages/admin/components/products/ProductMainGrid.tsx";
 import ProductCreate from "./pages/admin/components/products/form/ProductCreate.tsx";
+import StockCreate from "./pages/admin/components/products/form/StockCreate.tsx";
+import StockMainGrid from "./pages/admin/components/products/stock/StockMainGrid.tsx";
 import Settings from "./pages/admin/components/settings/Settings.tsx";
 import General from "./pages/admin/components/settings/general/General.tsx";
 import Notifications from "./pages/admin/components/settings/notifications/Notifications.tsx";
 import Preference from "./pages/admin/components/settings/preference/Preference.tsx";
-import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
-import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
+import UserPermission from "./pages/admin/components/settings/user-permission/UserPermission.tsx";
 import UserMainGrid from "./pages/admin/components/users/UserMainGrid.tsx";
 import UserCreate from "./pages/admin/components/users/form/UserCreate.tsx";
 import AdminLayout from "./pages/admin/layout/AdminLayout.tsx";
@@ -30,13 +31,11 @@ const AppRouter = () => {
         <Route index element={<ViewItemsPage />} />
         <Route path="/item/:skuCode/:id" element={<ViewItemPage />} />
       </Route>
-
       {/* admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/carts" element={<CartMainGrid />} />
         <Route path="/admin/items" element={<ItemMainGrid />} />
-
         {/* route people */}
         <Route path="/admin/people" element={<UserMainGrid />} />
         <Route path="/admin/people/admin" element={<UserMainGrid />} />
@@ -46,7 +45,9 @@ const AppRouter = () => {
         <Route path="/admin/people/update/:id" element={<UserCreate />} />
         {/* route product */}
         <Route path="/admin/products" element={<ProductMainGrid />} />
+        <Route path="/admin/products/stock" element={<StockMainGrid />} />
         <Route path="/admin/products/create" element={<ProductCreate />} />
+        <Route path="/admin/products/stock/create/" element={<StockCreate />} />
         <Route path="/admin/products/update/:id" element={<ProductCreate />} />
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
@@ -60,6 +61,11 @@ const AppRouter = () => {
             index
             path="/admin/settings/preference"
             element={<Preference />}
+          />
+          <Route
+            index
+            path="/admin/settings/user-permissions"
+            element={<UserPermission />}
           />
         </Route>
         {/* route order */}
