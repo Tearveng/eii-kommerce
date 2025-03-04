@@ -9,7 +9,9 @@ import {
 
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `http://${import.meta.env.VITE_HOST}:4000/products` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://${import.meta.env.VITE_HOST}:4000/products`,
+  }),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
     /** Get all products */
@@ -84,7 +86,7 @@ export const productApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page, limit } = queryObject as Record<string, any>;
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           const { data } = await queryFulfilled;
           dispatch(
@@ -129,7 +131,7 @@ export const productApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page, limit } = queryObject as Record<string, any>;
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           await queryFulfilled;
           dispatch(

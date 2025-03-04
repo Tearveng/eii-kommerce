@@ -18,10 +18,10 @@ export const adminApi = createApi({
   endpoints: (builder) => ({
     /** Get all products */
     getAllUsers: builder.query<IUser, IUserGetAllPayload>({
-      query: ({ limit = 10, page = 1, role = 'USER' }) => ({
+      query: ({ limit = 10, page = 1, role = "USER" }) => ({
         url: "/users",
         method: "GET",
-        params: { limit, page,role },
+        params: { limit, page, role },
       }),
       // providesTags: (result) =>
       //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
@@ -77,7 +77,7 @@ export const adminApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page, limit } = queryObject as Record<string, any>;
+          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           const { data } = await queryFulfilled;
           dispatch(
@@ -91,15 +91,15 @@ export const adminApi = createApi({
                 const cpData = [...draft.data];
                 // Filter out the deleted post from the cached posts
                 const tempIndex = draft.data.findIndex(
-                  (item) => item.id === id
+                  (item) => item.id === id,
                 );
                 cpData[tempIndex] = data;
                 return {
                   ...draft,
                   data: cpData,
                 };
-              }
-            )
+              },
+            ),
           );
         } catch (error) {
           // Handle error (if any)
@@ -141,8 +141,8 @@ export const adminApi = createApi({
                   },
                   data: [data, ...draft.data],
                 };
-              }
-            )
+              },
+            ),
           );
         } catch (error) {
           // Handle error (if any)
@@ -184,8 +184,8 @@ export const adminApi = createApi({
                   },
                   data: draft.data.filter((u) => u.id !== id),
                 };
-              }
-            )
+              },
+            ),
           );
         } catch (error) {
           // Handle error (if any)
