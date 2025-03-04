@@ -18,6 +18,7 @@ import { store } from "../../../../redux.ts";
 import {
   dispatchDeleteProductId,
   dispatchDeleteUserId,
+  dispatchPreviewRow,
 } from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
 
@@ -125,10 +126,12 @@ export function renderActions(
 ) {
   const actionsBtn = {
     ["product"]: {
+      preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
       edit: `/admin/products/update/${param.id}${window.location.search}`,
       delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id))),
     },
     ["client"]: {
+      preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
       edit: `/admin/people/update/${param.id}${window.location.search}`,
       delete: () => store.dispatch(dispatchDeleteUserId(Number(param.id))),
     },
@@ -148,6 +151,7 @@ export function renderActions(
       <PreviewRoundedIcon
         fontSize="small"
         color="secondary"
+        onClick={() => actionsBtn[type].preview()}
         sx={{
           cursor: "pointer",
         }}

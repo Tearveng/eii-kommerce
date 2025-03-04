@@ -37,13 +37,13 @@ export const useAuthWatcher = () => {
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("token_removed", handleTokenRemove);
-    const intervalId = setInterval(checkToken, 5000);
+    // const intervalId = setInterval(checkToken, 5000);
     checkToken();
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("token_removed", handleTokenRemove);
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
     };
   }, [navigate]);
 };

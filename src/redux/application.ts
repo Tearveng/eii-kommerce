@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IUserInfoRedux } from "../services/types/UserInterface.tsx";
-import { IApplication, ISnackbarStatus } from "./type.ts";
+import { IApplication, IPreviewRow, ISnackbarStatus } from "./type.ts";
 
 const initialState: IApplication = {
   productCurrentPage: 1,
@@ -9,12 +9,19 @@ const initialState: IApplication = {
   deleteProductId: null,
   deleteUserId: null,
   user: null,
+  previewRow: null,
 };
 
 export const applicationSlice = createSlice({
   name: "application",
   initialState,
   reducers: {
+    dispatchPreviewRow: (
+      state,
+      { payload }: { payload: IPreviewRow | null },
+    ) => {
+      state.previewRow = payload;
+    },
     dispatchSnackbar: (
       state,
       {
@@ -49,6 +56,7 @@ export const applicationSlice = createSlice({
 });
 
 export const {
+  dispatchPreviewRow,
   clearDeleteUserId,
   dispatchDeleteUserId,
   dispatchUserInfo,
