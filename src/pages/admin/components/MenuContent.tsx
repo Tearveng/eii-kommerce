@@ -1,31 +1,34 @@
+import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
 import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import InventoryRoundedIcon from "@mui/icons-material/InventoryRounded";
+import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+import StoreRoundedIcon from "@mui/icons-material/StoreRounded";
+import SupervisedUserCircleRoundedIcon from '@mui/icons-material/SupervisedUserCircleRounded';
+import { Box } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import Inventory2Icon from "@mui/icons-material/Inventory2";
-import ShowChartIcon from "@mui/icons-material/ShowChart";
-import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import Stack from "@mui/material/Stack";
+import { MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StoreRoundedIcon from "@mui/icons-material/StoreRounded";
-import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
-import { useState, MouseEvent } from "react";
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, path: "/home", children: [] },
@@ -38,6 +41,16 @@ const mainListItems = [
         text: "Stock",
         icon: <Inventory2Icon />,
         path: "/products/stock",
+      },
+      {
+        text: "Pre-stock",
+        icon: <BookmarkAddedIcon />,
+        path: "/products/pre-stock",
+      },
+      {
+        text: "Live",
+        icon: <ShowChartIcon />,
+        path: "/products/live",
       },
     ],
   },
@@ -107,10 +120,22 @@ const mainListItems = [
   //   children: [],
   // },
   {
-    text: "Clients",
+    text: "Users",
     icon: <PeopleRoundedIcon />,
     path: "/people",
-    children: [],
+    children: [
+      { text: "Admin", icon: <AdminPanelSettingsRoundedIcon />, path: "/people/admin?role=ADMIN" },
+      {
+        text: "User",
+        icon: <SupervisedUserCircleRoundedIcon />,
+        path: "/people/user?role=USER",
+      },
+      {
+        text: "Client",
+        icon: <PersonOutlineRoundedIcon />,
+        path: "/people/client?role=CLIENT",
+      },
+    ],
   },
   {
     text: "Tasks",
@@ -183,7 +208,7 @@ const MenuContent = () => {
                         >
                           <ListItemButton
                             selected={location.pathname.includes(
-                              `/admin${i.path}`,
+                              `/admin${i.path.split('?')[0]}`,
                             )}
                             onClick={() => handleNavigate(i.path)}
                           >

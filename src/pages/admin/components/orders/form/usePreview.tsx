@@ -8,6 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
 import { gray } from "../../../share-theme/themePrimitives.ts";
 
 const TAX_RATE = 0.07;
@@ -46,7 +47,17 @@ const invoiceSubtotal = subtotal(rows);
 const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-export const usePreview = () => {
+export interface IUsePreview {
+  tableData: IProductResponse[];
+}
+
+export const usePreview = (props: IUsePreview) => {
+  const calculateTotal = (numbers: number[]) => {
+    return numbers.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue;
+    }, 0);
+  };
+
   const receiptBlock3 = (props: { title: string; value: string }) => {
     return (
       <Stack direction="row" gap={4}>
@@ -72,7 +83,7 @@ export const usePreview = () => {
 
   const previewReceipt = () => {
     return (
-      <Stack px={2}>
+      <Stack p={2}>
         <Stack gap={3}>
           {/* block 1 */}
           <Stack
@@ -161,41 +172,25 @@ export const usePreview = () => {
           {/* block 4 */}
           <TableContainer>
             <Table
-              sx={{ minWidth: 700, borderCollapse: "collapse" }}
+              size="small"
+              sx={{ minWidth: 600, borderCollapse: "collapse" }}
               aria-label="spanning table"
             >
               <TableHead>
-                <TableRow>
+                <TableRow style={{ height: "20px" }}>
                   <TableCell
-                    align="center"
-                    colSpan={3}
                     sx={{
                       bgcolor: "background.paper",
+                      fontWeight: 600,
                       border: `2px solid ${gray[300]}`,
                     }}
                   >
-                    Details
+                    Description
                   </TableCell>
                   <TableCell
-                    align="right"
                     sx={{
                       bgcolor: "background.paper",
-                      border: `2px solid ${gray[300]}`,
-                    }}
-                  >
-                    Price
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    sx={{
-                      border: `2px solid ${gray[300]}`,
-                    }}
-                  >
-                    Desc
-                  </TableCell>
-                  <TableCell
-                    sx={{
+                      fontWeight: 600,
                       border: `2px solid ${gray[300]}`,
                     }}
                     align="right"
@@ -204,6 +199,8 @@ export const usePreview = () => {
                   </TableCell>
                   <TableCell
                     sx={{
+                      bgcolor: "background.paper",
+                      fontWeight: 600,
                       border: `2px solid ${gray[300]}`,
                     }}
                     align="right"
@@ -212,6 +209,8 @@ export const usePreview = () => {
                   </TableCell>
                   <TableCell
                     sx={{
+                      bgcolor: "background.paper",
+                      fontWeight: 600,
                       border: `2px solid ${gray[300]}`,
                     }}
                     align="right"
@@ -221,14 +220,16 @@ export const usePreview = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.desc}>
+                {props.tableData.map((row) => (
+                  <TableRow key={row.name}>
                     <TableCell
                       sx={{
                         border: `2px solid ${gray[300]}`,
+                        wordWrap: "break-word",
+                        maxWidth: 150,
                       }}
                     >
-                      {row.desc}
+                      {row.name}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -236,7 +237,7 @@ export const usePreview = () => {
                       }}
                       align="right"
                     >
-                      {row.qty}
+                      {row.quantity}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -244,7 +245,7 @@ export const usePreview = () => {
                       }}
                       align="right"
                     >
-                      {row.unit}
+                      {row.price}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -252,17 +253,12 @@ export const usePreview = () => {
                       }}
                       align="right"
                     >
-                      {ccyFormat(row.price)}
+                      {ccyFormat(row.price * row.quantity)}
                     </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell
-                    sx={{
-                      border: `2px solid ${gray[300]}`,
-                    }}
-                    rowSpan={3}
-                  />
+                  <TableCell rowSpan={3} />
                   <TableCell
                     sx={{
                       border: `2px solid ${gray[300]}`,
@@ -277,19 +273,11 @@ export const usePreview = () => {
                     }}
                     align="right"
                   >
-                    {ccyFormat(invoiceSubtotal)}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Tax</TableCell>
-                  <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-                  <TableCell
-                    sx={{
-                      border: `2px solid ${gray[300]}`,
-                    }}
-                    align="right"
-                  >
-                    {ccyFormat(invoiceTaxes)}
+                    {ccyFormat(
+                      calculateTotal(
+                        props.tableData.flatMap((i) => i.price * i.quantity)
+                      )
+                    )}
                   </TableCell>
                 </TableRow>
                 <TableRow>

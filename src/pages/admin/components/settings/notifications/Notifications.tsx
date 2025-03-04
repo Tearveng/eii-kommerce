@@ -1,6 +1,6 @@
 import { Checkbox, Divider, Stack, Typography } from "@mui/material";
 import { useAppSelector } from "../../../../../redux.ts";
-import { IOSSwitch } from "../../UI/AntSwitch.tsx";
+import { IOSSwitch } from "../../ui/AntSwitch.tsx";
 
 const Notifications = () => {
   const { user } = useAppSelector((state) => state.application);

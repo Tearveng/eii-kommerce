@@ -9,7 +9,7 @@ import {
 
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000/products" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://${import.meta.env.VITE_HOST}:4000/products` }),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
     /** Get all products */

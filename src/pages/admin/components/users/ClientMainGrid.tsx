@@ -1,5 +1,3 @@
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { Button, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
@@ -15,19 +13,19 @@ import {
 } from "../../../../services/types/UserInterface.tsx";
 import { userColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+import { Button, Stack } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-const UserMainGrid = () => {
+const ClientMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
-  const role = search.get("role")
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
   const { data, isLoading, isFetching } = useGetAllUsersQuery(
     {
       limit: Number(limit),
       page: Number(page),
-      role: role ?? "ALL"
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -49,7 +47,6 @@ const UserMainGrid = () => {
     if (data) {
       const remap: IUserDataGrid[] = data.data.map((d) => ({
         id: d.id,
-        userRoles: d.roles,
         userFirstName: d.firstName,
         userLastName: d.lastName,
         userEmail: d.email,
@@ -105,4 +102,4 @@ const UserMainGrid = () => {
   );
 };
 
-export default UserMainGrid;
+export default ClientMainGrid;

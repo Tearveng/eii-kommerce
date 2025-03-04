@@ -7,7 +7,7 @@ import {
 
 export const userApi = createApi({
   reducerPath: "userApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4001/users" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://${import.meta.env.VITE_HOST}:4001/users` }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
     login: builder.mutation<IUserInfoRedux, IUserLoginPayload>({

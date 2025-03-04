@@ -21,6 +21,7 @@ import {
   dispatchPreviewRow,
 } from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
+import { UserRole } from "../../../../utils/constant.ts";
 
 type SparkLineData = number[];
 
@@ -220,23 +221,23 @@ export const productColumns: GridColDef[] = [
   {
     field: "productCreatedDate",
     headerName: "Created Date",
-    flex: 1.5,
-    minWidth: 200,
+    flex: 1.2,
+    minWidth: 120,
     renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "productUpdatedDate",
     headerName: "Updated Date",
-    flex: 1.5,
-    minWidth: 200,
+    flex: 1.2,
+    minWidth: 120,
     renderCell: (param) => dateShortFormat(param.value),
   },
   {
     field: "edit",
     headerName: "Edit",
     headerAlign: "center",
-    flex: 1.5,
-    minWidth: 200,
+    flex: 1.2,
+    minWidth: 120,
     renderCell: (param) => renderActions(param, "product"),
   },
 ];
@@ -409,6 +410,30 @@ export const userColumns: GridColDef[] = [
     headerName: "Username",
     flex: 1.5,
     minWidth: 120,
+  },
+  {
+    field: "userRoles",
+    headerName: "Role",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => {
+      const getChip = (role: UserRole) => {
+        let color: any = "info"
+        if (role === UserRole.USER) {
+          color = 'error'
+        } else if (role === UserRole.CLIENT) {
+          color = 'success'
+        }
+
+        return <Chip label={role.charAt(0)} color={color} />
+      }
+
+      return (
+        <Stack direction='row' alignItems='center' mt={1} gap={1}>
+          {param.value.map(v => getChip(v))}
+        </Stack>
+      );
+    },
   },
   {
     field: "userEmail",

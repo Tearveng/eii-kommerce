@@ -6,32 +6,31 @@ import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppDispatch } from "../../../../redux.ts";
-import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
-import { useGetAllUsersQuery } from "../../../../services/adminApi.ts";
+import { useAppDispatch } from "../../../../../redux.ts";
+import { dispatchProductCurrentPage } from "../../../../../redux/application.ts";
+import { useGetAllProductsQuery } from "../../../../../services/productApi.ts";
 import {
-  IUser,
-  IUserDataGrid,
-} from "../../../../services/types/UserInterface.tsx";
-import { userColumns } from "../../internals/data/gridData.tsx";
-import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+  IProduct,
+  IProductDataGrid,
+} from "../../../../../services/types/ProductInterface.tsx";
+import { productColumns } from "../../../internals/data/gridData.tsx";
+import CustomizedDataGrid from "../../CustomizedDataGrid.tsx";
 
-const UserMainGrid = () => {
+const StockMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
-  const role = search.get("role")
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
-  const { data, isLoading, isFetching } = useGetAllUsersQuery(
-    {
-      limit: Number(limit),
-      page: Number(page),
-      role: role ?? "ALL"
-    },
-    { refetchOnMountOrArgChange: true },
-  );
-  const [users, setUser] = useState<IUserDataGrid[]>([]);
+  const {
+    currentData: data,
+    isLoading,
+    isFetching,
+  } = useGetAllProductsQuery({
+    limit: Number(limit),
+    page: Number(page),
+  });
+  const [products, setProducts] = useState<IProductDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
@@ -47,20 +46,18 @@ const UserMainGrid = () => {
 
   useEffect(() => {
     if (data) {
-      const remap: IUserDataGrid[] = data.data.map((d) => ({
+      const remap: IProductDataGrid[] = data.data.map((d) => ({
         id: d.id,
-        userRoles: d.roles,
-        userFirstName: d.firstName,
-        userLastName: d.lastName,
-        userEmail: d.email,
-        userPhone: d.phone,
-        userProfile: d.profile,
-        userPublicId: d.publicId,
-        userUsername: d.username,
-        userCreatedDate: d.createdAt,
-        userUpdatedDate: d.updatedAt,
+        productName: d.name,
+        productCode: d.code,
+        productSkuCode: d.skuCode,
+        productPrice: d.price,
+        productQuantity: d.quantity,
+        productThumbnail: d.thumbnail,
+        productCreatedDate: d.createdAt,
+        productUpdatedDate: d.updatedAt,
       }));
-      setUser(remap);
+      setProducts(remap);
     }
   }, [data, limit, page]);
 
@@ -76,7 +73,7 @@ const UserMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Users
+        Stock
       </Typography>
       <Stack direction="row" pb={1}>
         <Button
@@ -84,19 +81,19 @@ const UserMainGrid = () => {
           size="small"
           sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
           startIcon={<AddRoundedIcon />}
-          onClick={() => navigate("/admin/people/create")}
+          onClick={() => navigate("/admin/products/stock/create")}
         >
-          Create new
+          Add stock
         </Button>
       </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <CustomizedDataGrid<IUser>
+          <CustomizedDataGrid<IProduct>
             data={data}
             pageSize={Number(limit)}
             page={Number(page)}
-            columns={userColumns}
-            rows={users}
+            columns={productColumns}
+            rows={products}
             onPaginationModelChange={onPaginationModelChange}
           />
         </Grid>
@@ -105,4 +102,4 @@ const UserMainGrid = () => {
   );
 };
 
-export default UserMainGrid;
+export default StockMainGrid;

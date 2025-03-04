@@ -1,6 +1,6 @@
+import { Autocomplete, Box, Divider, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Box, Divider, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
@@ -70,15 +70,15 @@ export const useFindProduct = () => {
               if (typeof option === "string") {
                 return option;
               }
-              return option.name;
+              return `${option.name} - ${option.code} - ${option.skuCode}`
             }}
             renderOption={(props, option) => (
               <Box
                 {...props}
                 key={option.id}
                 component="li"
-                // onClick={(event) => onClickListDown(option, event)}
-                // onKeyDown={(event) => handleKeyboardEvent(event, option)}
+              // onClick={(event) => onClickListDown(option, event)}
+              // onKeyDown={(event) => handleKeyboardEvent(event, option)}
               >
                 {/* Use a unique key for each item */}
                 <Stack direction="row" gap={1}>
@@ -88,6 +88,9 @@ export const useFindProduct = () => {
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">
                     {option.code}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {option.skuCode}
                   </Typography>
                   <Divider orientation="vertical" flexItem />
                   <Typography variant="body2" color="textSecondary">

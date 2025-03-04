@@ -3,7 +3,7 @@ import { ICart, ICartGetAllPayload } from "./types/CartInterface.tsx";
 
 export const cartApi = createApi({
   reducerPath: "cartApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4002/carts" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://${import.meta.env.VITE_HOST}:4002/carts` }),
   tagTypes: ["Cart"],
   endpoints: (builder) => ({
     /** Get all carts */
