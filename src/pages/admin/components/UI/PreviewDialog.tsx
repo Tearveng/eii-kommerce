@@ -7,9 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useAppSelector } from "../../../../redux.ts";
-import PreviewCardProduct, {
-  IPreviewCardProductProps,
-} from "./PreviewCardProduct.tsx";
+import PreviewCardProduct from "./PreviewCardProduct.tsx";
 import { useEffect, useState } from "react";
 
 const PreviewDialog = () => {
@@ -52,7 +50,9 @@ const PreviewDialog = () => {
         </Stack>
       </DialogTitle>
       <DialogContent>
-        <PreviewCardProduct {...(previewRow as IPreviewCardProductProps)} />
+        {previewRow && (
+          <PreviewCardProduct product={previewRow} handleClose={handleClose} />
+        )}
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>

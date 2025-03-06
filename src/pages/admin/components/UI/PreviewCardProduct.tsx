@@ -7,7 +7,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { IProductDataGrid } from "../../../../services/types/ProductInterface.tsx";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { store } from "../../../../redux.ts";
@@ -15,20 +14,29 @@ import {
   dispatchDeleteProductId,
   dispatchDeleteUserId,
 } from "../../../../redux/application.ts";
-import { Link, useNavigate } from "react-router-dom";
-export interface IPreviewCardProductProps extends IProductDataGrid {
-  type: string;
+import { Link } from "react-router-dom";
+import { IPreviewRow } from "../../../../redux/type.ts";
+export interface IPreviewCardProductProps {
+  product: IPreviewRow;
+  handleClose: () => void;
 }
 
 const PreviewCardProduct = (props: IPreviewCardProductProps) => {
+  const { product } = props;
   const actionsBtn = {
     ["product"]: {
-      edit: `/admin/products/update/${props.id}${window.location.search}`,
-      delete: () => store.dispatch(dispatchDeleteProductId(Number(props.id))),
+      edit: `/admin/products/update/${product.id}${window.location.search}`,
+      delete: () => {
+        store.dispatch(dispatchDeleteProductId(Number(product.id)));
+        props.handleClose();
+      },
     },
     ["client"]: {
-      edit: `/admin/people/update/${props.id}${window.location.search}`,
-      delete: () => store.dispatch(dispatchDeleteUserId(Number(props.id))),
+      edit: `/admin/people/update/${product.id}${window.location.search}`,
+      delete: () => {
+        store.dispatch(dispatchDeleteUserId(Number(product.id)));
+        props.handleClose();
+      },
     },
   };
 
@@ -36,7 +44,7 @@ const PreviewCardProduct = (props: IPreviewCardProductProps) => {
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         sx={{ height: 140 }}
-        image={props.productThumbnail ?? ""}
+        image={product.productThumbnail ?? ""}
         title="green iguana"
       />
       <CardContent>
@@ -46,16 +54,17 @@ const PreviewCardProduct = (props: IPreviewCardProductProps) => {
           component="div"
           sx={{ lineHeight: 1.8 }}
         >
-          {props.productName}
+          {product.productName}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {props.productDescription}
+          {product.productDescription}
         </Typography>
       </CardContent>
       <CardActions sx={{ pt: 1 }}>
         <Stack direction="row" alignItems="center">
           <Link to={actionsBtn["product"].edit}>
             <Button
+              onClick={props.handleClose}
               size="small"
               startIcon={
                 <BorderColorRoundedIcon
