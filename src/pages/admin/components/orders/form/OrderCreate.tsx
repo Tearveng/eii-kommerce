@@ -28,6 +28,7 @@ import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
 import { validateEmail, validatePhone } from "../../../../../utils/common.ts";
 import { useFindProduct } from "./useFindProduct.tsx";
 import { usePreview } from "./usePreview.tsx";
+import CodeBlockToPdf from "../../../../../utils/internals/CodeBlockToPdf.tsx";
 
 const OrderCreate = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const OrderCreate = () => {
     {
       id: Number(param.id),
     },
-    { skip: !param.id, refetchOnMountOrArgChange: true }
+    { skip: !param.id, refetchOnMountOrArgChange: true },
   );
 
   const watchPassword = formData.watch("password");
@@ -86,7 +87,7 @@ const OrderCreate = () => {
         .unwrap()
         .then((res) => {
           setFiles((prev) =>
-            prev.filter((item) => item.public_id !== res.public_id)
+            prev.filter((item) => item.public_id !== res.public_id),
           );
         });
     } else {
@@ -97,7 +98,7 @@ const OrderCreate = () => {
   const createUser = async (
     data: IUserCreatePayload,
     imageUrl?: string,
-    publicId?: string
+    publicId?: string,
   ) => {
     return create({
       firstName: data.firstName,
@@ -116,7 +117,7 @@ const OrderCreate = () => {
   const updateUser = async (
     data: IUserResponse,
     imageUrl?: string,
-    publicId?: string
+    publicId?: string,
   ) => {
     const profile2 = imageUrl && imageUrl !== "" ? imageUrl : data.profile;
     const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
@@ -210,8 +211,6 @@ const OrderCreate = () => {
     };
   }, [selectOption, setSelectOption, setSearchValue]);
 
-  console.log(formData.watch('phone'))
-
   useEffect(() => {
     if (userById) {
       formData.reset({
@@ -263,8 +262,8 @@ const OrderCreate = () => {
             variant="outlined"
             size="small"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-          // startIcon={<AddRoundedIcon />}
-          // onClick={() => navigate("/admin/products/create")}
+            // startIcon={<AddRoundedIcon />}
+            // onClick={() => navigate("/admin/products/create")}
           >
             Clear
           </Button>
@@ -273,7 +272,7 @@ const OrderCreate = () => {
             variant="contained"
             size="medium"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-          // onClick={() => navigate("/admin/products/create")}
+            // onClick={() => navigate("/admin/products/create")}
           >
             Save
           </Button>
@@ -282,7 +281,7 @@ const OrderCreate = () => {
       <Box
         component="form"
         onSubmit={formData.handleSubmit(
-          param.id ? handleUpdateSubmit : handleSubmit
+          param.id ? handleUpdateSubmit : handleSubmit,
         )}
         noValidate
         sx={{
@@ -385,8 +384,8 @@ const OrderCreate = () => {
             />
           </Stack>
         </Stack>
-        <Stack direction="row">
-          <Stack gap={2} flexGrow={1} maxWidth={850}>
+        <Stack direction="row" flexWrap="wrap">
+          <Stack gap={2} flexGrow={1}>
             {returnJsx()}
             {formDataArray.fields.map((item, index) => (
               <Stack direction="row" gap={2} key={item.id}>
@@ -556,13 +555,17 @@ const OrderCreate = () => {
                 size="small"
                 sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
                 startIcon={<PreviewOutlinedIcon sx={{ width: 14 }} />}
-              // onClick={() => navigate("/admin/products/create")}
+                // onClick={() => navigate("/admin/products/create")}
               >
                 Preview
               </Button>
             </Stack>
           </Stack>
-          {watchProducts && <Stack flexGrow={1}>{previewReceipt()}</Stack>}
+          {watchProducts && (
+            <Stack flexGrow={1} maxWidth={600} minHeight={645}>
+              <CodeBlockToPdf>{previewReceipt()}</CodeBlockToPdf>{" "}
+            </Stack>
+          )}
         </Stack>
       </Box>
     </Box>

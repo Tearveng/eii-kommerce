@@ -21,7 +21,10 @@ const General = () => {
   const formData = useForm<IUserResponse & { confirmPassword: string }>();
 
   /** end-point */
-  const { data, isLoading, isSuccess } = useGetUserInfoQuery();
+  const { data, isLoading, isFetching, isSuccess } = useGetUserInfoQuery(
+    {},
+    { skip: !user?.access_token },
+  );
 
   useEffect(() => {
     if (data) {
@@ -37,6 +40,10 @@ const General = () => {
       });
     }
   }, [isSuccess, data, formData]);
+
+  if (isLoading || isFetching || !user?.access_token) {
+    return <>loading</>;
+  }
 
   return (
     <Stack gap={2} width="100%">

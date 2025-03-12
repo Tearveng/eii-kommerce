@@ -58,7 +58,7 @@ export const usePreview = (props: IUsePreview) => {
     }, 0);
   };
 
-  const receiptBlock3 = (props: { title: string; value: string }) => {
+  const receiptBlock3 = (pro: { title: string; value: string }) => {
     return (
       <Stack direction="row" gap={4}>
         <Typography
@@ -67,7 +67,7 @@ export const usePreview = (props: IUsePreview) => {
           textAlign="end"
           fontWeight={600}
         >
-          {props.title}
+          {pro.title}
         </Typography>
         <Typography
           variant="body2"
@@ -75,7 +75,7 @@ export const usePreview = (props: IUsePreview) => {
           color="textSecondary"
           minWidth={80}
         >
-          {props.value}
+          {pro.value}
         </Typography>
       </Stack>
     );
@@ -83,7 +83,7 @@ export const usePreview = (props: IUsePreview) => {
 
   const previewReceipt = () => {
     return (
-      <Stack p={2}>
+      <Stack p={2} maxWidth={600}>
         <Stack gap={3}>
           {/* block 1 */}
           <Stack
@@ -173,7 +173,7 @@ export const usePreview = (props: IUsePreview) => {
           <TableContainer>
             <Table
               size="small"
-              sx={{ minWidth: 600, borderCollapse: "collapse" }}
+              sx={{ maxWidth: 584, borderCollapse: "collapse" }}
               aria-label="spanning table"
             >
               <TableHead>
@@ -275,8 +275,8 @@ export const usePreview = (props: IUsePreview) => {
                   >
                     {ccyFormat(
                       calculateTotal(
-                        props.tableData.flatMap((i) => i.price * i.quantity)
-                      )
+                        props.tableData.flatMap((i) => i.price * i.quantity),
+                      ),
                     )}
                   </TableCell>
                 </TableRow>
