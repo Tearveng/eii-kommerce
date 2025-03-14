@@ -21,12 +21,11 @@ export const useFindUser = (props: IUseFindUser) => {
   const { formData, key } = props;
   const [selectUser, setSelectUser] = useState<IUserResponse | null>(null);
   const value = formData.watch(key);
-  console.log("key", key)
   /** end-point */
   const { data, isLoading, isFetching } = useSearchUsersQuery(
     {
       key,
-      search: value,
+      search: value as string,
     },
     {
       skip: !key || !value || value.toString().length < 3,

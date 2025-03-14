@@ -5,12 +5,13 @@ import {
   GridPaginationModel,
   GridValidRowModel,
 } from "@mui/x-data-grid";
-import { IProduct } from "../../../services/types/ProductInterface";
-import { ICart } from "../../../services/types/CartInterface.tsx";
-import { IUser } from "../../../services/types/UserInterface.tsx";
 import { DataGridProps } from "@mui/x-data-grid/models/props/DataGridProps";
+import { ICart } from "../../../services/types/CartInterface.tsx";
+import { IOrder } from "../../../services/types/OrderInterface.tsx";
+import { IProduct } from "../../../services/types/ProductInterface";
+import { IUser } from "../../../services/types/UserInterface.tsx";
 
-interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser>
+interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser | IOrder>
   extends DataGridProps {
   rows: readonly GridValidRowModel[];
   columns: GridColDef[];
@@ -23,7 +24,7 @@ interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser>
   ) => void;
 }
 
-export default function CustomizedDataGrid<T extends IProduct | ICart | IUser>(
+export default function CustomizedDataGrid<T extends IProduct | ICart | IUser | IOrder>(
   props: Readonly<ICustomizedDataGridProps<T>>,
 ) {
   const {

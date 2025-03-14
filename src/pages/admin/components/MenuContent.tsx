@@ -27,8 +27,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { StockType } from '../../../utils/constant';
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, path: "/home", children: [] },
@@ -40,17 +41,17 @@ const mainListItems = [
       {
         text: "Stock",
         icon: <Inventory2Icon />,
-        path: "/products/stock",
+        path: `/products/stock?type=${StockType.STOCK}`,
       },
       {
         text: "Pre-stock",
         icon: <BookmarkAddedIcon />,
-        path: "/products/pre-stock",
+        path: `/products/pre-stock?type=${StockType.PRE_STOCK}`,
       },
       {
         text: "Live",
         icon: <ShowChartIcon />,
-        path: "/products/live",
+        path: `/products/live?type=${StockType.LIVE}`,
       },
     ],
   },
@@ -151,6 +152,14 @@ const secondaryListItems = [
   { text: "Feedback", icon: <HelpRoundedIcon />, path: "/feedback" },
 ];
 
+const twoPathname = (pathname: string) => {
+  const splitPathname = pathname.split("/");
+  const peviousPathname = splitPathname[splitPathname.length - 2];
+  const lastPathname = splitPathname[splitPathname.length - 1];
+
+  return `${peviousPathname}/${lastPathname}`
+}
+
 const MenuContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -158,6 +167,7 @@ const MenuContent = () => {
     Array.from({ length: mainListItems.length }, () => false),
   );
 
+  const includePath = twoPathname(location.pathname)
   const handleNavigate = (path: string): void => {
     navigate(`/admin${path}`);
   };
@@ -171,6 +181,18 @@ const MenuContent = () => {
     cpExpanded[index] = !cpExpanded[index];
     setExpanded(cpExpanded);
   };
+
+  useEffect(() => {
+    const findIndex = mainListItems.findIndex(item => {
+      const childrens = item.children.flatMap(c => c.path);
+      return childrens.some(c => c.includes(includePath))
+    })
+    if (findIndex) {
+      const cpExpanded = [...expanded];
+      cpExpanded[findIndex] = true;
+      setExpanded(cpExpanded)
+    }
+  }, [])
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>

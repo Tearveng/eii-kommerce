@@ -1,30 +1,26 @@
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { Button, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useGetAllProductsQuery } from "../../../../services/productApi.ts";
-import {
-  IProduct,
-  IProductDataGrid,
-} from "../../../../services/types/ProductInterface.tsx";
-import { productColumns } from "../../internals/data/gridData.tsx";
-import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
-import { Button, Stack } from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { useNavigate } from "react-router-dom";
+import { useGetAllOrdersQuery } from "../../../../services/orderApi.ts";
+import { IOrder, IOrderDataGrid } from "../../../../services/types/OrderInterface.tsx";
+import { orderColumns } from "../../internals/data/gridData.tsx";
+import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 
 const OrderMainGrid = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
-  const { data, isLoading, isFetching } = useGetAllProductsQuery({
+  const { data, isLoading, isFetching } = useGetAllOrdersQuery({
     limit,
     page,
   });
 
-  const [products, setProducts] = useState<IProductDataGrid[]>([]);
-
+  const [orders, setOrders] = useState<IOrderDataGrid[]>([]);
   const onPaginationModelChange = (
     model: GridPaginationModel,
     detail: GridCallbackDetails<"pagination">,
@@ -35,18 +31,21 @@ const OrderMainGrid = () => {
 
   useEffect(() => {
     if (data) {
-      const remap: IProductDataGrid[] = data.data.map((d) => ({
+      const remap: IOrderDataGrid[] = data.data.map((d) => ({
         id: d.id,
-        productName: d.name,
-        productCode: d.code,
-        productSkuCode: d.skuCode,
-        productPrice: d.price,
-        productQuantity: d.quantity,
-        productThumbnail: d.thumbnail,
-        productCreatedDate: d.createdAt,
-        productUpdatedDate: d.updatedAt,
+        clientId: d.clientId,
+        profileId: d.profileId,
+        couponCode: d.couponCode,
+        currency: d.currency,
+        discount: d.discount,
+        refererCode: d.refererCode,
+        orderSubtotal: d.subtotal,
+        orderTotal: d.total,
+        orderTotalPrice: d.totalPrice,
+        orderCreatedDate: d.createdAt,
+        orderUpdatedDate: d.updatedAt
       }));
-      setProducts(remap);
+      setOrders(remap);
     }
   }, [data, limit, page]);
 
@@ -77,12 +76,12 @@ const OrderMainGrid = () => {
       </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <CustomizedDataGrid<IProduct>
+          <CustomizedDataGrid<IOrder>
             data={data}
             pageSize={limit}
             page={page}
-            columns={productColumns}
-            rows={products}
+            columns={orderColumns}
+            rows={orders}
             onPaginationModelChange={onPaginationModelChange}
           />
         </Grid>

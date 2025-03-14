@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { applicationSlice } from "./redux/application";
 import { adminApi } from "./services/adminApi.ts";
 import { cartApi } from "./services/cartApi.ts";
+import { orderApi } from "./services/orderApi.ts";
 import { productApi } from "./services/productApi";
+import { stocktApi } from "./services/stockApi.ts";
 import { userApi } from "./services/userApi";
 
 export const store = configureStore({
@@ -13,6 +15,8 @@ export const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
+    [stocktApi.reducerPath]: stocktApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     application: applicationSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -21,6 +25,8 @@ export const store = configureStore({
       productApi.middleware,
       cartApi.middleware,
       adminApi.middleware,
+      stocktApi.middleware,
+      orderApi.middleware
     ),
 });
 

@@ -53,3 +53,13 @@ export const snackbarError = (error: IErrorConnection | IErrorType) => {
     );
   }
 };
+
+// Function to generate a random number in the format "xxxxxxxxx-x"
+export const generateRandomNumber = (): string => {
+  // Generate a 9-digit random number
+  const nineDigits = Math.floor(100000000 + Math.random() * 900000000).toString();
+  // Generate a random single digit (0-9)
+  const singleDigit = Math.floor(Math.random() * 10).toString();
+  // Combine with a hyphen
+  return `${nineDigits}-${singleDigit}`;
+}

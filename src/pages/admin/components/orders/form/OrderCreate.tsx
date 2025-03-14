@@ -10,45 +10,55 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import InputPhone from "../../../../../components/Input/InputPhone.tsx";
 import InputText from "../../../../../components/Input/InputText.tsx";
+import { useAppSelector } from "../../../../../redux.ts";
 import {
-  useCreateUserMutation,
   useDeleteImageMutation,
   useUpdateUserMutation,
-  useUploadImageMutation,
+  useUploadImageMutation
 } from "../../../../../services/adminApi.ts";
+import { useCreateOrderMutation } from "../../../../../services/orderApi.ts";
 import {
   IProductResponse,
   IUploadImageResponse,
 } from "../../../../../services/types/ProductInterface.tsx";
 import {
-  IUserCreatePayload,
-  IUserResponse,
+  IUserResponse
 } from "../../../../../services/types/UserInterface.tsx";
 import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
-import { validateEmail, validatePhone } from "../../../../../utils/common.ts";
+import { validateEmail } from "../../../../../utils/common.ts";
 import { useFindProduct } from "./useFindProduct.tsx";
+import { useFindUser } from "./useFindUser.tsx";
 import { usePreview } from "./usePreview.tsx";
 
 const OrderCreate = () => {
+  const { user } = useAppSelector(state => state.application)
   const navigate = useNavigate();
   const param = useParams();
+  const [focusField, setFocusField] = useState<keyof IUserResponse | null>(
+    null,
+  );
   const formData = useForm<IUserResponse & { products: IProductResponse[] }>();
   const formDataArray = useFieldArray({
     control: formData.control,
     name: "products",
   });
+  const watchFormData = formData.watch();
   const watchProducts = formData.watch("products");
+  const { findUserJsx, selectUser, setSelectUser } = useFindUser({
+    key: focusField ?? "firstName",
+    formData,
+  });
   const { returnJsx, selectOption, setSelectOption, setSearchValue } =
     useFindProduct();
   const { previewReceipt } = usePreview({
-    tableData: watchProducts,
+    tableData: watchFormData,
   });
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const handleShowPassword = () => (showPassword ? "password" : "text");
 
   // *** end-point ***
-  const [create, { isLoading: createLoading }] = useCreateUserMutation();
+  const [create, { isLoading: createLoading }] = useCreateOrderMutation();
   const [upload, { isLoading }] = useUploadImageMutation();
   const [deleteImage, { isLoading: deleteLoading, originalArgs: deleteArgs }] =
     useDeleteImageMutation();
@@ -94,23 +104,27 @@ const OrderCreate = () => {
     }
   };
 
-  const createUser = async (
-    data: IUserCreatePayload,
-    imageUrl?: string,
-    publicId?: string
+  const createOrder = async (
+    data: IUserResponse & { products: IProductResponse[] },
   ) => {
-    return create({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      password: data.password,
-      phone: data.phone,
-      publicId: publicId ?? "",
-      profile: imageUrl ?? "",
-    })
-      .unwrap()
-      .then(() => navigate("/admin/people?page=1&limit=20"))
-      .catch((e) => console.error(e));
+    if (user) {
+      const products = data.products.map(p => ({
+        id: p.id,
+        skuCode: p.skuCode,
+        quantity: p.quantity,
+        discount: 0,
+      }))
+
+      return create({
+        clientId: data.id,
+        profileId: user.id,
+        address: data.address,
+        items: products
+      })
+        .unwrap()
+        .then(() => navigate("/admin/people?page=1&limit=20"))
+        .catch((e) => console.error(e));
+    }
   };
 
   const updateUser = async (
@@ -135,8 +149,8 @@ const OrderCreate = () => {
       .catch((e) => console.error(e));
   };
 
-  const handleSubmit = async (data: IUserCreatePayload) => {
-    console.log("data", data);
+  const handleSubmit = async (data: IUserResponse & { products: IProductResponse[] }) => {
+    await createOrder(data)
   };
 
   const handleUpdateSubmit = async (data: IUserResponse) => {
@@ -183,6 +197,7 @@ const OrderCreate = () => {
       });
     }
   };
+
   const removeProduct = async (index: number) => {
     formDataArray.remove(index);
   };
@@ -200,6 +215,28 @@ const OrderCreate = () => {
     }
   };
 
+  const handleFocusField = (keyField: keyof IUserResponse) => {
+    setFocusField(keyField);
+  };
+
+  const handleOnBlurField = () => {
+    setFocusField(null);
+  };
+
+  const resetFormData = () => {
+    if (selectUser) {
+      formData.reset({
+        id: selectUser.id,
+        firstName: selectUser.firstName,
+        lastName: selectUser.lastName,
+        email: selectUser.email,
+        phone: selectUser.phone,
+        address: '',
+        products: watchProducts
+      });
+    }
+  };
+
   useEffect(() => {
     if (selectOption) {
       appendProduct();
@@ -209,8 +246,6 @@ const OrderCreate = () => {
       setSearchValue("");
     };
   }, [selectOption, setSelectOption, setSearchValue]);
-
-  console.log(formData.watch('phone'))
 
   useEffect(() => {
     if (userById) {
@@ -237,6 +272,12 @@ const OrderCreate = () => {
       }
     }
   }, [userById, formData]);
+
+  useEffect(() => {
+    if (selectUser) {
+      resetFormData();
+    }
+  }, [selectUser]);
 
   if (userByIdLoading || userByIdFetching) {
     return <>loading...</>;
@@ -298,35 +339,57 @@ const OrderCreate = () => {
             <Typography variant="body2" color="textSecondary">
               First name
             </Typography>
-            <InputText
-              formData={formData}
-              name="firstName"
-              placeholder="First name"
-              error={formData.formState.errors["firstName"]}
-              rules={{
-                required: {
-                  value: true,
-                  message: "First name is required",
-                },
-              }}
-            />
+            {findUserJsx(
+              (e) => (
+                <InputText
+                  formData={formData}
+                  name="firstName"
+                  placeholder="First name"
+                  error={formData.formState.errors["firstName"]}
+                  inputPropsAutoComplete={e}
+                  disableSuggestions={true}
+                  inputPropsTextField={{
+                    onFocus: () => handleFocusField("firstName"),
+                    onBlur: handleOnBlurField,
+                  }}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "First name is required",
+                    },
+                  }}
+                />
+              ),
+              "firstName",
+            )}
           </Stack>
           <Stack gap={0.5} flexGrow={1}>
             <Typography variant="body2" color="textSecondary">
               Last name
             </Typography>
-            <InputText
-              formData={formData}
-              name="lastName"
-              placeholder="Last name"
-              error={formData.formState.errors["lastName"]}
-              rules={{
-                required: {
-                  value: false,
-                  message: "Last name is required",
-                },
-              }}
-            />
+            {findUserJsx(
+              (e) => (
+                <InputText
+                  formData={formData}
+                  name="lastName"
+                  placeholder="Last name"
+                  error={formData.formState.errors["lastName"]}
+                  inputPropsAutoComplete={e}
+                  disableSuggestions={true}
+                  inputPropsTextField={{
+                    onFocus: () => handleFocusField("lastName"),
+                    onBlur: handleOnBlurField,
+                  }}
+                  rules={{
+                    required: {
+                      value: false,
+                      message: "Last name is required",
+                    },
+                  }}
+                />
+              ),
+              "lastName",
+            )}
           </Stack>
         </Stack>
         <Stack direction="row" gap={2}>
@@ -334,37 +397,51 @@ const OrderCreate = () => {
             <Typography variant="body2" color="textSecondary">
               Email address
             </Typography>
-            <InputText
-              formData={formData}
-              name="email"
-              placeholder="Email address"
-              error={formData.formState.errors["email"]}
-              rules={{
-                required: {
-                  value: false,
-                  message: "Email address is required",
-                },
-                validate: (val: any) => validateEmail(val),
-              }}
-            />
+            {findUserJsx(
+              (e) => (
+                <InputText
+                  formData={formData}
+                  name="email"
+                  placeholder="Email address"
+                  error={formData.formState.errors["email"]}
+                  inputPropsAutoComplete={e}
+                  disableSuggestions={true}
+                  inputPropsTextField={{
+                    onFocus: () => handleFocusField("email"),
+                    onBlur: handleOnBlurField,
+                  }}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Email address is required",
+                    },
+                    validate: (val: any) => validateEmail(val),
+                  }}
+                />
+              ),
+              "email",
+            )}
           </Stack>
           <Stack gap={0.5} flexGrow={1}>
             <Typography variant="body2" color="textSecondary">
               Phone number
             </Typography>
-            <InputPhone
-              formData={formData}
-              name="phone"
-              placeholder="Phone number"
-              error={formData.formState.errors["phone"]}
-              rules={{
-                required: {
-                  value: true,
-                  message: "Phone number is required",
-                },
-                validate: (val: any) => validatePhone(val),
-              }}
-            />
+            {findUserJsx(
+              (e) => (
+                <InputPhone
+                  formData={formData}
+                  name="phone"
+                  placeholder="Phone number"
+                  error={formData.formState.errors["phone"]}
+                  inputPropsAutoComplete={e}
+                  inputPropsTextField={{
+                    onFocus: () => handleFocusField("phone"),
+                    onBlur: handleOnBlurField,
+                  }}
+                />
+              ),
+              "phone",
+            )}
           </Stack>
         </Stack>
         <Stack direction="row" gap={2}>

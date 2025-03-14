@@ -8,7 +8,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useAppSelector } from "../../../../../redux.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import { gray } from "../../../share-theme/themePrimitives.ts";
 
 const TAX_RATE = 0.07;
@@ -48,10 +50,11 @@ const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 export interface IUsePreview {
-  tableData: IProductResponse[];
+  tableData: IUserResponse & { products: IProductResponse[] };
 }
 
 export const usePreview = (props: IUsePreview) => {
+  const { user } = useAppSelector(state => state.application)
   const calculateTotal = (numbers: number[]) => {
     return numbers.reduce((accumulator, currentValue) => {
       return accumulator + currentValue;
@@ -132,7 +135,7 @@ export const usePreview = (props: IUsePreview) => {
                 Bill to
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                John Smith
+                {user && `${user.firstName} ${user.lastName}`}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 2 Count Square New York, NY 12210
@@ -147,7 +150,7 @@ export const usePreview = (props: IUsePreview) => {
                 Ship to
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                John Smith
+                {props.tableData.firstName} {props.tableData.lastName}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 3787 Pineview Drive Cambridge, MA 12210
@@ -220,7 +223,7 @@ export const usePreview = (props: IUsePreview) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.tableData.map((row) => (
+                {props.tableData.products.map((row) => (
                   <TableRow key={row.name}>
                     <TableCell
                       sx={{
@@ -275,7 +278,7 @@ export const usePreview = (props: IUsePreview) => {
                   >
                     {ccyFormat(
                       calculateTotal(
-                        props.tableData.flatMap((i) => i.price * i.quantity)
+                        props.tableData.products.flatMap((i) => i.price * i.quantity)
                       )
                     )}
                   </TableCell>

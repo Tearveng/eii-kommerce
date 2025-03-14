@@ -6,6 +6,7 @@ export interface IUserLoginPayload {
 }
 
 export interface IUserInfo {
+  id: number;
   firstName: string;
   lastName: string;
   username: string;
@@ -22,6 +23,7 @@ export interface IUserGetAllPayload {
 export interface IUserResponse {
   id: number;
   firstName: string;
+  address: string;
   lastName: string;
   email: string;
   phone: string;

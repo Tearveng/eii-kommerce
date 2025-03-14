@@ -1,3 +1,5 @@
+import { StockType } from "../../utils/constant";
+
 export interface IMeta {
   currentPage: string;
   itemCount: number;
@@ -8,6 +10,11 @@ export interface IMeta {
 
 export interface IProduct {
   data: IProductResponse[];
+  meta: IMeta;
+}
+
+export interface IStock {
+  data: IStockResponse[];
   meta: IMeta;
 }
 
@@ -24,6 +31,11 @@ export interface IProductDataGrid {
   productUpdatedDate: string;
 }
 
+
+export interface IStockDataGrid extends IProductDataGrid {
+  productType: StockType
+}
+
 export interface IProductResponse {
   id: number;
   name: string;
@@ -36,6 +48,14 @@ export interface IProductResponse {
   thumbnail: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IStockResponse extends IProductResponse {
+  type: StockType
+}
+
+export interface IStockCreatePayload extends IProductCreatePayload {
+  type: StockType;
 }
 
 export interface IProductCreatePayload {
@@ -52,6 +72,10 @@ export interface IProductCreatePayload {
 export interface IProductGetAllPayload {
   limit?: number;
   page?: number;
+}
+
+export interface IStockGetAllPayload extends IProductGetAllPayload {
+  type?: StockType
 }
 
 export interface IUploadImageResponse {

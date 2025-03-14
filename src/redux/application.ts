@@ -8,6 +8,7 @@ const initialState: IApplication = {
   snackbarStatus: "error",
   deleteProductId: null,
   deleteUserId: null,
+  deleteStockId: null,
   user: null,
   previewRow: null,
 };
@@ -40,6 +41,9 @@ export const applicationSlice = createSlice({
     dispatchDeleteUserId: (state, { payload }: { payload: number }) => {
       state.deleteUserId = payload;
     },
+    dispatchDeleteStockId: (state, { payload }: { payload: number }) => {
+      state.deleteStockId = payload;
+    },
     dispatchDeleteProductId: (state, { payload }: { payload: number }) => {
       state.deleteProductId = payload;
     },
@@ -49,6 +53,9 @@ export const applicationSlice = createSlice({
     clearDeleteProductId: (state) => {
       state.deleteProductId = null;
     },
+    clearDeleteStockId: (state) => {
+      state.deleteStockId = null;
+    },
     clearDeleteUserId: (state) => {
       state.deleteUserId = null;
     },
@@ -57,6 +64,8 @@ export const applicationSlice = createSlice({
 
 export const {
   dispatchPreviewRow,
+  dispatchDeleteStockId,
+  clearDeleteStockId,
   clearDeleteUserId,
   dispatchDeleteUserId,
   dispatchUserInfo,

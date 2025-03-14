@@ -8,17 +8,17 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { store, useAppSelector } from "../../../../../redux.ts";
-import { clearDeleteProductId } from "../../../../../redux/application.ts";
-import { useDeleteProductMutation } from "../../../../../services/productApi.ts";
+import { clearDeleteStockId } from "../../../../../redux/application.ts";
+import { useDeleteStockMutation } from "../../../../../services/stockApi.ts";
 
-const ProductDeleteDialog = () => {
-  const { deleteProductId } = useAppSelector((state) => state.application);
-  const [deleteProduct, { isLoading: deleteLoading }] =
-    useDeleteProductMutation();
+const StockDeleteDialog = () => {
+  const { deleteStockId } = useAppSelector((state) => state.application);
+  const [deleteStock, { isLoading: deleteLoading }] =
+    useDeleteStockMutation();
 
   const handleDeleteProduct = async () => {
-    if (deleteProductId) {
-      await deleteProduct({ id: deleteProductId })
+    if (deleteStockId) {
+      await deleteStock({ id: deleteStockId })
         .unwrap()
         .then(() => handleClose())
         .catch((err) => console.error(err));
@@ -26,12 +26,12 @@ const ProductDeleteDialog = () => {
   };
 
   const handleClose = () => {
-    store.dispatch(clearDeleteProductId());
+    store.dispatch(clearDeleteStockId());
   };
 
   return (
     <Dialog
-      open={Boolean(deleteProductId)}
+      open={Boolean(deleteStockId)}
       onClose={handleClose}
       fullWidth
       maxWidth="xs"
@@ -41,7 +41,7 @@ const ProductDeleteDialog = () => {
       <DialogTitle id="alert-dialog-title">{"Are you sure ?"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Do you really want to delete this product?
+          Do you really want to delete this stock?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -66,4 +66,4 @@ const ProductDeleteDialog = () => {
   );
 };
 
-export default ProductDeleteDialog;
+export default StockDeleteDialog;

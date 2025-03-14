@@ -59,11 +59,11 @@ const InputText = <T extends Record<string, any>>(props: IInputText<T>) => {
               {...inputPropsTextField}
               {...inputPropsAutoComplete}
               slotProps={{
-                ...inputPropsTextField?.slotProps,
                 input: {
                   ...inputPropsAutoComplete?.InputProps,
                   autoComplete: disableSuggestions ? "new-password" : undefined,
                 },
+                ...inputPropsTextField?.slotProps,
               }}
               sx={{
                 ...inputPropsTextField?.sx,

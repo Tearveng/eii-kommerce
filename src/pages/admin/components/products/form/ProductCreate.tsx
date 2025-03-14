@@ -1,14 +1,12 @@
+import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import InputText from "../../../../../components/Input/InputText";
-import {
-  IProductResponse,
-  IUploadImageResponse,
-} from "../../../../../services/types/ProductInterface";
-import DropZoneUpload from "../../DropZoneUpload";
 import {
   useCreateProductMutation,
   useDeleteImageMutation,
@@ -16,9 +14,11 @@ import {
   useUpdateProductMutation,
   useUploadImageMutation,
 } from "../../../../../services/productApi.ts";
-import { useEffect, useState } from "react";
-import { CircularProgress } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  IProductResponse,
+  IUploadImageResponse,
+} from "../../../../../services/types/ProductInterface";
+import DropZoneUpload from "../../DropZoneUpload";
 
 const ProductCreate = () => {
   const navigate = useNavigate();
@@ -71,6 +71,12 @@ const ProductCreate = () => {
       setFiles((prev) => prev.filter((_, i) => i !== props.index));
     }
   };
+
+  const validateNumber = (num: number) => {
+    if (num < 0) {
+      return "Value can't less than 0"
+    }
+  }
 
   const createProduct = async (
     data: IProductResponse,
@@ -290,6 +296,7 @@ const ProductCreate = () => {
                 value: true,
                 message: "Price is required",
               },
+              validate: (val: any) => validateNumber(val)
             }}
           />
         </Stack>
@@ -315,6 +322,7 @@ const ProductCreate = () => {
                 value: true,
                 message: "Quantity is required",
               },
+              validate: (val: any) => validateNumber(val)
             }}
           />
         </Stack>

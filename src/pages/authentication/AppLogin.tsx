@@ -15,9 +15,9 @@ import { useNavigate } from "react-router-dom";
 import InputText from "../../components/Input/InputText";
 import { useAppDispatch } from "../../redux.ts";
 import { dispatchUserInfo } from "../../redux/application.ts";
+import { authService } from "../../services/service/AuthService.ts";
 import { useLoginMutation } from "../../services/userApi.ts";
 import { snackbarError } from "../../utils/common.ts";
-import { authService } from "../../services/service/AuthService.ts";
 
 interface ILogin {
   email: string;
@@ -60,7 +60,6 @@ const AppLogin = () => {
         }
       })
       .catch((err) => {
-        console.log("err", err);
         snackbarError(err);
       });
   };

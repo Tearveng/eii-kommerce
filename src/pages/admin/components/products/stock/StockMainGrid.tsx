@@ -5,20 +5,62 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "../../../../../redux.ts";
 import { dispatchProductCurrentPage } from "../../../../../redux/application.ts";
-import { useGetAllProductsQuery } from "../../../../../services/productApi.ts";
+import { useGetAllStocksQuery } from "../../../../../services/stockApi.ts";
 import {
-  IProduct,
-  IProductDataGrid,
+  IStock,
+  IStockDataGrid,
 } from "../../../../../services/types/ProductInterface.tsx";
-import { productColumns } from "../../../internals/data/gridData.tsx";
+import { StockType } from "../../../../../utils/constant.ts";
+import { stockColumns } from "../../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../../CustomizedDataGrid.tsx";
+
+const lastPathName = (pathname: string) => {
+  const splitPathname = pathname.split("/");
+  const lastPathname = splitPathname[splitPathname.length - 1];
+
+  return lastPathname
+}
+
+const mapPathName = (pathname: string): StockType => {
+  const path = lastPathName(pathname)
+  const type = {
+    ["stock"]: StockType.STOCK,
+    ["pre-stock"]: StockType.PRE_STOCK,
+    ["live"]: StockType.LIVE,
+  };
+
+  return type[path] ?? StockType.STOCK;
+};
+
+export const titleName = (pathname: string): StockType => {
+  const path = lastPathName(pathname)
+  const type = {
+    ["stock"]: 'Stock',
+    ["pre-stock"]: 'Pre stock',
+    ["live"]: 'Live',
+  };
+
+  return type[path] ?? 'Stock';
+};
+
+export const mapPathType = (type: StockType) => {
+  const pathType = {
+    [StockType.STOCK]: "stock",
+    [StockType.PRE_STOCK]: "pre-stock",
+    [StockType.LIVE]: "live",
+  };
+
+  return pathType[type]
+}
 
 const StockMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const typePath = mapPathName(location.pathname);
   const [search, setSearchParam] = useSearchParams();
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
@@ -26,15 +68,16 @@ const StockMainGrid = () => {
     currentData: data,
     isLoading,
     isFetching,
-  } = useGetAllProductsQuery({
+  } = useGetAllStocksQuery({
     limit: Number(limit),
     page: Number(page),
+    type: typePath
   });
-  const [products, setProducts] = useState<IProductDataGrid[]>([]);
+  const [stocks, setStocks] = useState<IStockDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    _: GridCallbackDetails<"pagination">,
+    _: GridCallbackDetails<"pagination">
   ) => {
     setLimit(model.pageSize);
     setPage(model.page + 1);
@@ -46,9 +89,11 @@ const StockMainGrid = () => {
 
   useEffect(() => {
     if (data) {
-      const remap: IProductDataGrid[] = data.data.map((d) => ({
+      const remap: IStockDataGrid[] = data.data.map((d) => ({
         id: d.id,
         productName: d.name,
+        productType: d.type,
+        productDescription: d.description,
         productCode: d.code,
         productSkuCode: d.skuCode,
         productPrice: d.price,
@@ -57,7 +102,7 @@ const StockMainGrid = () => {
         productCreatedDate: d.createdAt,
         productUpdatedDate: d.updatedAt,
       }));
-      setProducts(remap);
+      setStocks(remap);
     }
   }, [data, limit, page]);
 
@@ -73,7 +118,7 @@ const StockMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Stock
+        {titleName(location.pathname)}
       </Typography>
       <Stack direction="row" pb={1}>
         <Button
@@ -81,19 +126,19 @@ const StockMainGrid = () => {
           size="small"
           sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
           startIcon={<AddRoundedIcon />}
-          onClick={() => navigate("/admin/products/stock/create")}
+          onClick={() => navigate(`/admin/products/${lastPathName(location.pathname)}/create${window.location.search}`)}
         >
           Add stock
         </Button>
       </Stack>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <CustomizedDataGrid<IProduct>
+          <CustomizedDataGrid<IStock>
             data={data}
             pageSize={Number(limit)}
             page={Number(page)}
-            columns={productColumns}
-            rows={products}
+            columns={stockColumns}
+            rows={stocks}
             onPaginationModelChange={onPaginationModelChange}
           />
         </Grid>

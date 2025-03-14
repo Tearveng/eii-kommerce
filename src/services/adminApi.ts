@@ -195,7 +195,7 @@ export const adminApi = createApi({
     }),
 
     /** Search user by firstName / phone **/
-    searchUsers: builder.query<string, { key: string; search: string }>({
+    searchUsers: builder.query<IUser, { key: string; search: string }>({
       query: ({ search, key }) => ({
         url: "/search-users",
         method: "GET",

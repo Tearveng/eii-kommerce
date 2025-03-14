@@ -1,9 +1,10 @@
-import { IUserInfoRedux } from "../services/types/UserInterface.tsx";
 import { GridValidRowModel } from "@mui/x-data-grid";
+import { IUserInfoRedux } from "../services/types/UserInterface.tsx";
 
 export interface IApplication {
   deleteProductId: number | null;
   deleteUserId: number | null;
+  deleteStockId: number | null;
   productCurrentPage: number;
   user: IUserInfoRedux | null;
   previewRow: IPreviewRow | null;

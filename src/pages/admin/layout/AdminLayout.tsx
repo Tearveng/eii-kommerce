@@ -1,22 +1,23 @@
 import { Box, Stack } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { alpha } from "@mui/material/styles";
-import type {} from "@mui/x-charts/themeAugmentation";
-import type {} from "@mui/x-data-grid/themeAugmentation";
-import type {} from "@mui/x-date-pickers/themeAugmentation";
-import type {} from "@mui/x-tree-view/themeAugmentation";
+import type { } from "@mui/x-charts/themeAugmentation";
+import type { } from "@mui/x-data-grid/themeAugmentation";
+import type { } from "@mui/x-date-pickers/themeAugmentation";
+import type { } from "@mui/x-tree-view/themeAugmentation";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuthWatcher } from "../../../hooks/useAuthWatcher.tsx";
+import { authService } from "../../../services/service/AuthService.ts";
 import AppNavbar from "../../admin/components/AppNavBar.tsx";
 import SideMenu from "../../admin/components/SideMenu.tsx";
 import AppTheme from "../AdminTheme.tsx";
 import ProductDeleteDialog from "../components/products/dialog/ProductDeleteDialog.tsx";
+import StockDeleteDialog from "../components/products/dialog/StockDeleteDialog.tsx";
+import PreviewDialog from "../components/ui/PreviewDialog.tsx";
 import UserDeleteDialog from "../components/users/dialog/UserDeleteDialog.tsx";
 import { chartsCustomizations } from "../theme/charts.ts";
 import { dataGridCustomizations } from "../theme/dataGrid.ts";
 import Header from "./Header.tsx";
-import { authService } from "../../../services/service/AuthService.ts";
-import { useAuthWatcher } from "../../../hooks/useAuthWatcher.tsx";
-import PreviewDialog from "../components/UI/PreviewDialog.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -61,6 +62,7 @@ const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
       </Box>
 
       <ProductDeleteDialog />
+      <StockDeleteDialog />
       <UserDeleteDialog />
       <PreviewDialog />
     </AppTheme>

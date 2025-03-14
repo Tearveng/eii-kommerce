@@ -14,6 +14,8 @@ import General from "./pages/admin/components/settings/general/General.tsx";
 import Notifications from "./pages/admin/components/settings/notifications/Notifications.tsx";
 import Preference from "./pages/admin/components/settings/preference/Preference.tsx";
 import UserPermission from "./pages/admin/components/settings/user-permission/UserPermission.tsx";
+import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
+import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
 import UserMainGrid from "./pages/admin/components/users/UserMainGrid.tsx";
 import UserCreate from "./pages/admin/components/users/form/UserCreate.tsx";
 import AdminLayout from "./pages/admin/layout/AdminLayout.tsx";
@@ -22,8 +24,6 @@ import AppLayout from "./pages/layout/authentication/Layout.tsx";
 import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
-import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
-import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
 
 const AppRouter = () => {
   return (
@@ -54,9 +54,16 @@ const AppRouter = () => {
         {/* route product */}
         <Route path="products" element={<ProductMainGrid />} />
         <Route path="products/stock" element={<StockMainGrid />} />
+        <Route path="products/pre-stock" element={<StockMainGrid />} />
+        <Route path="products/live" element={<StockMainGrid />} />
         <Route path="products/create" element={<ProductCreate />} />
         <Route path="products/stock/create" element={<StockCreate />} />
+        <Route path="products/pre-stock/create" element={<StockCreate />} />
+        <Route path="products/live/create" element={<StockCreate />} />
         <Route path="products/update/:id" element={<ProductCreate />} />
+        <Route path="products/stock/update/:id" element={<StockCreate />} />
+        <Route path="products/pre-stock/update/:id" element={<StockCreate />} />
+        <Route path="products/live/update/:id" element={<StockCreate />} />
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
           <Route index path="general" element={<General />} />

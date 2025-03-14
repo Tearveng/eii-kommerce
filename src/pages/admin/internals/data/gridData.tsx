@@ -17,11 +17,13 @@ import { Link } from "react-router-dom";
 import { store } from "../../../../redux.ts";
 import {
   dispatchDeleteProductId,
+  dispatchDeleteStockId,
   dispatchDeleteUserId,
   dispatchPreviewRow,
 } from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
 import { UserRole } from "../../../../utils/constant.ts";
+import { mapPathType } from "../../components/products/stock/StockMainGrid.tsx";
 
 type SparkLineData = number[];
 
@@ -123,13 +125,18 @@ export function renderAvatar(
 
 export function renderActions(
   param: GridRenderCellParams,
-  type: "product" | "client",
+  type: "product" | "client" | "stock",
 ) {
   const actionsBtn = {
     ["product"]: {
       preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
       edit: `/admin/products/update/${param.id}${window.location.search}`,
       delete: () => store.dispatch(dispatchDeleteProductId(Number(param.id))),
+    },
+    ["stock"]: {
+      preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
+      edit: `/admin/products/${mapPathType(param.row.productType)}/update/${param.id}${window.location.search}`,
+      delete: () => store.dispatch(dispatchDeleteStockId(Number(param.id))),
     },
     ["client"]: {
       preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
@@ -240,6 +247,145 @@ export const productColumns: GridColDef[] = [
     flex: 1.2,
     minWidth: 120,
     renderCell: (param) => renderActions(param, "product"),
+  },
+];
+
+export const orderColumns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Id",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (param) => param.value.toString().padStart(6, '0')
+  },
+  {
+    field: "coupoCode",
+    headerName: "Coupon code",
+    flex: 1.5,
+    minWidth: 150,
+  },
+  {
+    field: "currency",
+    headerName: "Currency",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "discount",
+    headerName: "Discount",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "refererCode",
+    headerName: "Ref code",
+    flex: 1,
+    maxWidth: 100,
+  },
+  {
+    field: "orderSubtotal",
+    headerName: "Subtotal",
+    flex: 1.5,
+    minWidth: 50,
+    maxWidth: 100,
+  },
+  {
+    field: "orderTotal",
+    headerName: "Total",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "orderTotalPrice",
+    headerName: "Total price",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "orderCreatedDate",
+    headerName: "Created Date",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "orderUpdatedDate",
+    headerName: "Updated Date",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "edit",
+    headerName: "Edit",
+    headerAlign: "center",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => renderActions(param, "product"),
+  },
+];
+
+export const stockColumns: GridColDef[] = [
+  {
+    field: "productName",
+    headerName: "Product title",
+    flex: 1.5,
+    minWidth: 200,
+  },
+
+  {
+    field: "productCode",
+    headerName: "Code",
+    flex: 1.5,
+    minWidth: 150,
+  },
+  {
+    field: "productSkuCode",
+    headerName: "SkuCode",
+    flex: 1.5,
+    minWidth: 150,
+  },
+  {
+    field: "productPrice",
+    headerName: "Price",
+    flex: 1.5,
+    minWidth: 50,
+    maxWidth: 100,
+  },
+  {
+    field: "productQuantity",
+    headerName: "Quantity",
+    flex: 1.5,
+    minWidth: 50,
+    maxWidth: 100,
+  },
+  {
+    field: "productThumbnail",
+    headerName: "Thumbnail",
+    flex: 1.5,
+    minWidth: 200,
+  },
+  {
+    field: "productCreatedDate",
+    headerName: "Created Date",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "productUpdatedDate",
+    headerName: "Updated Date",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "edit",
+    headerName: "Edit",
+    headerAlign: "center",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => renderActions(param, "stock"),
   },
 ];
 
