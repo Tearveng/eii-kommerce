@@ -1,4 +1,4 @@
-import { matchIsValidTel } from 'mui-tel-input';
+import { matchIsValidTel } from "mui-tel-input";
 import { store } from "../redux";
 import { dispatchSnackbar } from "../redux/application";
 import { IErrorConnection, IErrorType } from "../redux/type";
@@ -35,14 +35,15 @@ export const validateEmail = (email: string) => {
 };
 
 export const validatePhone = (phone: string) => {
-  if(phone && phone.startsWith("+")) {
+  let result: undefined | string = undefined;
+  if (phone?.startsWith("+")) {
     const isMatch = matchIsValidTel(phone);
-    if(!isMatch) {
-      return "Phoner number is invalid."
+    if (!isMatch) {
+      result = "Phone number is invalid.";
     }
   }
-  return undefined
-}
+  return result;
+};
 
 export const snackbarError = (error: IErrorConnection | IErrorType) => {
   if ("error" in error && error.status === "FETCH_ERROR") {
