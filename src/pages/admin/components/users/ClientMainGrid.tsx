@@ -26,6 +26,7 @@ const ClientMainGrid = () => {
     {
       limit: Number(limit),
       page: Number(page),
+      role: "CLIENT",
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -74,7 +75,7 @@ const ClientMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Users
+        Clients
       </Typography>
       <Stack direction="row" pb={1}>
         <Button

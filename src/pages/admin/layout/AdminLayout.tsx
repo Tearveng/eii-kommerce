@@ -24,7 +24,7 @@ const xThemeComponents = {
 };
 
 const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
-  useAuthWatcher();
+  // useAuthWatcher();
   const isAuthenticated = authService.isAuthenticated();
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;

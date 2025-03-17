@@ -55,6 +55,7 @@ export const productApi = createApi({
                   meta: {
                     ...draft.meta,
                     totalItems: draft.meta.totalItems + 1,
+                    totalThirtyDays: draft.meta.totalThirtyDays + 1,
                   },
                   data: [data, ...draft.data],
                 };

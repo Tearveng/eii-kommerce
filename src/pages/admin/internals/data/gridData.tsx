@@ -3,7 +3,7 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Stack } from "@mui/material";
+import { Stack, NativeSelect, Backdrop, CircularProgress } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -22,6 +22,9 @@ import {
 } from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
 import { UserRole } from "../../../../utils/constant.ts";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { changeRoleService } from "../../../../services/service/ChangeRoleService.ts";
 
 type SparkLineData = number[];
 
@@ -243,32 +246,32 @@ export const productColumns: GridColDef[] = [
   },
 ];
 
-export const userPermissionColumns: GridColDef[] = [
-  {
-    field: "actions",
-    headerName: "Actions",
-    flex: 1.5,
-    minWidth: 200,
-  },
-  {
-    field: "user",
-    headerName: "User",
-    flex: 1,
-    maxWidth: 100,
-  },
-  {
-    field: "manager",
-    headerName: "Manager",
-    flex: 1,
-    maxWidth: 100,
-  },
-  {
-    field: "admin",
-    headerName: "Admin",
-    flex: 1,
-    maxWidth: 100,
-  },
-];
+// export const userPermissionColumns: GridColDef[] = [
+//   {
+//     field: "actions",
+//     headerName: "Actions",
+//     flex: 1.5,
+//     minWidth: 200,
+//   },
+//   {
+//     field: "user",
+//     headerName: "User",
+//     flex: 1,
+//     maxWidth: 100,
+//   },
+//   {
+//     field: "manager",
+//     headerName: "Manager",
+//     flex: 1,
+//     maxWidth: 100,
+//   },
+//   {
+//     field: "admin",
+//     headerName: "Admin",
+//     flex: 1,
+//     maxWidth: 100,
+//   },
+// ];
 
 export const cartColumns: GridColDef[] = [
   {
@@ -459,6 +462,82 @@ export const userColumns: GridColDef[] = [
   {
     field: "userUpdatedDate",
     headerName: "UpdatedAt",
+    flex: 1.5,
+    minWidth: 100,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "edit",
+    headerName: "Edit",
+    headerAlign: "center",
+    flex: 1,
+    minWidth: 150,
+    renderCell: (param) => renderActions(param, "client"),
+  },
+];
+
+export const userPermissionColumns: GridColDef[] = [
+  {
+    field: "userUsername",
+    headerName: "Username",
+    flex: 1.5,
+    minWidth: 120,
+  },
+  {
+    field: "userProfile",
+    headerName: "Profile",
+    flex: 0.7,
+    minWidth: 50,
+    renderCell: (param) => {
+      return (
+        <img
+          style={{
+            maxWidth: "30px",
+            marginTop: 3,
+          }}
+          src={param.value}
+          alt={param.value}
+          loading="lazy"
+        />
+      );
+    },
+  },
+  {
+    field: "userEmail",
+    headerName: "Email",
+    flex: 2,
+    minWidth: 200,
+  },
+  {
+    field: "userRoles",
+    headerName: "Role",
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: (param) => {
+      const handleChange = async (event: SelectChangeEvent) => {
+        await changeRoleService(param.row, event.target.value);
+      };
+
+      return (
+        param.value.length > 0 && (
+          <Select
+            size="small"
+            value={param.value[0]}
+            sx={{ py: 0 }}
+            variant="outlined"
+            onChange={handleChange}
+          >
+            <MenuItem value={"ADMIN"}>Admin</MenuItem>
+            <MenuItem value={"USER"}>User</MenuItem>
+            <MenuItem value={"CLIENT"}>Client</MenuItem>
+          </Select>
+        )
+      );
+    },
+  },
+  {
+    field: "userCreatedDate",
+    headerName: "CreatedAt",
     flex: 1.5,
     minWidth: 100,
     renderCell: (param) => dateShortFormat(param.value),

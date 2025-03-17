@@ -16,7 +16,7 @@ import {
 import { userColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 
-const AdminMainGrid = () => {
+const AllMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
@@ -26,7 +26,7 @@ const AdminMainGrid = () => {
     {
       limit: Number(limit),
       page: Number(page),
-      role: "ADMIN",
+      role: "ALL",
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -75,7 +75,7 @@ const AdminMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Admins
+        Users
       </Typography>
       <Stack direction="row" pb={1}>
         <Button
@@ -104,4 +104,4 @@ const AdminMainGrid = () => {
   );
 };
 
-export default AdminMainGrid;
+export default AllMainGrid;

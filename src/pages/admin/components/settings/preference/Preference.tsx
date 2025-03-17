@@ -107,13 +107,13 @@ const Preference = () => {
       </Stack>
       <Stack gap={2}>
         <Stack direction="row" alignItems="center" gap={2} minWidth={350}>
-          <Typography>Time zone:</Typography>
+          <Typography minWidth={100}>Time zone:</Typography>
           <Select sx={{ minWidth: 300 }} value={timeZone}>
             <MenuItem value={timeZone}>{timeZone}</MenuItem>
           </Select>
         </Stack>
         <Stack direction="row" alignItems="center" gap={2} minWidth={350}>
-          <Typography>Date time:</Typography>
+          <Typography minWidth={100}>Date time:</Typography>
           <Select sx={{ minWidth: 300 }} value={timeZoneDate}>
             <MenuItem value={timeZoneDate}>{timeZoneDate}</MenuItem>
           </Select>

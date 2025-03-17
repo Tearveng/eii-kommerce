@@ -4,6 +4,7 @@ export interface IMeta {
   itemsPerPage: string;
   totalItems: number;
   totalPages: number;
+  totalThirtyDays: number;
 }
 
 export interface IProduct {

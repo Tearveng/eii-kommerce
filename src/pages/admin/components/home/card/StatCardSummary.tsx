@@ -38,7 +38,13 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
-const StatCard = ({ title, value, interval, trend, data }: StatCardProps) => {
+const StatCardSummary = ({
+  title,
+  value,
+  interval,
+  trend,
+  data,
+}: StatCardProps) => {
   const theme = useTheme();
   const daysInWeek = getDaysInMonth(4, 2024);
 
@@ -70,7 +76,7 @@ const StatCard = ({ title, value, interval, trend, data }: StatCardProps) => {
   return (
     <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>
       <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
+        <Typography component="h2" variant="subtitle2">
           {title}
         </Typography>
         <Stack
@@ -117,4 +123,4 @@ const StatCard = ({ title, value, interval, trend, data }: StatCardProps) => {
   );
 };
 
-export default StatCard;
+export default StatCardSummary;

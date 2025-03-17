@@ -24,6 +24,7 @@ import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
 import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
 import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
+import AllMainGrid from "./pages/admin/components/users/AllMainGrid.tsx";
 
 const AppRouter = () => {
   return (
@@ -44,7 +45,7 @@ const AppRouter = () => {
         <Route path="items" element={<ItemMainGrid />} />
 
         {/* route people */}
-        <Route path="people" element={<UserMainGrid />} />
+        <Route path="people" element={<AllMainGrid />} />
         <Route path="people/user" element={<UserMainGrid />} />
         <Route path="people/client" element={<ClientMainGrid />} />
         <Route path="people/admin" element={<AdminMainGrid />} />

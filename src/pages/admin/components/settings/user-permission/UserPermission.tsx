@@ -1,143 +1,116 @@
-import { Checkbox, Divider, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CustomizedDataGrid from "../../CustomizedDataGrid.tsx";
 import {
   IProduct,
   IProductDataGrid,
 } from "../../../../../services/types/ProductInterface.tsx";
-import { userPermissionColumns } from "../../../internals/data/gridData.tsx";
-import { useState } from "react";
-
-const data = {
-  data: [],
-  meta: {
-    totalItems: 0,
-  },
-};
+import {
+  userColumns,
+  userPermissionColumns,
+} from "../../../internals/data/gridData.tsx";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch } from "../../../../../redux.ts";
+import { useGetAllUsersQuery } from "../../../../../services/adminApi.ts";
+import {
+  IUser,
+  IUserDataGrid,
+} from "../../../../../services/types/UserInterface.tsx";
+import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
+import { dispatchProductCurrentPage } from "../../../../../redux/application.ts";
+import Box from "@mui/material/Box";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const UserPermission = () => {
-  const [userPermissions, setUserPermissions] = useState<any[]>([
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [search, setSearchParam] = useSearchParams();
+  const role = search.get("role");
+  const [page, setPage] = useState(search.get("page") ?? 1);
+  const [limit, setLimit] = useState(search.get("limit") ?? 20);
+  const { data, isLoading, isFetching } = useGetAllUsersQuery(
     {
-      id: "1",
-      actions: "1",
+      limit: Number(limit),
+      page: Number(page),
+      role: role ?? "ALL",
     },
-  ]);
+    { refetchOnMountOrArgChange: true },
+  );
+  const [users, setUser] = useState<IUserDataGrid[]>([]);
+
+  const onPaginationModelChange = (
+    model: GridPaginationModel,
+    _: GridCallbackDetails<"pagination">,
+  ) => {
+    setLimit(model.pageSize);
+    setPage(model.page + 1);
+    search.set("page", (model.page + 1).toString());
+    search.set("limit", model.pageSize.toString());
+    setSearchParam(search);
+    dispatch(dispatchProductCurrentPage(model.page + 1));
+  };
+
+  useEffect(() => {
+    if (data) {
+      const remap: IUserDataGrid[] = data.data.map((d) => ({
+        id: d.id,
+        userRoles: d.roles,
+        userFirstName: d.firstName,
+        userLastName: d.lastName,
+        userEmail: d.email,
+        userPhone: d.phone,
+        userProfile: d.profile,
+        userPublicId: d.publicId,
+        userUsername: d.username,
+        userCreatedDate: d.createdAt,
+        userUpdatedDate: d.updatedAt,
+      }));
+      setUser(remap);
+    }
+  }, [data, limit, page]);
+
+  if (isLoading || isFetching) {
+    return <>loading...</>;
+  }
 
   return (
-    <Stack gap={2} width="100%">
-      <Stack gap={1}>
-        <Typography variant="h4" fontWeight={600}>
-          User Permissions
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Manage who has access in your system
-        </Typography>
-      </Stack>
-      <Divider />
-      <Stack>
-        <Stack gap={4}>
-          <Grid container spacing={2} columns={12}>
-            <Grid size={{ xs: 12, lg: 12 }}></Grid>
-          </Grid>
-
-          {/*<Typography variant="h5" fontWeight={600}>*/}
-          {/*  User*/}
-          {/*</Typography>*/}
-          {/*/!*  products  *!/*/}
-          {/*<Stack direction="row" alignItems="center" gap={4}>*/}
-          {/*  <Typography variant="body1" fontWeight={600} minWidth={100}>*/}
-          {/*    View:*/}
-          {/*  </Typography>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">View</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Create</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Update</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Delete</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*</Stack>*/}
-
-          {/*/!*  orders  *!/*/}
-          {/*<Stack direction="row" alignItems="center" gap={4}>*/}
-          {/*  <Typography variant="body1" fontWeight={600} minWidth={100}>*/}
-          {/*    Orders:*/}
-          {/*  </Typography>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">View</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Create</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Update</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Delete</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*</Stack>*/}
-
-          {/*/!*  carts  *!/*/}
-          {/*<Stack direction="row" alignItems="center" gap={4}>*/}
-          {/*  <Typography variant="body1" fontWeight={600} minWidth={100}>*/}
-          {/*    Carts:*/}
-          {/*  </Typography>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">View</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Create</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Update</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*  <Stack direction="row" alignItems="center" gap={1}>*/}
-          {/*    <Checkbox defaultChecked sx={{ m: 0 }} />*/}
-          {/*    <Stack mt={0.3}>*/}
-          {/*      <Typography variant="body2">Delete</Typography>*/}
-          {/*    </Stack>*/}
-          {/*  </Stack>*/}
-          {/*</Stack>*/}
-        </Stack>
-      </Stack>
-    </Stack>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: { sm: "100%", md: "1700px" },
+      }}
+    >
+      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+        Users Permissions
+      </Typography>
+      <Grid container spacing={2} columns={12}>
+        <Grid size={{ xs: 12, lg: 12 }}>
+          <CustomizedDataGrid<IUser>
+            data={data}
+            pageSize={Number(limit)}
+            page={Number(page)}
+            columns={userPermissionColumns}
+            rows={users}
+            checkboxSelection={false}
+            onPaginationModelChange={onPaginationModelChange}
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

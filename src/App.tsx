@@ -8,7 +8,7 @@ import { refreshTokenService } from "./services/service/RefreshTokenService.ts";
 
 function App() {
   const dispatch = useAppDispatch();
-  const { snackbarMessage, snackbarStatus } = useAppSelector(
+  const { snackbarMessage, snackbarStatus, user } = useAppSelector(
     (state) => state.application,
   );
 
@@ -23,7 +23,7 @@ function App() {
 
   return (
     <Stack>
-      <AppRouter />
+      {user && <AppRouter />}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={Boolean(snackbarMessage)}
