@@ -20,14 +20,13 @@ const UserMainGrid = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
-  const role = search.get("role");
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
   const { data, isLoading, isFetching } = useGetAllUsersQuery(
     {
       limit: Number(limit),
       page: Number(page),
-      role: role ?? "ALL"
+      role: "USER",
     },
     { refetchOnMountOrArgChange: true },
   );

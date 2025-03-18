@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InputText from "../../../../../components/Input/InputText.tsx";
 import { IUploadImageResponse } from "../../../../../services/types/ProductInterface.tsx";
 import {
@@ -28,6 +28,7 @@ const UserCreate = () => {
   const navigate = useNavigate();
   const param = useParams();
   const formData = useForm<IUserResponse & { confirmPassword: string }>();
+  const [search] = useSearchParams();
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const handleShowPassword = () => (showPassword ? "password" : "text");
@@ -105,6 +106,7 @@ const UserCreate = () => {
   ) => {
     const profile2 = imageUrl && imageUrl !== "" ? imageUrl : data.profile;
     const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
+    const path = search.get("role");
 
     return update({
       id: Number(param.id),
@@ -116,7 +118,11 @@ const UserCreate = () => {
       profile: files.length > 0 ? profile2 : "",
     })
       .unwrap()
-      .then(() => navigate(`/admin/people${window.location.search}`))
+      .then(() =>
+        navigate(
+          `/admin/people/${path ? path.toLowerCase() : ""}${window.location.search}`,
+        ),
+      )
       .catch((e) => console.error(e));
   };
 

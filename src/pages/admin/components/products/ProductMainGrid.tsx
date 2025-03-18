@@ -15,6 +15,7 @@ import { productColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
 import { useAppDispatch } from "../../../../redux.ts";
+import ConsumeData from "../../../../components/ConsumeData.tsx";
 
 const ProductMainGrid = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const ProductMainGrid = () => {
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _: GridCallbackDetails<"pagination">,
   ) => {
     setLimit(model.pageSize);
@@ -76,6 +78,10 @@ const ProductMainGrid = () => {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Products
       </Typography>
+
+      {/* consume data */}
+      {data && <ConsumeData meta={data.meta} />}
+
       <Stack direction="row" pb={1}>
         <Button
           variant="contained"

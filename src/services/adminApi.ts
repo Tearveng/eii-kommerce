@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { store } from "../redux.ts";
+import { RootState, store } from "../redux.ts";
 import { IUploadImageResponse } from "./types/ProductInterface";
 import {
   IUser,
@@ -13,6 +13,13 @@ export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `http://${import.meta.env.VITE_HOST}:4001/admin`,
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).application.user?.access_token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ["Admin", "User"],
   endpoints: (builder) => ({
@@ -77,7 +84,11 @@ export const adminApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            role = "ALL",
+          } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           const { data } = await queryFulfilled;
           dispatch(
@@ -86,6 +97,7 @@ export const adminApi = createApi({
               {
                 limit: Number(limit),
                 page: Number(page),
+                role,
               },
               (draft) => {
                 const cpData = [...draft.data];
@@ -123,7 +135,11 @@ export const adminApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            role = "ALL",
+          } = queryObject as Record<string, any>;
           const { data } = await queryFulfilled;
           dispatch(
             adminApi.util.updateQueryData(
@@ -131,6 +147,7 @@ export const adminApi = createApi({
               {
                 limit: Number(limit),
                 page: Number(page),
+                role,
               },
               (draft) => {
                 // Filter out the deleted post from the cached posts
@@ -165,7 +182,11 @@ export const adminApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20 } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            role = "ALL",
+          } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           await queryFulfilled;
           dispatch(
@@ -174,6 +195,7 @@ export const adminApi = createApi({
               {
                 limit: Number(limit),
                 page: Number(page),
+                role,
               },
               (draft) => {
                 // Filter out the deleted post from the cached posts
@@ -201,6 +223,60 @@ export const adminApi = createApi({
         method: "GET",
         params: { search, key },
       }),
+    }),
+
+    /** Change user role */
+    changeRoleUser: builder.mutation<
+      IUserResponse,
+      { id: number; role: string }
+    >({
+      query: ({ id, role }) => ({
+        url: `/change-role/${id}`,
+        method: "PUT",
+        params: { role },
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        try {
+          const queryParams = new URLSearchParams(window.location.search);
+          const queryObject = {};
+          queryParams.forEach((value, key) => {
+            queryObject[key] = value;
+          });
+          const {
+            page = 1,
+            limit = 20,
+            role = "ALL",
+          } = queryObject as Record<string, any>;
+          // Wait for the delete mutation to be successful
+          const { data } = await queryFulfilled;
+          dispatch(
+            adminApi.util.updateQueryData(
+              "getAllUsers",
+              {
+                limit: Number(limit),
+                page: Number(page),
+                role,
+              },
+              (draft) => {
+                const cpData = [...draft.data];
+                // Filter out the deleted post from the cached posts
+                const tempIndex = draft.data.findIndex(
+                  (item) => item.id === id,
+                );
+                cpData[tempIndex] = data;
+                return {
+                  ...draft,
+                  data: cpData,
+                };
+              },
+            ),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the user:", error);
+        }
+      },
     }),
   }),
 });
