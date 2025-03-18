@@ -26,10 +26,11 @@ import {
 } from "../../../../../services/types/UserInterface.tsx";
 import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
 import { validateEmail } from "../../../../../utils/common.ts";
-import { useFindProduct } from "./useFindProduct.tsx";
+import CodeBlockToPdf from "../../../../../utils/internals/CodeBlockToPdf.tsx";
+import { useSelectProductType } from "../../products/hooks/useSelectProductType.tsx";
+import { useFindStock } from "./useFindStock.tsx";
 import { useFindUser } from "./useFindUser.tsx";
 import { usePreview } from "./usePreview.tsx";
-import CodeBlockToPdf from "../../../../../utils/internals/CodeBlockToPdf.tsx";
 
 const OrderCreate = () => {
   const { user } = useAppSelector(state => state.application)
@@ -50,7 +51,8 @@ const OrderCreate = () => {
     formData,
   });
   const { returnJsx, selectOption, setSelectOption, setSearchValue } =
-    useFindProduct();
+    useFindStock();
+  const { select: selectType, selectTypeJSX } = useSelectProductType();
   const { previewReceipt } = usePreview({
     tableData: watchFormData,
   });
@@ -177,8 +179,8 @@ const OrderCreate = () => {
   const appendProduct = () => {
     if (selectOption) {
       const duplicateCode = watchProducts
-        .flatMap((item) => item.code)
-        .includes(selectOption.code);
+        .flatMap((item) => item.skuCode)
+        .includes(selectOption.skuCode);
       if (duplicateCode || typeof selectOption === "string") {
         return;
       }
@@ -305,8 +307,8 @@ const OrderCreate = () => {
             variant="outlined"
             size="small"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-            // startIcon={<AddRoundedIcon />}
-            // onClick={() => navigate("/admin/products/create")}
+          // startIcon={<AddRoundedIcon />}
+          // onClick={() => navigate("/admin/products/create")}
           >
             Clear
           </Button>
@@ -315,7 +317,7 @@ const OrderCreate = () => {
             variant="contained"
             size="medium"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-            // onClick={() => navigate("/admin/products/create")}
+          // onClick={() => navigate("/admin/products/create")}
           >
             Save
           </Button>
@@ -490,12 +492,12 @@ const OrderCreate = () => {
                 </Stack>
                 <Stack gap={0.5} maxWidth={150} flexGrow={1}>
                   <Typography variant="body2" color="textSecondary">
-                    Code
+                    Sku code
                   </Typography>
                   <InputText
                     formData={formData}
-                    name={`products.${index}.code`}
-                    placeholder="Code"
+                    name={`products.${index}.skuCode`}
+                    placeholder="Skucode"
                     inputPropsTextField={{
                       disabled: true,
                     }}
@@ -503,7 +505,7 @@ const OrderCreate = () => {
                     rules={{
                       required: {
                         value: true,
-                        message: "Code is required",
+                        message: "Skucode is required",
                       },
                     }}
                   />
@@ -634,7 +636,7 @@ const OrderCreate = () => {
                 size="small"
                 sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
                 startIcon={<PreviewOutlinedIcon sx={{ width: 14 }} />}
-                // onClick={() => navigate("/admin/products/create")}
+              // onClick={() => navigate("/admin/products/create")}
               >
                 Preview
               </Button>

@@ -4,7 +4,7 @@ import {
   IStock,
   IStockCreatePayload,
   IStockGetAllPayload,
-  IStockResponse
+  IStockResponse,
 } from "./types/ProductInterface.tsx";
 
 export const stocktApi = createApi({
@@ -16,7 +16,7 @@ export const stocktApi = createApi({
   endpoints: (builder) => ({
     /** Get all stocks */
     getAllStocks: builder.query<IStock, IStockGetAllPayload>({
-      query: ({ limit = 10, page = 1, type = StockType.STOCK, }) => ({
+      query: ({ limit = 10, page = 1, type = StockType.STOCK }) => ({
         url: "/",
         method: "GET",
         params: { limit, page, type },
@@ -40,7 +40,11 @@ export const stocktApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20,type = StockType.STOCK } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            type = StockType.STOCK,
+          } = queryObject as Record<string, any>;
           const { data } = await queryFulfilled;
           dispatch(
             stocktApi.util.updateQueryData(
@@ -48,7 +52,7 @@ export const stocktApi = createApi({
               {
                 limit: Number(limit),
                 page: Number(page),
-                type
+                type,
               },
               (draft) => {
                 // Filter out the deleted post from the cached posts
@@ -59,8 +63,8 @@ export const stocktApi = createApi({
                   },
                   data: [data, ...draft.data],
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -87,7 +91,11 @@ export const stocktApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20, type = StockType.STOCK } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            type = StockType.STOCK,
+          } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           const { data } = await queryFulfilled;
           dispatch(
@@ -102,15 +110,15 @@ export const stocktApi = createApi({
                 const cpData = [...draft.data];
                 // Filter out the deleted post from the cached posts
                 const tempIndex = draft.data.findIndex(
-                  (item) => item.id === id,
+                  (item) => item.id === id
                 );
                 cpData[tempIndex] = data;
                 return {
                   ...draft,
                   data: cpData,
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -133,7 +141,11 @@ export const stocktApi = createApi({
           queryParams.forEach((value, key) => {
             queryObject[key] = value;
           });
-          const { page = 1, limit = 20, type = StockType.STOCK } = queryObject as Record<string, any>;
+          const {
+            page = 1,
+            limit = 20,
+            type = StockType.STOCK,
+          } = queryObject as Record<string, any>;
           // Wait for the delete mutation to be successful
           await queryFulfilled;
           dispatch(
@@ -153,8 +165,8 @@ export const stocktApi = createApi({
                   },
                   data: draft.data.filter((product) => product.id !== id),
                 };
-              },
-            ),
+              }
+            )
           );
         } catch (error) {
           // Handle error (if any)
@@ -163,6 +175,15 @@ export const stocktApi = createApi({
       },
       // Invalidate the tag of the deleted post and the 'LIST'
       // invalidatesTags: (_result, _error, { id }) => [{ type: "Product", id }],
+    }),
+
+    /** Search stock by name / code / sku code base on type **/
+    searchStocks: builder.query<IStock, { search: string; type: string }>({
+      query: ({ search, type }) => ({
+        url: "/search-stocks",
+        method: "GET",
+        params: { search, type },
+      }),
     }),
 
     // /** Search product by name / code / sku code **/
@@ -207,6 +228,7 @@ export const {
   useGetStockByIdQuery,
   useUpdateStockMutation,
   useDeleteStockMutation,
+  useSearchStocksQuery,
   // useGetProductByIdQuery,
   // useUploadImageMutation,
   // useDeleteImageMutation,

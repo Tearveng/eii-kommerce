@@ -2,29 +2,58 @@ import {
   Autocomplete,
   Box,
   Divider,
-  TextField
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import { useSearchProductsQuery } from "../../../../../services/productApi.ts";
+import { useSearchStocksQuery } from "../../../../../services/stockApi.ts";
 import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import { StockType } from "../../../../../utils/constant.ts";
 
-export function useFindProduct() {
+export function useFindStock() {
   // const [searchBy, setSearchBy] = useState<string>("1");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [select, setSelect] = useState<StockType>(StockType.STOCK);
   const [selectOption, setSelectOption] = useState<IProductResponse | null>(
     null
   );
 
   /** end-point */
-  const { data, isLoading, isFetching } = useSearchProductsQuery(
+  const { data, isLoading, isFetching } = useSearchStocksQuery(
     {
       search: searchValue,
+      type: select,
     },
     { skip: searchValue.length < 3 }
   );
 
+  const handleChange = (e: SelectChangeEvent<StockType>) => {
+    setSelect(e.target.value as StockType);
+  };
+
+  // const onSearchBy = (event: SelectChangeEvent) => {
+  //   setSearchBy(event.target.value);
+  // };
+
+  // const onClickListDown = (
+  //   option: IProductResponse,
+  //   event?: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  // ) => {
+  //   return setSelectOption(option);
+  // };
+
+  // const handleKeyboardEvent = (
+  //   event: React.KeyboardEvent<HTMLLIElement>,
+  //   option: IProductResponse,
+  // ) => {
+  //   if (event.key === "Enter" || event.key === " ") {
+  //     onClickListDown(option);
+  //   }
+  // };
   const handleOptionChange = (_event: React.SyntheticEvent, value: any) => {
     setSelectOption(value);
   };
@@ -50,6 +79,13 @@ export function useFindProduct() {
                 <Typography variant="caption" color="warning">
                   Noted: Name / Code / Sku code
                 </Typography>
+                <Select size="small" value={select} onChange={handleChange}>
+                  <MenuItem value={StockType.STOCK}>{StockType.STOCK}</MenuItem>
+                  <MenuItem value={StockType.PRE_STOCK}>
+                    {StockType.PRE_STOCK}
+                  </MenuItem>
+                  <MenuItem value={StockType.LIVE}>{StockType.LIVE}</MenuItem>
+                </Select>
               </Stack>
             </Stack>
             <Autocomplete
@@ -73,8 +109,8 @@ export function useFindProduct() {
                   {...props}
                   key={option.id}
                   component="li"
-                // onClick={(event) => onClickListDown(option, event)}
-                // onKeyDown={(event) => handleKeyboardEvent(event, option)}
+                  // onClick={(event) => onClickListDown(option, event)}
+                  // onKeyDown={(event) => handleKeyboardEvent(event, option)}
                 >
                   {/* Use a unique key for each item */}
                   <Stack direction="row" gap={1}>
@@ -116,5 +152,5 @@ export function useFindProduct() {
     );
   };
 
-  return { returnJsx, selectOption, setSelectOption, setSearchValue };
+  return { returnJsx, selectOption, setSelectOption, setSearchValue, select };
 }

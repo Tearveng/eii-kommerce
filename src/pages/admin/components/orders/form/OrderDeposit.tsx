@@ -30,6 +30,7 @@ import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { useFindProduct } from "./useFindProduct.tsx";
 import { usePreview } from "./usePreview.tsx";
 import { useFindUser } from "./useFindUser.tsx";
+import { useFindStock } from "./useFindStock.tsx";
 
 export type IDepositRegister = IUserResponse & {
   address: string;
@@ -41,7 +42,7 @@ const OrderDeposit = () => {
   const param = useParams();
   const formData = useForm<IDepositRegister>();
   const [focusField, setFocusField] = useState<keyof IUserResponse | null>(
-    null,
+    null
   );
   const formDataArray = useFieldArray({
     control: formData.control,
@@ -54,7 +55,7 @@ const OrderDeposit = () => {
     formData,
   });
   const { returnJsx, selectOption, setSelectOption, setSearchValue } =
-    useFindProduct();
+    useFindStock();
   const { previewReceipt } = usePreview();
   const [files, setFiles] = useState<IUploadImageResponse[]>([]);
 
@@ -73,7 +74,7 @@ const OrderDeposit = () => {
     {
       id: Number(param.id),
     },
-    { skip: !param.id, refetchOnMountOrArgChange: true },
+    { skip: !param.id, refetchOnMountOrArgChange: true }
   );
 
   const handleFocusField = (keyField: keyof IUserResponse) => {
@@ -87,7 +88,7 @@ const OrderDeposit = () => {
   const createUser = async (
     data: IUserCreatePayload,
     imageUrl?: string,
-    publicId?: string,
+    publicId?: string
   ) => {
     return create({
       firstName: data.firstName,
@@ -106,7 +107,7 @@ const OrderDeposit = () => {
   const updateUser = async (
     data: IUserResponse,
     imageUrl?: string,
-    publicId?: string,
+    publicId?: string
   ) => {
     const profile2 = imageUrl && imageUrl !== "" ? imageUrl : data.profile;
     const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
@@ -276,7 +277,7 @@ const OrderDeposit = () => {
       <Box
         component="form"
         onSubmit={formData.handleSubmit(
-          param.id ? handleUpdateSubmit : handleSubmit,
+          param.id ? handleUpdateSubmit : handleSubmit
         )}
         noValidate
         sx={{
@@ -313,7 +314,7 @@ const OrderDeposit = () => {
                   }}
                 />
               ),
-              "firstName",
+              "firstName"
             )}
           </Stack>
           <Stack gap={0.5} flexGrow={1}>
@@ -341,7 +342,7 @@ const OrderDeposit = () => {
                   }}
                 />
               ),
-              "lastName",
+              "lastName"
             )}
           </Stack>
         </Stack>
@@ -372,7 +373,7 @@ const OrderDeposit = () => {
                   }}
                 />
               ),
-              "email",
+              "email"
             )}
           </Stack>
           <Stack gap={0.5} flexGrow={1}>
@@ -393,7 +394,7 @@ const OrderDeposit = () => {
                   }}
                 />
               ),
-              "phone",
+              "phone"
             )}
           </Stack>
         </Stack>
