@@ -24,8 +24,6 @@ import AppLayout from "./pages/layout/authentication/Layout.tsx";
 import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
-import AdminMainGrid from "./pages/admin/components/users/AdminMainGrid.tsx";
-import ClientMainGrid from "./pages/admin/components/users/ClientMainGrid.tsx";
 import AllMainGrid from "./pages/admin/components/users/AllMainGrid.tsx";
 
 const AppRouter = () => {
@@ -67,6 +65,7 @@ const AppRouter = () => {
         <Route path="products/stock/update/:id" element={<StockCreate />} />
         <Route path="products/pre-stock/update/:id" element={<StockCreate />} />
         <Route path="products/live/update/:id" element={<StockCreate />} />
+
         {/* route settings */}
         <Route path="/admin/settings" element={<Settings />}>
           <Route index path="general" element={<General />} />
@@ -77,6 +76,7 @@ const AppRouter = () => {
             element={<UserPermission />}
           />
         </Route>
+
         {/* route order */}
         <Route path="/admin/orders" element={<OrderMainGrid />} />
         <Route path="/admin/orders/create" element={<OrderCreate />} />

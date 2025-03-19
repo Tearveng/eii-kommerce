@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, InputAdornment } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -19,6 +19,7 @@ import {
   IUploadImageResponse,
 } from "../../../../../services/types/ProductInterface";
 import DropZoneUpload from "../../DropZoneUpload";
+import { generateRandomNumber } from "../../../../../utils/common.ts";
 
 const ProductCreate = () => {
   const navigate = useNavigate();
@@ -74,9 +75,9 @@ const ProductCreate = () => {
 
   const validateNumber = (num: number) => {
     if (num < 0) {
-      return "Value can't less than 0"
+      return "Value can't less than 0";
     }
-  }
+  };
 
   const createProduct = async (
     data: IProductResponse,
@@ -111,7 +112,7 @@ const ProductCreate = () => {
       name: data.name,
       description: data.description,
       skuCode: data.skuCode,
-      code: "",
+      code: data.code,
       price: data.price,
       quantity: data.quantity,
       publicId: files.length > 0 ? publicId2 : "",
@@ -141,6 +142,7 @@ const ProductCreate = () => {
   };
 
   const handleUpdateSubmit = async (data: IProductResponse) => {
+    console.log("data", data);
     if (files.length > 0) {
       for (const f of files.flatMap((i) => i.originalFile)) {
         const form = new FormData();
@@ -158,6 +160,12 @@ const ProductCreate = () => {
     } else {
       await updateProduct(data, "", "");
     }
+  };
+
+  const handleGenerateCode = () => {
+    const code = generateRandomNumber();
+    formData.setValue("skuCode", code);
+    formData.trigger("skuCode");
   };
 
   useEffect(() => {
@@ -266,6 +274,25 @@ const ProductCreate = () => {
             name="skuCode"
             placeholder="Sku Code"
             error={formData.formState.errors["skuCode"]}
+            inputPropsTextField={{
+              slotProps: {
+                input: {
+                  endAdornment: !param.id && (
+                    <InputAdornment position="start">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        sx={{ maxHeight: "12px" }}
+                        onClick={handleGenerateCode}
+                      >
+                        Get code
+                      </Button>
+                    </InputAdornment>
+                  ),
+                },
+              },
+              disabled: true,
+            }}
             rules={{
               required: {
                 value: true,
@@ -296,7 +323,7 @@ const ProductCreate = () => {
                 value: true,
                 message: "Price is required",
               },
-              validate: (val: any) => validateNumber(val)
+              validate: (val: any) => validateNumber(val),
             }}
           />
         </Stack>
@@ -322,7 +349,7 @@ const ProductCreate = () => {
                 value: true,
                 message: "Quantity is required",
               },
-              validate: (val: any) => validateNumber(val)
+              validate: (val: any) => validateNumber(val),
             }}
           />
         </Stack>

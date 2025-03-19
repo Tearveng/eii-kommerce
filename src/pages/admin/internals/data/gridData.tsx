@@ -19,6 +19,7 @@ import {
   dispatchDeleteProductId,
   dispatchDeleteStockId,
   dispatchDeleteUserId,
+  dispatchPreviewOrder,
   dispatchPreviewRow,
 } from "../../../../redux/application.ts";
 import { dateShortFormat } from "../../../../utils/common.ts";
@@ -128,7 +129,7 @@ export function renderAvatar(
 
 export function renderActions(
   param: GridRenderCellParams,
-  type: "product" | "client" | "stock",
+  type: "product" | "client" | "stock" | "order",
 ) {
   const actionsBtn = {
     ["product"]: {
@@ -138,6 +139,12 @@ export function renderActions(
     },
     ["stock"]: {
       preview: () => store.dispatch(dispatchPreviewRow({ ...param.row, type })),
+      edit: `/admin/products/${mapPathType(param.row.productType)}/update/${param.id}${window.location.search}`,
+      delete: () => store.dispatch(dispatchDeleteStockId(Number(param.id))),
+    },
+    ["order"]: {
+      preview: () =>
+        store.dispatch(dispatchPreviewOrder({ ...param.row, type })),
       edit: `/admin/products/${mapPathType(param.row.productType)}/update/${param.id}${window.location.search}`,
       delete: () => store.dispatch(dispatchDeleteStockId(Number(param.id))),
     },
@@ -259,7 +266,7 @@ export const orderColumns: GridColDef[] = [
     headerName: "Id",
     flex: 1,
     minWidth: 100,
-    renderCell: (param) => param.value.toString().padStart(6, '0')
+    renderCell: (param) => param.value.toString().padStart(6, "0"),
   },
   {
     field: "coupoCode",
@@ -324,7 +331,7 @@ export const orderColumns: GridColDef[] = [
     headerAlign: "center",
     flex: 1.2,
     minWidth: 120,
-    renderCell: (param) => renderActions(param, "product"),
+    renderCell: (param) => renderActions(param, "order"),
   },
 ];
 

@@ -11,12 +11,19 @@ const initialState: IApplication = {
   deleteStockId: null,
   user: null,
   previewRow: null,
+  previewOrder: null,
 };
 
 export const applicationSlice = createSlice({
   name: "application",
   initialState,
   reducers: {
+    dispatchPreviewOrder: (
+      state,
+      { payload }: { payload: IPreviewRow | null },
+    ) => {
+      state.previewOrder = payload;
+    },
     dispatchPreviewRow: (
       state,
       { payload }: { payload: IPreviewRow | null },
@@ -63,6 +70,7 @@ export const applicationSlice = createSlice({
 });
 
 export const {
+  dispatchPreviewOrder,
   dispatchPreviewRow,
   dispatchDeleteStockId,
   clearDeleteStockId,

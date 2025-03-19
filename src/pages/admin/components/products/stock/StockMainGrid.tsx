@@ -21,11 +21,11 @@ const lastPathName = (pathname: string) => {
   const splitPathname = pathname.split("/");
   const lastPathname = splitPathname[splitPathname.length - 1];
 
-  return lastPathname
-}
+  return lastPathname;
+};
 
 const mapPathName = (pathname: string): StockType => {
-  const path = lastPathName(pathname)
+  const path = lastPathName(pathname);
   const type = {
     ["stock"]: StockType.STOCK,
     ["pre-stock"]: StockType.PRE_STOCK,
@@ -36,16 +36,17 @@ const mapPathName = (pathname: string): StockType => {
 };
 
 export const titleName = (pathname: string): StockType => {
-  const path = lastPathName(pathname)
+  const path = lastPathName(pathname);
   const type = {
-    ["stock"]: 'Stock',
-    ["pre-stock"]: 'Pre stock',
-    ["live"]: 'Live',
+    ["stock"]: "Stock",
+    ["pre-stock"]: "Pre stock",
+    ["live"]: "Live",
   };
 
-  return type[path] ?? 'Stock';
+  return type[path] ?? "Stock";
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const mapPathType = (type: StockType) => {
   const pathType = {
     [StockType.STOCK]: "stock",
@@ -53,8 +54,8 @@ export const mapPathType = (type: StockType) => {
     [StockType.LIVE]: "live",
   };
 
-  return pathType[type]
-}
+  return pathType[type];
+};
 
 const StockMainGrid = () => {
   const navigate = useNavigate();
@@ -71,13 +72,13 @@ const StockMainGrid = () => {
   } = useGetAllStocksQuery({
     limit: Number(limit),
     page: Number(page),
-    type: typePath
+    type: typePath,
   });
   const [stocks, setStocks] = useState<IStockDataGrid[]>([]);
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
-    _: GridCallbackDetails<"pagination">
+    _: GridCallbackDetails<"pagination">,
   ) => {
     setLimit(model.pageSize);
     setPage(model.page + 1);
@@ -126,7 +127,11 @@ const StockMainGrid = () => {
           size="small"
           sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
           startIcon={<AddRoundedIcon />}
-          onClick={() => navigate(`/admin/products/${lastPathName(location.pathname)}/create${window.location.search}`)}
+          onClick={() =>
+            navigate(
+              `/admin/products/${lastPathName(location.pathname)}/create${window.location.search}`,
+            )
+          }
         >
           Add stock
         </Button>

@@ -7,21 +7,22 @@ import {
   Typography,
 } from "@mui/material";
 import { useAppSelector } from "../../../../redux.ts";
-import PreviewCardProduct from "./PreviewCardProduct.tsx";
 import { useEffect, useState } from "react";
+import PreviewCardProduct from "./PreviewCardProduct.tsx";
+import PreviewCardOrder from "./PreviewCardOrder.tsx";
 
-const PreviewDialog = () => {
-  const { previewRow } = useAppSelector((state) => state.application);
+const PreviewOrderDialog = () => {
+  const { previewOrder } = useAppSelector((state) => state.application);
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    if (previewRow) {
+    if (previewOrder) {
       setOpen(true);
     }
-  }, [previewRow]);
+  }, [previewOrder]);
 
   return (
     <Dialog
@@ -50,8 +51,8 @@ const PreviewDialog = () => {
         </Stack>
       </DialogTitle>
       <DialogContent>
-        {previewRow && (
-          <PreviewCardProduct product={previewRow} handleClose={handleClose} />
+        {previewOrder && (
+          <PreviewCardOrder order={previewOrder} handleClose={handleClose} />
         )}
       </DialogContent>
       <DialogActions></DialogActions>
@@ -59,4 +60,4 @@ const PreviewDialog = () => {
   );
 };
 
-export default PreviewDialog;
+export default PreviewOrderDialog;

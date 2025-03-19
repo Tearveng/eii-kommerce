@@ -1,10 +1,10 @@
 import { Box, Stack } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { alpha } from "@mui/material/styles";
-import type { } from "@mui/x-charts/themeAugmentation";
-import type { } from "@mui/x-data-grid/themeAugmentation";
-import type { } from "@mui/x-date-pickers/themeAugmentation";
-import type { } from "@mui/x-tree-view/themeAugmentation";
+import type {} from "@mui/x-charts/themeAugmentation";
+import type {} from "@mui/x-data-grid/themeAugmentation";
+import type {} from "@mui/x-date-pickers/themeAugmentation";
+import type {} from "@mui/x-tree-view/themeAugmentation";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthWatcher } from "../../../hooks/useAuthWatcher.tsx";
 import { authService } from "../../../services/service/AuthService.ts";
@@ -18,6 +18,7 @@ import UserDeleteDialog from "../components/users/dialog/UserDeleteDialog.tsx";
 import { chartsCustomizations } from "../theme/charts.ts";
 import { dataGridCustomizations } from "../theme/dataGrid.ts";
 import Header from "./Header.tsx";
+import PreviewOrderDialog from "../components/ui/PreviewOrderDialog.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -65,6 +66,7 @@ const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
       <StockDeleteDialog />
       <UserDeleteDialog />
       <PreviewDialog />
+      <PreviewOrderDialog />
     </AppTheme>
   );
 };

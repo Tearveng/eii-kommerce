@@ -9,7 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useAppSelector } from "../../../../../redux.ts";
-import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import {
+  IProductResponse,
+  IStockResponse,
+} from "../../../../../services/types/ProductInterface.tsx";
 import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import { gray } from "../../../share-theme/themePrimitives.ts";
 
@@ -50,11 +53,11 @@ const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 export interface IUsePreview {
-  tableData: IUserResponse & { products: IProductResponse[] };
+  tableData: IUserResponse & { stocks: IStockResponse[] };
 }
 
 export const usePreview = (props: IUsePreview) => {
-  const { user } = useAppSelector(state => state.application)
+  const { user } = useAppSelector((state) => state.application);
   const calculateTotal = (numbers: number[]) => {
     return numbers.reduce((accumulator, currentValue) => {
       return accumulator + currentValue;
@@ -223,7 +226,7 @@ export const usePreview = (props: IUsePreview) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.tableData.products.map((row) => (
+                {props.tableData.stocks.map((row) => (
                   <TableRow key={row.name}>
                     <TableCell
                       sx={{
@@ -278,8 +281,10 @@ export const usePreview = (props: IUsePreview) => {
                   >
                     {ccyFormat(
                       calculateTotal(
-                        props.tableData.products.flatMap((i) => i.price * i.quantity)
-                      )
+                        props.tableData.stocks.flatMap(
+                          (i) => i.price * i.quantity,
+                        ),
+                      ),
                     )}
                   </TableCell>
                 </TableRow>

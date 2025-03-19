@@ -8,6 +8,7 @@ export interface IApplication {
   productCurrentPage: number;
   user: IUserInfoRedux | null;
   previewRow: IPreviewRow | null;
+  previewOrder: IPreviewRow | null;
   snackbarMessage: string | null;
   snackbarStatus: ISnackbarStatus;
 }

@@ -11,16 +11,14 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useSearchStocksQuery } from "../../../../../services/stockApi.ts";
-import { IProductResponse } from "../../../../../services/types/ProductInterface.tsx";
+import { IStockResponse } from "../../../../../services/types/ProductInterface.tsx";
 import { StockType } from "../../../../../utils/constant.ts";
 
 export function useFindStock() {
   // const [searchBy, setSearchBy] = useState<string>("1");
   const [searchValue, setSearchValue] = useState<string>("");
   const [select, setSelect] = useState<StockType>(StockType.STOCK);
-  const [selectOption, setSelectOption] = useState<IProductResponse | null>(
-    null
-  );
+  const [selectOption, setSelectOption] = useState<IStockResponse | null>(null);
 
   /** end-point */
   const { data, isLoading, isFetching } = useSearchStocksQuery(
@@ -28,7 +26,7 @@ export function useFindStock() {
       search: searchValue,
       type: select,
     },
-    { skip: searchValue.length < 3 }
+    { skip: searchValue.length < 3 },
   );
 
   const handleChange = (e: SelectChangeEvent<StockType>) => {
@@ -90,7 +88,7 @@ export function useFindStock() {
             </Stack>
             <Autocomplete
               defaultValue={undefined}
-              value={selectOption as IProductResponse | undefined}
+              value={selectOption as IStockResponse | undefined}
               onChange={handleOptionChange}
               freeSolo
               size="small"

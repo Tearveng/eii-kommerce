@@ -14,16 +14,15 @@ import { useAppSelector } from "../../../../../redux.ts";
 import {
   useDeleteImageMutation,
   useUpdateUserMutation,
-  useUploadImageMutation
+  useUploadImageMutation,
 } from "../../../../../services/adminApi.ts";
 import { useCreateOrderMutation } from "../../../../../services/orderApi.ts";
 import {
   IProductResponse,
+  IStockResponse,
   IUploadImageResponse,
 } from "../../../../../services/types/ProductInterface.tsx";
-import {
-  IUserResponse
-} from "../../../../../services/types/UserInterface.tsx";
+import { IUserResponse } from "../../../../../services/types/UserInterface.tsx";
 import { useGetUserByIdQuery } from "../../../../../services/userApi.ts";
 import { validateEmail } from "../../../../../utils/common.ts";
 import CodeBlockToPdf from "../../../../../utils/internals/CodeBlockToPdf.tsx";
@@ -33,20 +32,20 @@ import { useFindUser } from "./useFindUser.tsx";
 import { usePreview } from "./usePreview.tsx";
 
 const OrderCreate = () => {
-  const { user } = useAppSelector(state => state.application)
+  const { user } = useAppSelector((state) => state.application);
   const navigate = useNavigate();
   const param = useParams();
   const [focusField, setFocusField] = useState<keyof IUserResponse | null>(
     null,
   );
-  const formData = useForm<IUserResponse & { products: IProductResponse[] }>();
+  const formData = useForm<IUserResponse & { stocks: IStockResponse[] }>();
   const formDataArray = useFieldArray({
     control: formData.control,
-    name: "products",
+    name: "stocks",
   });
   const watchFormData = formData.watch();
-  const watchProducts = formData.watch("products");
-  const { findUserJsx, selectUser, setSelectUser } = useFindUser({
+  const watchProducts = formData.watch("stocks");
+  const { findUserJsx, selectUser } = useFindUser({
     key: focusField ?? "firstName",
     formData,
   });
@@ -108,24 +107,24 @@ const OrderCreate = () => {
   };
 
   const createOrder = async (
-    data: IUserResponse & { products: IProductResponse[] },
+    data: IUserResponse & { stocks: IStockResponse[] },
   ) => {
     if (user) {
-      const products = data.products.map(p => ({
+      const stocks = data.stocks.map((p) => ({
         id: p.id,
         skuCode: p.skuCode,
         quantity: p.quantity,
         discount: 0,
-      }))
+      }));
 
       return create({
         clientId: data.id,
         profileId: user.id,
         address: data.address,
-        items: products
+        items: stocks,
       })
         .unwrap()
-        .then(() => navigate("/admin/people?page=1&limit=20"))
+        .then(() => navigate("/admin/orders?page=1&limit=20"))
         .catch((e) => console.error(e));
     }
   };
@@ -148,12 +147,14 @@ const OrderCreate = () => {
       profile: files.length > 0 ? profile2 : "",
     })
       .unwrap()
-      .then(() => navigate(`/admin/people${window.location.search}`))
+      .then(() => navigate(`/admin/orders${window.location.search}`))
       .catch((e) => console.error(e));
   };
 
-  const handleSubmit = async (data: IUserResponse & { products: IProductResponse[] }) => {
-    await createOrder(data)
+  const handleSubmit = async (
+    data: IUserResponse & { stocks: IStockResponse[] },
+  ) => {
+    await createOrder(data);
   };
 
   const handleUpdateSubmit = async (data: IUserResponse) => {
@@ -189,6 +190,7 @@ const OrderCreate = () => {
         id: 1,
         name: selectOption.name,
         description: selectOption.description,
+        type: selectOption.type,
         code: selectOption.code,
         skuCode: selectOption.skuCode,
         price: selectOption.price,
@@ -234,8 +236,8 @@ const OrderCreate = () => {
         lastName: selectUser.lastName,
         email: selectUser.email,
         phone: selectUser.phone,
-        address: '',
-        products: watchProducts
+        address: "",
+        stocks: watchProducts,
       });
     }
   };
@@ -307,8 +309,8 @@ const OrderCreate = () => {
             variant="outlined"
             size="small"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-          // startIcon={<AddRoundedIcon />}
-          // onClick={() => navigate("/admin/products/create")}
+            // startIcon={<AddRoundedIcon />}
+            // onClick={() => navigate("/admin/products/create")}
           >
             Clear
           </Button>
@@ -317,7 +319,7 @@ const OrderCreate = () => {
             variant="contained"
             size="medium"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-          // onClick={() => navigate("/admin/products/create")}
+            // onClick={() => navigate("/admin/products/create")}
           >
             Save
           </Button>
@@ -476,7 +478,7 @@ const OrderCreate = () => {
                   </Typography>
                   <InputText
                     formData={formData}
-                    name={`products.${index}.name`}
+                    name={`stocks.${index}.name`}
                     placeholder="Product name"
                     inputPropsTextField={{
                       disabled: true,
@@ -496,7 +498,7 @@ const OrderCreate = () => {
                   </Typography>
                   <InputText
                     formData={formData}
-                    name={`products.${index}.skuCode`}
+                    name={`stocks.${index}.skuCode`}
                     placeholder="Skucode"
                     inputPropsTextField={{
                       disabled: true,
@@ -510,8 +512,27 @@ const OrderCreate = () => {
                     }}
                   />
                 </Stack>
+                <Stack gap={0.5} maxWidth={100} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Type
+                  </Typography>
+                  <InputText
+                    formData={formData}
+                    name={`stocks.${index}.type`}
+                    placeholder="Type"
+                    inputPropsTextField={{
+                      disabled: true,
+                    }}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Skucode is required",
+                      },
+                    }}
+                  />
+                </Stack>
                 {watchProducts[index].thumbnail && (
-                  <Stack gap={0.5} maxWidth={150} flexGrow={1}>
+                  <Stack gap={0.5} maxWidth={80} flexGrow={1}>
                     <Typography variant="body2" color="textSecondary">
                       Image
                     </Typography>
@@ -541,7 +562,7 @@ const OrderCreate = () => {
                       },
                     }}
                     formData={formData}
-                    name={`products.${index}.price`}
+                    name={`stocks.${index}.price`}
                     placeholder="Price"
                     // error={formData.formState.errors[""]}
                     rules={{
@@ -570,7 +591,7 @@ const OrderCreate = () => {
                       onPaste: handleOnPast,
                     }}
                     formData={formData}
-                    name={`products.${index}.quantity`}
+                    name={`stocks.${index}.quantity`}
                     placeholder="QTY"
                     // error={formData.formState.errors[""]}
                     rules={{
@@ -636,7 +657,7 @@ const OrderCreate = () => {
                 size="small"
                 sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
                 startIcon={<PreviewOutlinedIcon sx={{ width: 14 }} />}
-              // onClick={() => navigate("/admin/products/create")}
+                // onClick={() => navigate("/admin/products/create")}
               >
                 Preview
               </Button>
