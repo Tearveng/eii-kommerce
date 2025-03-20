@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
-import { store } from "../../../../redux.ts";
+import { store, useAppSelector } from "../../../../redux.ts";
 import {
   dispatchDeleteProductId,
   dispatchDeleteUserId,
@@ -17,12 +17,11 @@ import {
 import { Link } from "react-router-dom";
 import { IPreviewRow } from "../../../../redux/type.ts";
 export interface IPreviewCardOrderProps {
-  order: IPreviewRow;
   handleClose: () => void;
 }
 
 const PreviewCardOrder = (props: IPreviewCardOrderProps) => {
-  const { order } = props;
+  const { previewOrder } = useAppSelector((state) => state.application);
   const actionsBtn = {
     ["product"]: {
       edit: `/admin/products/update/${product.id}${window.location.search}`,
@@ -39,6 +38,7 @@ const PreviewCardOrder = (props: IPreviewCardOrderProps) => {
       },
     },
   };
+  console.log("previewOrder", previewOrder);
 
   return (
     <Card sx={{ maxWidth: 345 }}>

@@ -1,5 +1,5 @@
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { Button, Stack } from "@mui/material";
+import { Button, CircularProgress, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
@@ -26,7 +26,7 @@ const AllMainGrid = () => {
     {
       limit: Number(limit),
       page: Number(page),
-      role: "ALL",
+      role: search.get("role") ?? "ALL",
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -64,7 +64,7 @@ const AllMainGrid = () => {
   }, [data, limit, page]);
 
   if (isLoading || isFetching) {
-    return <>loading...</>;
+    return <CircularProgress size="20px" color="inherit" />;
   }
 
   return (

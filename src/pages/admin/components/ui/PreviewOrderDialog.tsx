@@ -38,7 +38,7 @@ const PreviewOrderDialog = () => {
         <Stack direction="row" justifyContent="space-between">
           <Typography sx={{ visibility: "hidden" }}>X</Typography>
           <Typography variant="subtitle2" fontWeight={600} textAlign="center">
-            Product
+            Order
           </Typography>
           <Typography
             variant="subtitle2"
@@ -51,9 +51,7 @@ const PreviewOrderDialog = () => {
         </Stack>
       </DialogTitle>
       <DialogContent>
-        {previewOrder && (
-          <PreviewCardOrder order={previewOrder} handleClose={handleClose} />
-        )}
+        {previewOrder && <PreviewCardOrder handleClose={handleClose} />}
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>

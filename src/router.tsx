@@ -46,9 +46,9 @@ const AppRouter = () => {
 
         {/* route people */}
         <Route path="people" element={<AllMainGrid />} />
-        <Route path="people/user" element={<UserMainGrid />} />
-        <Route path="people/client" element={<ClientMainGrid />} />
-        <Route path="people/admin" element={<AdminMainGrid />} />
+        <Route path="people/user" element={<AllMainGrid />} />
+        <Route path="people/client" element={<AllMainGrid />} />
+        <Route path="people/admin" element={<AllMainGrid />} />
         <Route path="people/create" element={<UserCreate />} />
         <Route path="people/update/:id" element={<UserCreate />} />
 

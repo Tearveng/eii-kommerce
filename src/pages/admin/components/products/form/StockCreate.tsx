@@ -9,9 +9,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import InputText from "../../../../../components/Input/InputText.tsx";
 import {
   useDeleteImageMutation,
-  useUploadImageMutation
+  useUploadImageMutation,
 } from "../../../../../services/productApi.ts";
-import { useCreateStockMutation, useGetStockByIdQuery, useUpdateStockMutation } from "../../../../../services/stockApi.ts";
+import {
+  useCreateStockMutation,
+  useGetStockByIdQuery,
+  useUpdateStockMutation,
+} from "../../../../../services/stockApi.ts";
 import {
   IProductResponse,
   IStockResponse,
@@ -27,11 +31,11 @@ const lastPathName = (pathname: string, number = 2) => {
   const splitPathname = pathname.split("/");
   const lastPathname = splitPathname[splitPathname.length - number];
 
-  return lastPathname
-}
+  return lastPathname;
+};
 
 const mapPathName = (pathname: string): StockType => {
-  const path = lastPathName(pathname)
+  const path = lastPathName(pathname);
   const type = {
     ["stock"]: StockType.STOCK,
     ["pre-stock"]: StockType.PRE_STOCK,
@@ -42,21 +46,21 @@ const mapPathName = (pathname: string): StockType => {
 };
 
 const titleName = (pathname: string, number = 2): StockType => {
-  const path = lastPathName(pathname, number)
+  const path = lastPathName(pathname, number);
   const type = {
-    ["stock"]: 'stock',
-    ["pre-stock"]: 'pre stock',
-    ["live"]: 'live',
+    ["stock"]: "stock",
+    ["pre-stock"]: "pre stock",
+    ["live"]: "live",
   };
 
-  return type[path] ?? 'Stock';
+  return type[path] ?? "Stock";
 };
 
 const StockCreate = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const param = useParams();
-  const formData = useForm<IProductResponse & { type: StockType }>({
+  const formData = useForm<IStockResponse>({
     defaultValues: {
       type: mapPathName(location.pathname),
     },
@@ -80,7 +84,7 @@ const StockCreate = () => {
     {
       id: Number(param.id),
     },
-    { skip: !param.id, refetchOnMountOrArgChange: true }
+    { skip: !param.id, refetchOnMountOrArgChange: true },
   );
 
   const appendProduct = () => {
@@ -133,7 +137,7 @@ const StockCreate = () => {
         .unwrap()
         .then((res) => {
           setFiles((prev) =>
-            prev.filter((item) => item.public_id !== res.public_id)
+            prev.filter((item) => item.public_id !== res.public_id),
           );
         });
     } else {
@@ -144,11 +148,12 @@ const StockCreate = () => {
   const createProduct = async (
     data: IStockResponse,
     imageUrl?: string,
-    publicId?: string
+    publicId?: string,
   ) => {
     return create({
       name: data.name,
       description: data.description,
+      discount: data.discount,
       skuCode: data.skuCode,
       code: data.code,
       type: data.type,
@@ -158,15 +163,18 @@ const StockCreate = () => {
       thumbnail: imageUrl ?? "",
     })
       .unwrap()
-      .then(() => navigate(`/admin/products/${mapPathType(data.type)}?type=${data.type}&page=1&limit=20`))
+      .then(() =>
+        navigate(
+          `/admin/products/${mapPathType(data.type)}?type=${data.type}&page=1&limit=20`,
+        ),
+      )
       .catch((e) => console.error(e));
   };
-
 
   const updateStock = async (
     data: IStockResponse,
     imageUrl?: string,
-    publicId?: string
+    publicId?: string,
   ) => {
     const thumbnail2 = imageUrl && imageUrl !== "" ? imageUrl : data.thumbnail;
     const publicId2 = publicId && publicId !== "" ? publicId : data.publicId;
@@ -180,11 +188,16 @@ const StockCreate = () => {
       code: data.code,
       price: data.price,
       quantity: data.quantity,
+      discount: data.discount,
       publicId: files.length > 0 ? publicId2 : "",
       thumbnail: files.length > 0 ? thumbnail2 : "",
     })
       .unwrap()
-      .then(() => navigate(`/admin/products/${mapPathType(data.type)}${window.location.search}`))
+      .then(() =>
+        navigate(
+          `/admin/products/${mapPathType(data.type)}${window.location.search}`,
+        ),
+      )
       .catch((e) => console.error(e));
   };
 
@@ -231,14 +244,14 @@ const StockCreate = () => {
   const handleGenerateCode = () => {
     const code = generateRandomNumber();
     formData.setValue("skuCode", code);
-    formData.trigger("skuCode")
+    formData.trigger("skuCode");
   };
 
   const validateNumber = (num: number) => {
     if (num < 0) {
-      return "Value can't less than 0"
+      return "Value can't less than 0";
     }
-  }
+  };
 
   useEffect(() => {
     if (selectOption) {
@@ -259,6 +272,7 @@ const StockCreate = () => {
         code: stockById.code,
         type: stockById.type,
         skuCode: stockById.skuCode,
+        discount: stockById.discount,
         price: stockById.price,
         quantity: stockById.quantity,
         thumbnail: stockById.thumbnail,
@@ -293,12 +307,14 @@ const StockCreate = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        {param.id ? `Update ${titleName(location.pathname, 3)}` : `Add ${titleName(location.pathname, 2)}`}
+        {param.id
+          ? `Update ${titleName(location.pathname, 3)}`
+          : `Add ${titleName(location.pathname, 2)}`}
       </Typography>
       <Box
         component="form"
         onSubmit={formData.handleSubmit(
-          param.id ? handleUpdateSubmit : handleSubmit
+          param.id ? handleUpdateSubmit : handleSubmit,
         )}
         noValidate
         sx={{
@@ -310,7 +326,7 @@ const StockCreate = () => {
       >
         {/* <FormControl> */}
         <Stack direction="row" width="100%" gap={2}>
-          <Stack width="100%" gap={3.3}>
+          <Stack width="100%" gap={1}>
             {/* search product */}
             {!param.id && returnJsx()}
             <Stack gap={0.5}>
@@ -352,8 +368,28 @@ const StockCreate = () => {
                 }}
               />
             </Stack>
+            <Stack gap={0.5}>
+              <Typography variant="body2" color="textSecondary">
+                Discount
+              </Typography>
+              <InputText
+                formData={formData}
+                name="discount"
+                placeholder="Discount"
+                error={formData.formState.errors["discount"]}
+                inputPropsTextField={{
+                  type: "number",
+                  slotProps: {
+                    htmlInput: {
+                      min: 1,
+                      max: 100,
+                    },
+                  },
+                }}
+              />
+            </Stack>
           </Stack>
-          <Stack width="100%" gap={1}>
+          <Stack width="100%" gap={1.97}>
             <Stack gap={0.5}>
               <Typography variant="body2" color="textSecondary">
                 Type
@@ -406,16 +442,18 @@ const StockCreate = () => {
                 inputPropsTextField={{
                   slotProps: {
                     input: {
-                      endAdornment: !param.id && <InputAdornment position="start">
-                        <Button
-                          size="small"
-                          variant="contained"
-                          sx={{ maxHeight: "12px" }}
-                          onClick={handleGenerateCode}
-                        >
-                          Get code
-                        </Button>
-                      </InputAdornment>
+                      endAdornment: !param.id && (
+                        <InputAdornment position="start">
+                          <Button
+                            size="small"
+                            variant="contained"
+                            sx={{ maxHeight: "12px" }}
+                            onClick={handleGenerateCode}
+                          >
+                            Get code
+                          </Button>
+                        </InputAdornment>
+                      ),
                     },
                   },
                   disabled: true,

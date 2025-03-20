@@ -32,9 +32,8 @@ export interface IProductDataGrid {
   productUpdatedDate: string;
 }
 
-
 export interface IStockDataGrid extends IProductDataGrid {
-  productType: StockType
+  productType: StockType;
 }
 
 export interface IProductResponse {
@@ -52,10 +51,12 @@ export interface IProductResponse {
 }
 
 export interface IStockResponse extends IProductResponse {
-  type: StockType
+  discount: number;
+  type: StockType;
 }
 
 export interface IStockCreatePayload extends IProductCreatePayload {
+  discount: number;
   type: StockType;
 }
 
@@ -76,7 +77,7 @@ export interface IProductGetAllPayload {
 }
 
 export interface IStockGetAllPayload extends IProductGetAllPayload {
-  type?: StockType
+  type?: StockType;
 }
 
 export interface IUploadImageResponse {

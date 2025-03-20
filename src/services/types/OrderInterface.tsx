@@ -2,6 +2,7 @@ import { IMeta } from "./ProductInterface";
 
 export interface IPayloadItems {
   id: number;
+  code: string;
   skuCode: string;
   quantity: number;
   discount: number;

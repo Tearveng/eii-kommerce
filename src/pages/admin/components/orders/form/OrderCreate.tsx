@@ -112,6 +112,7 @@ const OrderCreate = () => {
     if (user) {
       const stocks = data.stocks.map((p) => ({
         id: p.id,
+        code: p.code,
         skuCode: p.skuCode,
         quantity: p.quantity,
         discount: 0,
@@ -193,7 +194,8 @@ const OrderCreate = () => {
         type: selectOption.type,
         code: selectOption.code,
         skuCode: selectOption.skuCode,
-        price: selectOption.price,
+        price: selectOption.price * (1 - selectOption.discount / 100),
+        discount: selectOption.discount,
         quantity: 1,
         publicId: selectOption.publicId,
         thumbnail: selectOption.thumbnail,
@@ -531,8 +533,34 @@ const OrderCreate = () => {
                     }}
                   />
                 </Stack>
+                <Stack gap={0.5} maxWidth={70} flexGrow={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    Dis
+                  </Typography>
+                  <InputText
+                    formData={formData}
+                    name={`stocks.${index}.discount`}
+                    placeholder="Discount"
+                    inputPropsTextField={{
+                      disabled: true,
+                      slotProps: {
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">%</InputAdornment>
+                          ),
+                        },
+                      },
+                    }}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Discount is required",
+                      },
+                    }}
+                  />
+                </Stack>
                 {watchProducts[index].thumbnail && (
-                  <Stack gap={0.5} maxWidth={80} flexGrow={1}>
+                  <Stack gap={0.5} maxWidth={60} flexGrow={1}>
                     <Typography variant="body2" color="textSecondary">
                       Image
                     </Typography>

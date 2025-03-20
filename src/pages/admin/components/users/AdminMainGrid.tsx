@@ -22,14 +22,11 @@ const AdminMainGrid = () => {
   const [search, setSearchParam] = useSearchParams();
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
-  const { data, isLoading, isFetching } = useGetAllUsersQuery(
-    {
-      limit: Number(limit),
-      page: Number(page),
-      role: "ADMIN",
-    },
-    { refetchOnMountOrArgChange: true },
-  );
+  const { data, isLoading, isFetching } = useGetAllUsersQuery({
+    limit: Number(limit),
+    page: Number(page),
+    role: "ADMIN",
+  });
   const [users, setUser] = useState<IUserDataGrid[]>([]);
 
   const onPaginationModelChange = (
