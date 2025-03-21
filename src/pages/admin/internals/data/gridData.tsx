@@ -3,7 +3,7 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -22,14 +22,54 @@ import {
   dispatchPreviewOrder,
   dispatchPreviewRow,
 } from "../../../../redux/application.ts";
-import { dateShortFormat } from "../../../../utils/common.ts";
-import { UserRole } from "../../../../utils/constant.ts";
-import { mapPathType } from "../../components/products/stock/StockMainGrid.tsx";
+import { dateShortFormat, mapPathType } from "../../../../utils/common.ts";
+import { ORDER_STATUS, UserRole } from "../../../../utils/constant.ts";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { changeRoleService } from "../../../../services/service/ChangeRoleService.ts";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import KeyboardReturnRoundedIcon from "@mui/icons-material/KeyboardReturnRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 type SparkLineData = number[];
+
+export const orderStatus = (
+  sta: string,
+): { title: string; color: string; icon: JSX.Element } => {
+  const status: {
+    [k: ORDER_STATUS]: { title: string; color: string; icon: JSX.Element };
+  } = {
+    [ORDER_STATUS.DONE]: {
+      title: "Done",
+      color: "info",
+      icon: <DoneRoundedIcon color="info" />,
+    },
+    [ORDER_STATUS.PAID]: {
+      title: "Paid",
+      color: "success",
+      icon: <DoneRoundedIcon color="success" />,
+    },
+    [ORDER_STATUS.PENDING]: {
+      title: "Pending",
+      color: "warning",
+      icon: <HistoryRoundedIcon color="warning" />,
+    },
+    [ORDER_STATUS.RETURN]: {
+      title: "Return",
+      color: "secondary",
+      icon: <KeyboardReturnRoundedIcon color="secondary" />,
+    },
+  };
+
+  return (
+    status[sta] ?? {
+      title: "Rejected",
+      color: "error",
+      icon: <CloseRoundedIcon color="error" />,
+    }
+  );
+};
 
 function getDaysInMonth(month: number, year: number) {
   const date = new Date(year, month, 0);
@@ -154,6 +194,7 @@ export function renderActions(
       delete: () => store.dispatch(dispatchDeleteUserId(Number(param.id))),
     },
   };
+  const checkTypePaid = type === "order";
 
   return (
     <Stack
@@ -184,14 +225,16 @@ export function renderActions(
           }}
         />
       </Link>
-      <DisabledByDefaultRoundedIcon
-        fontSize="small"
-        color="error"
-        onClick={() => actionsBtn[type].delete()}
-        sx={{
-          cursor: "pointer",
-        }}
-      />
+      {!checkTypePaid && (
+        <DisabledByDefaultRoundedIcon
+          fontSize="small"
+          color="error"
+          onClick={() => actionsBtn[type].delete()}
+          sx={{
+            cursor: "pointer",
+          }}
+        />
+      )}
     </Stack>
   );
 }
@@ -222,6 +265,7 @@ export const productColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 50,
     maxWidth: 100,
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "productQuantity",
@@ -268,11 +312,24 @@ export const orderColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (param) => param.value.toString().padStart(6, "0"),
   },
+  // {
+  //   field: "coupoCode",
+  //   headerName: "Coupon code",
+  //   flex: 1.5,
+  //   minWidth: 150,
+  // },
   {
-    field: "coupoCode",
-    headerName: "Coupon code",
+    field: "client",
+    headerName: "Client",
     flex: 1.5,
-    minWidth: 150,
+    maxWidth: 150,
+    renderCell: (param) => {
+      return (
+        <Typography mt={0.9} color="info">
+          {param.value.username}
+        </Typography>
+      );
+    },
   },
   {
     field: "currency",
@@ -287,6 +344,24 @@ export const orderColumns: GridColDef[] = [
     minWidth: 100,
   },
   {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (param) => {
+      const status = orderStatus(param.value);
+
+      return (
+        <Stack direction="row" gap={0.5} alignItems="center" mt={0.6}>
+          {status.icon}
+          <Typography variant="body2" color={status.color}>
+            {status.title}
+          </Typography>
+        </Stack>
+      );
+    },
+  },
+  {
     field: "refererCode",
     headerName: "Ref code",
     flex: 1,
@@ -298,18 +373,21 @@ export const orderColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 50,
     maxWidth: 100,
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "orderTotal",
     headerName: "Total",
     flex: 1,
     minWidth: 100,
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "orderTotalPrice",
     headerName: "Total price",
     flex: 1,
     minWidth: 100,
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "orderCreatedDate",
@@ -361,6 +439,7 @@ export const stockColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 50,
     maxWidth: 100,
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "productQuantity",
@@ -517,6 +596,109 @@ export const cartColumns: GridColDef[] = [
   },
   {
     field: "cartUpdatedDate",
+    headerName: "UpdatedAt",
+    flex: 1.5,
+    minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+];
+
+export const itemColumns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 1,
+    minWidth: 50,
+    maxWidth: 100,
+    type: "singleSelect",
+  },
+  {
+    field: "client",
+    headerName: "Client",
+    flex: 1.5,
+    maxWidth: 150,
+    renderCell: (param) => {
+      return (
+        <Typography mt={0.9} color="info">
+          {param.value.username}
+        </Typography>
+      );
+    },
+  },
+  {
+    field: "stockUrl",
+    headerName: "Image",
+    flex: 1,
+    maxWidth: 100,
+    renderCell: (param) => {
+      return (
+        <img
+          style={{
+            maxWidth: "30px",
+            marginTop: 3,
+          }}
+          src={param.value}
+          alt={param.value}
+          loading="lazy"
+        />
+      );
+    },
+  },
+  {
+    field: "itemName",
+    headerName: "Name",
+    flex: 2,
+    maxWidth: 200,
+  },
+  {
+    field: "stockSkuCode",
+    headerName: "Sku code",
+    flex: 1.5,
+    maxWidth: 150,
+  },
+  {
+    field: "itemQuantity",
+    headerName: "Quantity",
+    flex: 1.5,
+    maxWidth: 100,
+  },
+  {
+    field: "itemPrice",
+    headerName: "Price",
+    flex: 1,
+    maxWidth: 100,
+    renderCell: (param) => `$ ${param.value}`,
+  },
+  {
+    field: "itemSubtotal",
+    headerName: "Subtotal",
+    flex: 1,
+    maxWidth: 100,
+    renderCell: (param) => `$ ${param.value}`,
+  },
+  {
+    field: "itemDiscount",
+    headerName: "Discount",
+    flex: 0.8,
+    maxWidth: 80,
+    renderCell: (param) => `% ${param.value}`,
+  },
+  {
+    field: "itemTotalPrice",
+    headerName: "Total",
+    flex: 1,
+    maxWidth: 100,
+    renderCell: (param) => `$ ${param.value}`,
+  },
+  {
+    field: "itemCreatedDate",
+    headerName: "CreatedAt",
+    flex: 1.5,
+    minWidth: 200,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "itemCreatedDate",
     headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 200,

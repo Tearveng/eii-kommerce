@@ -16,6 +16,7 @@ import {
 import { StockType } from "../../../../../utils/constant.ts";
 import { stockColumns } from "../../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../../CustomizedDataGrid.tsx";
+import { titleName } from "../../../../../utils/common.ts";
 
 const lastPathName = (pathname: string) => {
   const splitPathname = pathname.split("/");
@@ -33,28 +34,6 @@ const mapPathName = (pathname: string): StockType => {
   };
 
   return type[path] ?? StockType.STOCK;
-};
-
-export const titleName = (pathname: string): StockType => {
-  const path = lastPathName(pathname);
-  const type = {
-    ["stock"]: "Stock",
-    ["pre-stock"]: "Pre stock",
-    ["live"]: "Live",
-  };
-
-  return type[path] ?? "Stock";
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const mapPathType = (type: StockType) => {
-  const pathType = {
-    [StockType.STOCK]: "stock",
-    [StockType.PRE_STOCK]: "pre-stock",
-    [StockType.LIVE]: "live",
-  };
-
-  return pathType[type];
 };
 
 const StockMainGrid = () => {

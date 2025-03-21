@@ -17,22 +17,17 @@ import {
   useUpdateStockMutation,
 } from "../../../../../services/stockApi.ts";
 import {
-  IProductResponse,
   IStockResponse,
   IUploadImageResponse,
 } from "../../../../../services/types/ProductInterface.tsx";
-import { generateRandomNumber } from "../../../../../utils/common.ts";
+import {
+  generateRandomNumber,
+  lastPathName,
+  mapPathType,
+} from "../../../../../utils/common.ts";
 import { StockType } from "../../../../../utils/constant.ts";
 import DropZoneUpload from "../../DropZoneUpload.tsx";
 import { useFindProduct } from "../../orders/form/useFindProduct.tsx";
-import { mapPathType } from "../stock/StockMainGrid.tsx";
-
-const lastPathName = (pathname: string, number = 2) => {
-  const splitPathname = pathname.split("/");
-  const lastPathname = splitPathname[splitPathname.length - number];
-
-  return lastPathname;
-};
 
 const mapPathName = (pathname: string): StockType => {
   const path = lastPathName(pathname);

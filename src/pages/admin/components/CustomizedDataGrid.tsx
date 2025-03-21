@@ -10,9 +10,11 @@ import { ICart } from "../../../services/types/CartInterface.tsx";
 import { IOrder } from "../../../services/types/OrderInterface.tsx";
 import { IProduct } from "../../../services/types/ProductInterface";
 import { IUser } from "../../../services/types/UserInterface.tsx";
+import { IItem } from "../../../services/types/ItemInterface.tsx";
 
-interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser | IOrder>
-  extends DataGridProps {
+interface ICustomizedDataGridProps<
+  T extends IProduct | ICart | IUser | IOrder | IItem,
+> extends DataGridProps {
   rows: readonly GridValidRowModel[];
   columns: GridColDef[];
   pageSize: number;
@@ -24,9 +26,9 @@ interface ICustomizedDataGridProps<T extends IProduct | ICart | IUser | IOrder>
   ) => void;
 }
 
-export default function CustomizedDataGrid<T extends IProduct | ICart | IUser | IOrder>(
-  props: Readonly<ICustomizedDataGridProps<T>>,
-) {
+export default function CustomizedDataGrid<
+  T extends IProduct | ICart | IUser | IOrder | IItem,
+>(props: Readonly<ICustomizedDataGridProps<T>>) {
   const {
     columns,
     rows,

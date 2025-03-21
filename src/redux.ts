@@ -8,6 +8,7 @@ import { orderApi } from "./services/orderApi.ts";
 import { productApi } from "./services/productApi";
 import { stocktApi } from "./services/stockApi.ts";
 import { userApi } from "./services/userApi";
+import { itemApi } from "./services/itemApi.ts";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     [adminApi.reducerPath]: adminApi.reducer,
     [stocktApi.reducerPath]: stocktApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [itemApi.reducerPath]: itemApi.reducer,
     application: applicationSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -26,7 +28,8 @@ export const store = configureStore({
       cartApi.middleware,
       adminApi.middleware,
       stocktApi.middleware,
-      orderApi.middleware
+      orderApi.middleware,
+      itemApi.middleware,
     ),
 });
 

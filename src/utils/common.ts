@@ -2,6 +2,8 @@ import { matchIsValidTel } from "mui-tel-input";
 import { store } from "../redux";
 import { dispatchSnackbar } from "../redux/application";
 import { IErrorConnection, IErrorType } from "../redux/type";
+import { ORDER_STATUS, StockType } from "./constant.ts";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 
 export const substring100 = (str: string) => {
   if (str.length > 100) {
@@ -58,9 +60,39 @@ export const snackbarError = (error: IErrorConnection | IErrorType) => {
 // Function to generate a random number in the format "xxxxxxxxx-x"
 export const generateRandomNumber = (): string => {
   // Generate a 9-digit random number
-  const nineDigits = Math.floor(100000000 + Math.random() * 900000000).toString();
+  const nineDigits = Math.floor(
+    100000000 + Math.random() * 900000000,
+  ).toString();
   // Generate a random single digit (0-9)
   const singleDigit = Math.floor(Math.random() * 10).toString();
   // Combine with a hyphen
   return `${nineDigits}-${singleDigit}`;
-}
+};
+
+export const titleName = (pathname: string): StockType => {
+  const path = lastPathName(pathname);
+  const type = {
+    ["stock"]: "Stock",
+    ["pre-stock"]: "Pre stock",
+    ["live"]: "Live",
+  };
+
+  return type[path] ?? "Stock";
+};
+
+export const mapPathType = (type: StockType) => {
+  const pathType = {
+    [StockType.STOCK]: "stock",
+    [StockType.PRE_STOCK]: "pre-stock",
+    [StockType.LIVE]: "live",
+  };
+
+  return pathType[type];
+};
+
+export const lastPathName = (pathname: string, number = 2) => {
+  const splitPathname = pathname.split("/");
+  const pathName = splitPathname[splitPathname.length - number];
+
+  return pathName;
+};

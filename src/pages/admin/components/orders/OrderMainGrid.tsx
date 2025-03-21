@@ -7,7 +7,10 @@ import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetAllOrdersQuery } from "../../../../services/orderApi.ts";
-import { IOrder, IOrderDataGrid } from "../../../../services/types/OrderInterface.tsx";
+import {
+  IOrder,
+  IOrderDataGrid,
+} from "../../../../services/types/OrderInterface.tsx";
 import { orderColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 
@@ -33,17 +36,20 @@ const OrderMainGrid = () => {
     if (data) {
       const remap: IOrderDataGrid[] = data.data.map((d) => ({
         id: d.id,
+        client: d.client,
+        profile: d.profile,
         clientId: d.clientId,
         profileId: d.profileId,
         couponCode: d.couponCode,
         currency: d.currency,
         discount: d.discount,
+        status: d.status,
         refererCode: d.refererCode,
         orderSubtotal: d.subtotal,
         orderTotal: d.total,
         orderTotalPrice: d.totalPrice,
         orderCreatedDate: d.createdAt,
-        orderUpdatedDate: d.updatedAt
+        orderUpdatedDate: d.updatedAt,
       }));
       setOrders(remap);
     }
