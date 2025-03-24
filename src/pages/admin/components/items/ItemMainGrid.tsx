@@ -16,6 +16,7 @@ import {
   IItemDataGrid,
 } from "../../../../services/types/ItemInterface.tsx";
 import { useDatePicker } from "../../../../hooks/useDatePicker.tsx";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 const ItemMainGrid = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const ItemMainGrid = () => {
     page: Number(page),
   });
   const [items, setItems] = useState<IItemDataGrid[]>([]);
-  const { startDateJSX } = useDatePicker();
+  const { startDateJSX, endDateJSX } = useDatePicker();
 
   const onPaginationModelChange = (
     model: GridPaginationModel,
@@ -94,9 +95,10 @@ const ItemMainGrid = () => {
         <SearchRoundedIcon />
         <TextField type="search" size="small" placeholder="Search" />
       </Stack>
-      <Stack direction="row" gap={2}>
+      <Stack direction="row" gap={2} alignItems="center">
         <Stack>{startDateJSX()}</Stack>
-        <Stack>{startDateJSX()}</Stack>
+        <CompareArrowsIcon sx={{ mt: 1 }} />
+        <Stack>{endDateJSX()}</Stack>
       </Stack>
       <Grid container spacing={2} columns={12} mt={2}>
         <Grid size={{ xs: 12, lg: 12 }}>

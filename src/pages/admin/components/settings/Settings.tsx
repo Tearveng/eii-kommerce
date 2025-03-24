@@ -8,7 +8,6 @@ import DisplaySettingsOutlinedIcon from "@mui/icons-material/DisplaySettingsOutl
 import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -28,11 +27,11 @@ const mainListItems = [
     icon: <NotificationsNoneOutlinedIcon />,
     path: "/notifications",
   },
-  {
-    text: "Account",
-    icon: <AdminPanelSettingsOutlinedIcon />,
-    path: "/account",
-  },
+  // {
+  //   text: "Account",
+  //   icon: <AdminPanelSettingsOutlinedIcon />,
+  //   path: "/account",
+  // },
   {
     text: "User permissions",
     icon: <PeopleAltOutlinedIcon />,
@@ -75,8 +74,6 @@ const Settings = () => {
             variant="outlined"
             size="small"
             sx={{ minWidth: 100, borderRadius: "6px", height: 32 }}
-            // startIcon={<AddRoundedIcon />}
-            // onClick={() => navigate("/admin/products/create")}
           >
             Cancel
           </Button>
@@ -122,19 +119,6 @@ const Settings = () => {
         <Stack p={1.5} gap={1} flexGrow={1}>
           <Outlet />
         </Stack>
-        {/*<List dense>*/}
-        {/*  {secondaryListItems.map((item, index) => (*/}
-        {/*    <ListItem key={index} disablePadding sx={{ display: "block" }}>*/}
-        {/*      <ListItemButton*/}
-        {/*        selected={location.pathname.includes(`/admin${item.path}`)}*/}
-        {/*        onClick={() => handleNavigate(item.path)}*/}
-        {/*      >*/}
-        {/*        <ListItemIcon>{item.icon}</ListItemIcon>*/}
-        {/*        <ListItemText primary={item.text} />*/}
-        {/*      </ListItemButton>*/}
-        {/*    </ListItem>*/}
-        {/*  ))}*/}
-        {/*</List>*/}
       </Stack>
     </Box>
   );

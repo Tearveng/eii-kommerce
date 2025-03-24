@@ -1,8 +1,8 @@
 import Grid from "@mui/material/Grid2";
-import StatCard from "../pages/admin/components/home/card/StatCard.tsx";
 import { useEffect, useState } from "react";
 import { IMeta } from "../services/types/ProductInterface.tsx";
 import StatCardSummary from "../pages/admin/components/home/card/StatCardSummary.tsx";
+import { IOrderSummary } from "../services/types/OrderInterface.tsx";
 
 export interface IConsumeDataGrid {
   title: string;
@@ -14,6 +14,7 @@ export interface IConsumeDataGrid {
 
 export interface IConsumeData {
   meta: IMeta;
+  orderSummary: IOrderSummary;
 }
 
 const ConsumeData = (props: IConsumeData) => {

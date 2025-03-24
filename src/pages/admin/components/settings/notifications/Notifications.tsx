@@ -1,10 +1,7 @@
 import { Checkbox, Divider, Stack, Typography } from "@mui/material";
-import { useAppSelector } from "../../../../../redux.ts";
 import { IOSSwitch } from "../../ui/AntSwitch.tsx";
 
 const Notifications = () => {
-  const { user } = useAppSelector((state) => state.application);
-
   return (
     <Stack gap={2} width="100%">
       <Stack gap={1}>
@@ -28,7 +25,7 @@ const Notifications = () => {
         </Stack>
         <Stack gap={1}>
           <Stack direction="row" alignItems="center" gap={2}>
-            <IOSSwitch sx={{ m: 1 }} defaultChecked />
+            <IOSSwitch sx={{ m: 1 }} color="primary" defaultChecked />
             <Typography variant="body2" fontWeight={400} mt={0.2}>
               On
             </Typography>

@@ -6,13 +6,17 @@ import Typography from "@mui/material/Typography";
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAllOrdersQuery } from "../../../../services/orderApi.ts";
+import {
+  useGetAllOrdersQuery,
+  useGetOrdersSummaryQuery,
+} from "../../../../services/orderApi.ts";
 import {
   IOrder,
   IOrderDataGrid,
 } from "../../../../services/types/OrderInterface.tsx";
 import { orderColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
+import ConsumeData from "../../../../components/ConsumeData.tsx";
 
 const OrderMainGrid = () => {
   const navigate = useNavigate();
@@ -22,6 +26,11 @@ const OrderMainGrid = () => {
     limit,
     page,
   });
+  const {
+    data: orderSummary,
+    isLoading: summaryLoading,
+    isFetching: summaryFetching,
+  } = useGetOrdersSummaryQuery();
 
   const [orders, setOrders] = useState<IOrderDataGrid[]>([]);
   const onPaginationModelChange = (
@@ -36,6 +45,7 @@ const OrderMainGrid = () => {
     if (data) {
       const remap: IOrderDataGrid[] = data.data.map((d) => ({
         id: d.id,
+        items: d.items,
         client: d.client,
         profile: d.profile,
         clientId: d.clientId,
@@ -55,7 +65,7 @@ const OrderMainGrid = () => {
     }
   }, [data, limit, page]);
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || summaryLoading || summaryFetching) {
     return <>loading...</>;
   }
 
@@ -66,6 +76,11 @@ const OrderMainGrid = () => {
         maxWidth: { sm: "100%", md: "1700px" },
       }}
     >
+      {/* consume data */}
+      {data && orderSummary && (
+        <ConsumeData meta={data.meta} orderSummary={orderSummary} />
+      )}
+
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Orders
       </Typography>

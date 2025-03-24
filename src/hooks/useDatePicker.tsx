@@ -20,32 +20,11 @@ export const useDatePicker = () => {
                 <TextField
                   {...params}
                   sx={{
+                    width: 120,
                     "& .MuiInputBase-root": {
                       height: 30,
                       overflowY: "hidden",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Default state
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Hover state
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Focus state
-                      },
                     },
-                    "& .MuiInputLabel-root": { fontSize: "0.75rem" },
-                    "& .MuiOutlinedInput-root": {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Default state
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Hover state
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent", // Focus state
-                      },
-                    },
-                    width: 120,
                     "& .MuiInputAdornment-root .MuiSvgIcon-root": {
                       fontSize: "1rem", // Change icon size (default is ~24px or 1.5rem)
                     },
@@ -63,11 +42,35 @@ export const useDatePicker = () => {
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker", "DatePicker"]}>
-          <DatePicker defaultValue={dayjs("2022-04-17")} />
+          <DatePicker
+            defaultValue={dayjs("2022-04-17")}
+            sx={{
+              "& .MuiInputBase-root": {
+                height: 30,
+                overflowY: "hidden",
+              },
+              "& .MuiInputLabel-root": { fontSize: "0.75rem" },
+              "& .MuiOutlinedInput-root": {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "transparent", // Default state
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "transparent", // Hover state
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "transparent", // Focus state
+                },
+              },
+              width: 120,
+              "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+                fontSize: "1rem", // Change icon size (default is ~24px or 1.5rem)
+              },
+            }}
+          />
         </DemoContainer>
       </LocalizationProvider>
     );
   };
 
-  return { startDateJSX, startDate, endDate };
+  return { startDateJSX, endDateJSX, startDate, endDate };
 };

@@ -338,10 +338,27 @@ export const orderColumns: GridColDef[] = [
     minWidth: 100,
   },
   {
-    field: "discount",
-    headerName: "Discount",
+    field: "items",
+    headerName: "Items",
     flex: 1,
     minWidth: 100,
+    renderCell: (param) => {
+      const value = param.value;
+      if (value.length > 0) {
+        return `${value.length} item${value.length > 1 ? "s" : ""}`;
+      }
+
+      return "-";
+    },
+  },
+  {
+    field: "orderTotal",
+    headerName: "Total",
+    flex: 1,
+    minWidth: 100,
+    headerAlign: "right",
+    align: "right",
+    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
   {
     field: "status",
@@ -375,13 +392,7 @@ export const orderColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (param) => `$ ${param.value.toFixed(2)}`,
   },
-  {
-    field: "orderTotal",
-    headerName: "Total",
-    flex: 1,
-    minWidth: 100,
-    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
-  },
+
   {
     field: "orderTotalPrice",
     headerName: "Total price",

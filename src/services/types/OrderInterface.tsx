@@ -1,6 +1,7 @@
 import { IMeta } from "./ProductInterface";
 import { ORDER_STATUS } from "../../utils/constant.ts";
 import { IUserResponse } from "./UserInterface.tsx";
+import { IItemResponse } from "./ItemInterface.tsx";
 
 export interface IPayloadItems {
   id: number;
@@ -24,6 +25,7 @@ export interface IOrderGetAllPayload {
 
 export interface IOrderResponse {
   id: number;
+  items: IItemResponse[];
   profileId: number;
   clientId: number;
   client: IUserResponse;
@@ -42,6 +44,7 @@ export interface IOrderResponse {
 
 export interface IOrderDataGrid {
   id: number;
+  items: IItemResponse[];
   clientId: number;
   profileId: number;
   client: IUserResponse;
@@ -61,4 +64,14 @@ export interface IOrderDataGrid {
 export interface IOrder {
   data: IOrderResponse[];
   meta: IMeta;
+}
+
+export interface IOrderSummary {
+  status: { status: ORDER_STATUS; count: string }[];
+  orderAmount: {
+    subtotal: string;
+  };
+  revenue: {
+    total: string;
+  };
 }

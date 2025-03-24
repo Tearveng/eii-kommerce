@@ -1,12 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IOrder, IOrderCreatePayload, IOrderGetAllPayload } from "./types/OrderInterface";
 import {
-  IUserInfoRedux
-} from "./types/UserInterface";
+  IOrder,
+  IOrderCreatePayload,
+  IOrderGetAllPayload,
+  IOrderSummary,
+} from "./types/OrderInterface";
+import { IUserInfoRedux } from "./types/UserInterface";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `http://${import.meta.env.VITE_HOST}:4002/orders` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://${import.meta.env.VITE_HOST}:4002/orders`,
+  }),
   tagTypes: ["Order"],
   endpoints: (builder) => ({
     /** get all orders */
@@ -18,6 +23,16 @@ export const orderApi = createApi({
       }),
       providesTags: (result) =>
         result ? result.data.map(({ id }) => ({ type: "Order", id })) : [],
+    }),
+
+    /** get orders summary */
+    getOrdersSummary: builder.query<IOrderSummary, void>({
+      query: () => ({
+        url: "/order-summary",
+        method: "GET",
+      }),
+      // providesTags: (result) =>
+      //   result ? result.data.map(({ id }) => ({ type: "Order", id })) : [],
     }),
 
     /** create order */
@@ -32,6 +47,7 @@ export const orderApi = createApi({
 });
 
 export const {
+  useGetOrdersSummaryQuery,
   useGetAllOrdersQuery,
-  useCreateOrderMutation
+  useCreateOrderMutation,
 } = orderApi;

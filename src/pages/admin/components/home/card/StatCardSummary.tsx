@@ -88,35 +88,35 @@ const StatCardSummary = ({
               direction="row"
               sx={{ justifyContent: "space-between", alignItems: "center" }}
             >
-              <Typography variant="h4" component="p">
+              <Typography variant="h5" component="p">
                 {value}
               </Typography>
-              <Chip size="small" color={color} label={trendValues[trend]} />
+              {/*<Chip size="small" color={color} label={trendValues[trend]} />*/}
             </Stack>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               {interval}
             </Typography>
           </Stack>
-          <Box sx={{ width: "100%", height: data.length === 0 ? 0 : 50 }}>
-            <SparkLineChart
-              colors={[chartColor]}
-              data={data}
-              area
-              showHighlight
-              showTooltip
-              xAxis={{
-                scaleType: "band",
-                data: daysInWeek,
-              }}
-              sx={{
-                [`& .${areaElementClasses.root}`]: {
-                  fill: `url(#area-gradient-${value})`,
-                },
-              }}
-            >
-              <AreaGradient color={chartColor} id={`area-gradient-${value}`} />
-            </SparkLineChart>
-          </Box>
+          {/*<Box sx={{ width: "100%", height: data.length === 0 ? 0 : 50 }}>*/}
+          {/*  <SparkLineChart*/}
+          {/*    colors={[chartColor]}*/}
+          {/*    data={data}*/}
+          {/*    area*/}
+          {/*    showHighlight*/}
+          {/*    showTooltip*/}
+          {/*    xAxis={{*/}
+          {/*      scaleType: "band",*/}
+          {/*      data: daysInWeek,*/}
+          {/*    }}*/}
+          {/*    sx={{*/}
+          {/*      [`& .${areaElementClasses.root}`]: {*/}
+          {/*        fill: `url(#area-gradient-${value})`,*/}
+          {/*      },*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    <AreaGradient color={chartColor} id={`area-gradient-${value}`} />*/}
+          {/*  </SparkLineChart>*/}
+          {/*</Box>*/}
         </Stack>
       </CardContent>
     </Card>
