@@ -3,7 +3,7 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -13,7 +13,7 @@ import {
   GridRenderCellParams,
   GridRowsProp,
 } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { store } from "../../../../redux.ts";
 import {
   dispatchDeleteProductId,
@@ -324,11 +324,7 @@ export const orderColumns: GridColDef[] = [
     flex: 1.5,
     maxWidth: 150,
     renderCell: (param) => {
-      return (
-        <Typography mt={0.9} color="info">
-          {param.value.username}
-        </Typography>
-      );
+      return <NavLink to={`${param.row.id}`}>{param.value.username}</NavLink>;
     },
   },
   {

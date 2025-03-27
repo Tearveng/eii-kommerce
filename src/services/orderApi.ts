@@ -3,6 +3,7 @@ import {
   IOrder,
   IOrderCreatePayload,
   IOrderGetAllPayload,
+  IOrderResponse,
   IOrderSummary,
 } from "./types/OrderInterface";
 import { IUserInfoRedux } from "./types/UserInterface";
@@ -43,10 +44,19 @@ export const orderApi = createApi({
         body,
       }),
     }),
+
+    /** get order details */
+    getOrderDetail: builder.query<IOrderResponse, { id: number }>({
+      query: ({ id }) => ({
+        url: `/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
+  useGetOrderDetailQuery,
   useGetOrdersSummaryQuery,
   useGetAllOrdersQuery,
   useCreateOrderMutation,

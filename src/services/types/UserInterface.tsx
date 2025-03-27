@@ -17,7 +17,7 @@ export interface IUserInfo {
 export interface IUserGetAllPayload {
   limit?: number;
   page?: number;
-  role?: 'ADMIN' | "USER" | "CLIENT"
+  role?: "ADMIN" | "USER" | "CLIENT";
 }
 
 export interface IUserResponse {
@@ -27,6 +27,7 @@ export interface IUserResponse {
   lastName: string;
   email: string;
   phone: string;
+  roles: string[];
   profile: string;
   publicId: string;
   username: string;

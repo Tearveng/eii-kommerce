@@ -25,6 +25,7 @@ import AppPublicLayout from "./pages/layout/public/Layout.tsx";
 import ViewItemPage from "./pages/products/ViewItemPage";
 import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
 import AllMainGrid from "./pages/admin/components/users/AllMainGrid.tsx";
+import OrderDetail from "./pages/admin/components/orders/order-details/OrderDetail.tsx";
 
 const AppRouter = () => {
   return (
@@ -79,6 +80,7 @@ const AppRouter = () => {
 
         {/* route order */}
         <Route path="/admin/orders" element={<OrderMainGrid />} />
+        <Route path="/admin/orders/:id" element={<OrderDetail />} />
         <Route path="/admin/orders/create" element={<OrderCreate />} />
         <Route path="/admin/orders/deposit" element={<OrderDeposit />} />
       </Route>

@@ -21,6 +21,7 @@ const ConsumeData = (props: IConsumeData) => {
   const [consumeData, setConsumeData] = useState<IConsumeDataGrid[]>([]);
 
   useEffect(() => {
+    setConsumeData([]);
     if (props.meta) {
       const mockData: Array<IConsumeDataGrid> = [
         {
@@ -30,17 +31,41 @@ const ConsumeData = (props: IConsumeData) => {
           trend: "neutral",
           data: [],
         },
-        {
-          title: "New items",
-          value: `${props.meta.totalThirtyDays}`,
-          interval: "Last 30 days",
-          trend: "up",
-          data: [],
-        },
       ];
       setConsumeData(mockData);
     }
-  }, [props.meta]);
+
+    if (props.orderSummary) {
+      const mockSummary: Array<IConsumeDataGrid> = [
+        {
+          title: "Total order amount",
+          value: `$ ${Number(props.orderSummary.orderAmount.subtotal).toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+          interval: "",
+          trend: "neutral",
+          data: [],
+        },
+        {
+          title: "Revenue",
+          value: `$ ${Number(props.orderSummary.revenue.total).toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+          interval: "",
+          trend: "neutral",
+          data: [],
+        },
+      ];
+      for (const sta of props.orderSummary.status) {
+        if (["RETURN"].indexOf(sta.status) > -1) {
+          mockSummary.push({
+            title: sta.status.toLocaleUpperCase(),
+            value: `${Number(sta.count)}`,
+            interval: "",
+            trend: "neutral",
+            data: [],
+          });
+        }
+      }
+      setConsumeData((prev) => [...prev, ...mockSummary]);
+    }
+  }, [props.meta, props.orderSummary]);
 
   return (
     <Grid

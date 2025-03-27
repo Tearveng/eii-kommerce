@@ -25,6 +25,13 @@ export const dateShortFormat = (d: string) => {
   });
 };
 
+export const dateFullDayFormat = (d: string) => {
+  const date = new Date(d);
+  return date.toLocaleString("en-US", {
+    dateStyle: "medium",
+  });
+};
+
 export const validateEmail = (email: string) => {
   if (email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -95,4 +102,10 @@ export const lastPathName = (pathname: string, number = 2) => {
   const pathName = splitPathname[splitPathname.length - number];
 
   return pathName;
+};
+
+export const formatPrice = (num: number) => {
+  return num.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+  });
 };

@@ -52,7 +52,7 @@ export const adminApi = createApi({
     }),
 
     /** get user info */
-    getUserInfo: builder.query<IUser, void>({
+    getUserInfo: builder.query<IUserResponse, void>({
       query: () => ({
         url: "/user-info",
         method: "GET",
