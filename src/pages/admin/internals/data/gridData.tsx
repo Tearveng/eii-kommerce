@@ -310,7 +310,7 @@ export const orderColumns: GridColDef[] = [
     headerName: "Id",
     flex: 1,
     minWidth: 100,
-    renderCell: (param) => param.value.toString().padStart(6, "0"),
+    renderCell: (param) => `#${param.value.toString().padStart(6, "0")}`,
   },
   // {
   //   field: "coupoCode",

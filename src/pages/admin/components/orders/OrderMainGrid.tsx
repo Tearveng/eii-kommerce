@@ -17,11 +17,18 @@ import {
 import { orderColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 import ConsumeData from "../../../../components/ConsumeData.tsx";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import { useDatePicker } from "../../../../hooks/useDatePicker.tsx";
+import { useSearchInput } from "../../../../hooks/useSearchInput.tsx";
+import { useSelectTable } from "../../../../hooks/useSelectTable.tsx";
 
 const OrderMainGrid = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
+  const { startDateJSX, endDateJSX } = useDatePicker();
+  const { searchJsx } = useSearchInput();
+  const { selectCurrencyJSX, selectStatusJSX } = useSelectTable();
   const { data, isLoading, isFetching } = useGetAllOrdersQuery({
     limit,
     page,
@@ -95,6 +102,30 @@ const OrderMainGrid = () => {
           Create new
         </Button>
       </Stack>
+
+      <Stack direction="row" gap={2} alignItems="center" mb={2}>
+        <Stack>{startDateJSX()}</Stack>
+        <CompareArrowsIcon sx={{ mt: 1 }} />
+        <Stack>{endDateJSX()}</Stack>
+      </Stack>
+
+      <Stack
+        direction="row"
+        alignItems="end"
+        justifyContent="space-between"
+        mb={2}
+        flexWrap="wrap"
+        gap={2}
+      >
+        <Stack direction="row" gap={2}>
+          {selectCurrencyJSX()}
+          {selectStatusJSX()}
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={1}>
+          {searchJsx()}
+        </Stack>
+      </Stack>
+
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid<IOrder>

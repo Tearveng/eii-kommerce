@@ -14,6 +14,7 @@ export const useDatePicker = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker", "DatePicker"]}>
           <DatePicker
+            minDate={dayjs("2020-01-01")}
             defaultValue={dayjs("2022-04-17")}
             slots={{
               textField: (params) => (

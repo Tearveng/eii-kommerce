@@ -8,8 +8,7 @@ import { itemColumns } from "../../internals/data/gridData.tsx";
 import CustomizedDataGrid from "../CustomizedDataGrid.tsx";
 import { dispatchProductCurrentPage } from "../../../../redux/application.ts";
 import { useAppDispatch } from "../../../../redux.ts";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { Stack, TextField } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useGetAllItemsQuery } from "../../../../services/itemApi.ts";
 import {
   IItem,
@@ -17,6 +16,7 @@ import {
 } from "../../../../services/types/ItemInterface.tsx";
 import { useDatePicker } from "../../../../hooks/useDatePicker.tsx";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import { useSearchInput } from "../../../../hooks/useSearchInput.tsx";
 
 const ItemMainGrid = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const ItemMainGrid = () => {
   const [search, setSearchParam] = useSearchParams();
   const [page, setPage] = useState(search.get("page") ?? 1);
   const [limit, setLimit] = useState(search.get("limit") ?? 20);
+  const { searchJsx } = useSearchInput();
   const {
     currentData: data,
     isLoading,
@@ -91,14 +92,16 @@ const ItemMainGrid = () => {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Items
       </Typography>
-      <Stack direction="row" alignItems="center" gap={1}>
-        <SearchRoundedIcon />
-        <TextField type="search" size="small" placeholder="Search" />
-      </Stack>
-      <Stack direction="row" gap={2} alignItems="center">
-        <Stack>{startDateJSX()}</Stack>
-        <CompareArrowsIcon sx={{ mt: 1 }} />
-        <Stack>{endDateJSX()}</Stack>
+
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" gap={2} alignItems="center">
+          <Stack>{startDateJSX()}</Stack>
+          <CompareArrowsIcon sx={{ mt: 1 }} />
+          <Stack>{endDateJSX()}</Stack>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={1}>
+          {searchJsx()}
+        </Stack>
       </Stack>
       <Grid container spacing={2} columns={12} mt={2}>
         <Grid size={{ xs: 12, lg: 12 }}>
