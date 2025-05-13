@@ -1,29 +1,9 @@
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CustomizedDataGrid from "../../CustomizedDataGrid.tsx";
-import {
-  IProduct,
-  IProductDataGrid,
-} from "../../../../../services/types/ProductInterface.tsx";
-import {
-  userColumns,
-  userPermissionColumns,
-} from "../../../internals/data/gridData.tsx";
+import { userPermissionColumns } from "../../../internals/data/gridData.tsx";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "../../../../../redux.ts";
 import { useGetAllUsersQuery } from "../../../../../services/adminApi.ts";
 import {
@@ -33,10 +13,8 @@ import {
 import { GridCallbackDetails, GridPaginationModel } from "@mui/x-data-grid";
 import { dispatchProductCurrentPage } from "../../../../../redux/application.ts";
 import Box from "@mui/material/Box";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const UserPermission = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearchParam] = useSearchParams();
   const role = search.get("role");

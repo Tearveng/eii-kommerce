@@ -3,7 +3,7 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import PreviewRoundedIcon from "@mui/icons-material/PreviewRounded";
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -38,7 +38,7 @@ export const orderStatus = (
   sta: string,
 ): { title: string; color: string; icon: JSX.Element } => {
   const status: {
-    [k: ORDER_STATUS]: { title: string; color: string; icon: JSX.Element };
+    [k in ORDER_STATUS]: { title: string; color: string; icon: JSX.Element };
   } = {
     [ORDER_STATUS.DONE]: {
       title: "Done",
@@ -265,7 +265,7 @@ export const productColumns: GridColDef[] = [
     flex: 1.5,
     minWidth: 50,
     maxWidth: 100,
-    renderCell: (param) => `$ ${param.value.toFixed(2)}`,
+    renderCell: (param) => `$ ${Number(param.value).toFixed(2)}`,
   },
   {
     field: "productQuantity",
@@ -484,33 +484,6 @@ export const stockColumns: GridColDef[] = [
     renderCell: (param) => renderActions(param, "stock"),
   },
 ];
-
-// export const userPermissionColumns: GridColDef[] = [
-//   {
-//     field: "actions",
-//     headerName: "Actions",
-//     flex: 1.5,
-//     minWidth: 200,
-//   },
-//   {
-//     field: "user",
-//     headerName: "User",
-//     flex: 1,
-//     maxWidth: 100,
-//   },
-//   {
-//     field: "manager",
-//     headerName: "Manager",
-//     flex: 1,
-//     maxWidth: 100,
-//   },
-//   {
-//     field: "admin",
-//     headerName: "Admin",
-//     flex: 1,
-//     maxWidth: 100,
-//   },
-// ];
 
 export const cartColumns: GridColDef[] = [
   {
@@ -880,6 +853,13 @@ export const userPermissionColumns: GridColDef[] = [
   {
     field: "userCreatedDate",
     headerName: "CreatedAt",
+    flex: 1.5,
+    minWidth: 100,
+    renderCell: (param) => dateShortFormat(param.value),
+  },
+  {
+    field: "userUpdatedDate",
+    headerName: "UpdatedAt",
     flex: 1.5,
     minWidth: 100,
     renderCell: (param) => dateShortFormat(param.value),

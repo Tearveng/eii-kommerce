@@ -24,6 +24,7 @@ import ViewItemsPage from "./pages/products/ViewItemsPage.tsx";
 import AllMainGrid from "./pages/admin/components/users/AllMainGrid.tsx";
 import OrderDetail from "./pages/admin/components/orders/order-details/OrderDetail.tsx";
 import { useAppSelector } from "./redux.ts";
+import TaskMainGrid from "./pages/admin/components/tasks/TaskMainGrid.tsx";
 
 const AppRouter = () => {
   const { user } = useAppSelector((state) => state.application);
@@ -87,6 +88,9 @@ const AppRouter = () => {
           <Route path="/admin/orders/:id" element={<OrderDetail />} />
           <Route path="/admin/orders/create" element={<OrderCreate />} />
           <Route path="/admin/orders/deposit" element={<OrderDeposit />} />
+
+          {/* route order */}
+          <Route path="/admin/tasks" element={<TaskMainGrid />} />
         </Route>
       )}
 
