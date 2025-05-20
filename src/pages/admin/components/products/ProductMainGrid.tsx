@@ -80,7 +80,7 @@ const ProductMainGrid = () => {
       </Typography>
 
       {/* consume data */}
-      {data && <ConsumeData meta={data.meta} />}
+      {/*{data && <ConsumeData meta={data.meta} orderSummary={} />}*/}
 
       <Stack direction="row" pb={1}>
         <Button

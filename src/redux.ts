@@ -9,6 +9,7 @@ import { productApi } from "./services/productApi";
 import { stocktApi } from "./services/stockApi.ts";
 import { userApi } from "./services/userApi";
 import { itemApi } from "./services/itemApi.ts";
+import { todoApi } from "./services/todoApi.ts";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     [stocktApi.reducerPath]: stocktApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [itemApi.reducerPath]: itemApi.reducer,
+    [todoApi.reducerPath]: todoApi.reducer,
     application: applicationSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -30,6 +32,7 @@ export const store = configureStore({
       stocktApi.middleware,
       orderApi.middleware,
       itemApi.middleware,
+      todoApi.middleware,
     ),
 });
 

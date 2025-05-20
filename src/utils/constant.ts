@@ -16,3 +16,9 @@ export enum ORDER_STATUS {
   PENDING = "PENDING",
   RETURN = "RETURN",
 }
+
+export enum TODO_STATUS {
+  TODO = "TODO",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+}

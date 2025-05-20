@@ -14,6 +14,23 @@ const getChipStatus = (value: string, chipProps?: ChipProps) => {
   );
 };
 
+function groupBy<T, K extends keyof any>(
+  array: T[],
+  getKey: (item: T) => K,
+): Record<K, T[]> {
+  return array.reduce(
+    (result, item) => {
+      const key = getKey(item);
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(item);
+      return result;
+    },
+    {} as Record<K, T[]>,
+  );
+}
+
 const formatCambodianPhoneNumber = (phone) => {
   // Remove any non-digit characters (spaces, dashes, etc.)
   let cleaned = phone.replace(/\D/g, "");
@@ -35,4 +52,4 @@ const formatCambodianPhoneNumber = (phone) => {
   return "Invalid Cambodian phone number";
 };
 
-export { getChipStatus, formatCambodianPhoneNumber };
+export { getChipStatus, formatCambodianPhoneNumber, groupBy };

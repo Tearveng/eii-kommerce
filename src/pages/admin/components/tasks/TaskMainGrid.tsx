@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import TaskTwoListsDND from "./TaskTwoListsDND.tsx";
 
 const TaskMainGrid = () => {
   return (
@@ -10,8 +11,10 @@ const TaskMainGrid = () => {
       }}
     >
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Orders
+        Tasks
       </Typography>
+
+      <TaskTwoListsDND />
     </Box>
   );
 };
