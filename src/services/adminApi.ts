@@ -23,7 +23,7 @@ export const adminApi = createApi({
   }),
   tagTypes: ["Admin", "User"],
   endpoints: (builder) => ({
-    /** Get all products */
+    /** get all products */
     getAllUsers: builder.query<IUser, IUserGetAllPayload>({
       query: ({ limit = 10, page = 1, role = "USER" }) => ({
         url: "/users",
@@ -34,7 +34,7 @@ export const adminApi = createApi({
       //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
     }),
 
-    /** Upload image */
+    /** upload image */
     uploadImage: builder.mutation<IUploadImageResponse, { form: FormData }>({
       query: ({ form }) => ({
         url: "/upload/image/profile",
@@ -66,7 +66,7 @@ export const adminApi = createApi({
       //   result ? result.data.map(({ id }) => ({ type: "Admin", id })) : [],
     }),
 
-    /** Update user */
+    /** update user */
     updateUser: builder.mutation<
       IUserResponse,
       IUserUpdatePayload & { id: number }
@@ -120,7 +120,7 @@ export const adminApi = createApi({
       },
     }),
 
-    /** Create user */
+    /** create user */
     createUser: builder.mutation<IUserResponse, IUserCreatePayload>({
       query: (body) => ({
         url: "/create-user",
@@ -168,7 +168,7 @@ export const adminApi = createApi({
       },
     }),
 
-    /** Delete user */
+    /** delete user */
     deleteUser: builder.mutation<IUserResponse, { id: number }>({
       query: ({ id }) => ({
         url: `/delete-users/${id}`,

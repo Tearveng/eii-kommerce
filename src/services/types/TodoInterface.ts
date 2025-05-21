@@ -7,6 +7,7 @@ export interface ITodoResponse {
   status: TODO_STATUS;
   isCompleted: boolean;
   dueDate: string | null;
+  sortOrder: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -66,13 +66,72 @@ export const todoApi = createApi({
           const { data } = await queryFulfilled;
           dispatch(
             todoApi.util.updateQueryData("getAllTodos", undefined, (draft) => {
+              const cpData = [...draft];
               // Filter out the deleted post from the cached posts
-              return [...draft.filter((u) => u.id !== id), data];
+              const tempIndex = draft.findIndex((item) => item.id === id);
+              cpData[tempIndex] = data;
+              // Filter out the deleted post from the cached posts
+              return cpData;
             }),
           );
         } catch (error) {
           // Handle error (if any)
           console.error("Failed to delete the product:", error);
+        }
+      },
+    }),
+
+    /** update todo order */
+    updateOrderTodo: builder.mutation<
+      { success: boolean },
+      { orderedTodoIds: number[] }
+    >({
+      query: ({ orderedTodoIds }) => ({
+        url: "/reorder",
+        method: "PUT",
+        body: { orderedTodoIds },
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      // onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+      //   try {
+      //     const { data } = await queryFulfilled;
+      //     dispatch(
+      //       todoApi.util.updateQueryData("getAllTodos", undefined, (draft) => {
+      //         const cpData = [...draft];
+      //         // Filter out the deleted post from the cached posts
+      //         const tempIndex = draft.findIndex((item) => item.id === id);
+      //         cpData[tempIndex] = data;
+      //         // Filter out the deleted post from the cached posts
+      //         return cpData;
+      //       }),
+      //     );
+      //   } catch (error) {
+      //     // Handle error (if any)
+      //     console.error("Failed to delete the product:", error);
+      //   }
+      // },
+    }),
+
+    /** delete todo */
+    deleteTodo: builder.mutation<ITodoResponse, { id: number }>({
+      query: ({ id }) => ({
+        url: `/delete-todos/${id}`,
+        method: "DELETE",
+      }),
+      // Using `onQueryStarted` to update the cache manually without a refetch
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        try {
+          // Wait for the delete mutation to be successful
+          await queryFulfilled;
+          dispatch(
+            todoApi.util.updateQueryData("getAllTodos", undefined, (draft) => {
+              // Filter out the deleted post from the cached posts
+              return draft.filter((u) => u.id !== id);
+            }),
+          );
+        } catch (error) {
+          // Handle error (if any)
+          console.error("Failed to delete the user:", error);
         }
       },
     }),
@@ -83,4 +142,6 @@ export const {
   useGetAllTodosQuery,
   useCreateTodoMutation,
   useUpdateTodoMutation,
+  useDeleteTodoMutation,
+  useUpdateOrderTodoMutation,
 } = todoApi;

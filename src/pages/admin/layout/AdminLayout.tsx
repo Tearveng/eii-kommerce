@@ -6,7 +6,6 @@ import type {} from "@mui/x-data-grid/themeAugmentation";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 import type {} from "@mui/x-tree-view/themeAugmentation";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthWatcher } from "../../../hooks/useAuthWatcher.tsx";
 import { authService } from "../../../services/service/AuthService.ts";
 import AppNavbar from "../../admin/components/AppNavBar.tsx";
 import SideMenu from "../../admin/components/SideMenu.tsx";
@@ -26,9 +25,7 @@ const xThemeComponents = {
 };
 
 const AdminLayout = (props: { disableCustomTheme?: boolean }) => {
-  // useAuthWatcher();
   const isAuthenticated = authService.isAuthenticated();
-
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
